@@ -1,41 +1,74 @@
 # == Class: vmware
 #
-# Full description of class vmware here.
+# Manage vmware
 #
-# === Parameters
-#
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
-# === Variables
-#
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if
-#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should be avoided in favor of class parameters as
-#   of Puppet 2.6.)
-#
-# === Examples
-#
-#  class { vmware:
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
-#  }
-#
-# === Authors
-#
-# Author Name <author@domain.com>
-#
-# === Copyright
-#
-# Copyright 2014 Your name here, unless otherwise noted.
-#
-class vmware {
+class vmware (
+  $manage_repo_package = true,
+  $repo_package_name   = 'vmwaretools-repo',
+  $repo_package_ensure = 'present',
+  $manage_tools_package = true,
+  $tools_package_name = 'USE_DEFAULTS',
+  $tools_package_ensure = 'present',
+){
 
+  if $::virtual == 'vmware' {
+    if $tools_package_name == 'USE_DEFAULTS' {
+      if $::vmware_has_x == 'true' {
+        $tools_package_name_real = ['vmware-tools-esx',
+                                    'vmware-tools-esx-nox',
+                                    'vmware-tools-esx-kmods',]
+      } else {
+        $tools_package_name_real = ['vmware-tools-esx-nox',
+                                    'vmware-tools-esx-kmods',]
+      }
+    } else {
+        if type($tools_package_name) == 'String' or type($tools_package_name) == 'Array' {
+          $tools_package_name_real = $tools_package_name
+        } else {
+          fail('vmware::tools_package_name must be a string or an array.')
+        }
+    }
 
+    if type($manage_repo_package) == 'string' {
+      $manage_repo_package_real = str2bool($manage_repo_package)
+    } else {
+      validate_bool($manage_repo_package)
+      $manage_repo_package_real = $manage_repo_package
+    }
+
+    if type($manage_tools_package) == 'string' {
+      $manage_tools_package_real = str2bool($manage_tools_package)
+    } else {
+      validate_bool($manage_tools_package)
+      $manage_tools_package_real = $manage_tools_package
+    }
+
+    if $manage_repo_package_real == true {
+      validate_string($repo_package_name)
+      validate_string($repo_package_ensure)
+
+      package { $repo_package_name:
+        ensure => $repo_package_ensure,
+      }
+    }
+
+    if $manage_tools_package_real == true {
+      validate_string($tools_package_ensure)
+
+      exec { 'Remove vmware tools script installation':
+        path => '/usr/bin/:/etc/vmware-tools/',
+        onlyif => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+        command => 'installer.sh uninstall',
+        before => Package[$tools_package_name_real],
+      }
+
+      package { $tools_package_name_real:
+        ensure => $tools_package_ensure,
+      }
+    }
+
+    if $manage_repo_package_real == true and $manage_tools_package_real == true {
+      Package[$repo_package_name] -> Package[$tools_package_name_real]
+    }
+  }
 }

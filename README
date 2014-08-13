@@ -1,16 +1,47 @@
-vmware
+# puppet-module-vmware
+===
 
-This is the vmware module.
+Manage VMware - Install vmwaretools
+Will remove vmware tools that has been installed from script if present.
 
-License
--------
+===
 
+# Class `vmware`
 
-Contact
--------
+## Parameters
 
+manage_repo_package
+-------------------
+Should repo package be managed? Contains the vmware repo and key.
 
-Support
--------
+- *Default*: true
 
-Please log tickets and issues at our [Projects site](http://projects.example.com)
+repo_package_name
+-----------------
+Name of repo package. Please note that this needs to be built manually, there is no premade package.
+
+- *Default*: 'vmwaretools-repo'
+
+repo_package_ensure
+-------------------
+String to pass to ensure attribute for the repo package.
+
+- *Default*: 'present'
+
+manage_tools_package
+--------------------
+Should vmwaretools package be managed?
+
+- *Default*: true
+
+tools_package_name
+------------------
+Name of package(s) for vmwaretools.
+
+- *Default*: based on if X is installed or not.
+
+tools_package_ensure
+--------------------
+String to pass to ensure attribute for the vmwaretools package.
+
+- *Default*: 'present'
