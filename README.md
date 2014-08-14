@@ -1,6 +1,8 @@
 # puppet-module-vmware
 ===
 
+[![Build Status](https://travis-ci.org/emahags/puppet-module-vmware.png?branch=master)](https://travis-ci.org/emahags/puppet-module-vmware)
+
 Manage VMware - Install vmwaretools. Will remove vmware tools that has been installed from script if present.
 
 ===
