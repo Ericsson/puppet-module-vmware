@@ -1,8 +1,7 @@
 # puppet-module-vmware
 ===
 
-Manage VMware - Install vmwaretools
-Will remove vmware tools that has been installed from script if present.
+Manage VMware - Install vmwaretools. Will remove vmware tools that has been installed from script if present.
 
 ===
 
