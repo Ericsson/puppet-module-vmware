@@ -6,29 +6,27 @@ class vmware (
   $manage_repo_package = true,
   $repo_package_name   = 'vmwaretools-repo',
   $repo_package_ensure = 'present',
-  $manage_tools_package = true,
-  $tools_package_name = 'USE_DEFAULTS',
-  $tools_package_ensure = 'present',
+  $manage_tools_nox_package = true,
+  $tools_nox_package_name = 'vmware-tools-esx-nox',
+  $tools_nox_package_ensure = 'present',
+  $manage_tools_x_package = 'USE_DEFAULTS',
+  $tools_x_package_name = 'vmware-tools-esx',
+  $tools_x_package_ensure = 'present',
+  $manage_tools_kmod_package = true,
+  $tools_kmod_package_name = 'vmware-tools-esx-kmods',
+  $tools_kmod_package_ensure = 'present',
 ){
 
-  if $::virtual == 'vmware' {
-    if $tools_package_name == 'USE_DEFAULTS' {
-      if $::vmware_has_x == 'true' {
-        $tools_package_name_real = ['vmware-tools-esx',
-                                    'vmware-tools-esx-nox',
-                                    'vmware-tools-esx-kmods',]
-      } else {
-        $tools_package_name_real = ['vmware-tools-esx-nox',
-                                    'vmware-tools-esx-kmods',]
-      }
-    } else {
-        if type($tools_package_name) == 'String' or type($tools_package_name) == 'Array' {
-          $tools_package_name_real = $tools_package_name
-        } else {
-          fail('vmware::tools_package_name must be a string or an array.')
-        }
-    }
+  validate_string($repo_package_name)
+  validate_string($repo_package_ensure)
+  validate_string($tools_nox_package_ensure)
+  validate_string($tools_nox_package_name)
+  validate_string($tools_x_package_ensure)
+  validate_string($tools_x_package_name)
+  validate_string($tools_kmod_package_ensure)
+  validate_string($tools_kmod_package_name)
 
+  if $::virtual == 'vmware' {
     if type($manage_repo_package) == 'string' {
       $manage_repo_package_real = str2bool($manage_repo_package)
     } else {
@@ -36,39 +34,81 @@ class vmware (
       $manage_repo_package_real = $manage_repo_package
     }
 
-    if type($manage_tools_package) == 'string' {
-      $manage_tools_package_real = str2bool($manage_tools_package)
+    if type($manage_tools_nox_package) == 'string' {
+      $manage_tools_nox_package_real = str2bool($manage_tools_nox_package)
     } else {
-      validate_bool($manage_tools_package)
-      $manage_tools_package_real = $manage_tools_package
+      validate_bool($manage_tools_nox_package)
+      $manage_tools_nox_package_real = $manage_tools_nox_package
+    }
+
+    if $::vmware_has_x == 'true' and $manage_tools_x_package == 'USE_DEFAULTS' {
+      $manage_tools_x_package_real = true
+    } elsif $::vmware_has_x == 'false' and $manage_tools_x_package == 'USE_DEFAULTS' {
+      $manage_tools_x_package_real = false
+    } else {
+      if type($manage_tools_x_package) == 'string' {
+        $manage_tools_x_package_real = str2bool($manage_tools_x_package)
+      } else {
+        validate_bool($manage_tools_x_package)
+        $manage_tools_x_package_real = $manage_tools_x_package
+      }
+    }
+
+    if type($manage_tools_kmod_package) == 'string' {
+      $manage_tools_kmod_package_real = str2bool($manage_tools_kmod_package)
+    } else {
+      validate_bool($manage_tools_kmod_package)
+      $manage_tools_kmod_package_real = $manage_tools_kmod_package
     }
 
     if $manage_repo_package_real == true {
-      validate_string($repo_package_name)
-      validate_string($repo_package_ensure)
-
       package { $repo_package_name:
         ensure => $repo_package_ensure,
       }
     }
 
-    if $manage_tools_package_real == true {
-      validate_string($tools_package_ensure)
-
+    if $manage_tools_nox_package_real == true or $manage_tools_x_package_real == true or $manage_tools_kmod_package_real == true {
       exec { 'Remove vmware tools script installation':
         path => '/usr/bin/:/etc/vmware-tools/',
         onlyif => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         command => 'installer.sh uninstall',
-        before => Package[$tools_package_name_real],
       }
-
-      package { $tools_package_name_real:
-        ensure => $tools_package_ensure,
+      if $manage_tools_nox_package_real == true {
+        Exec['Remove vmware tools script installation'] -> Package[$tools_nox_package_name]
+      }
+      if $manage_tools_x_package_real == true {
+        Exec['Remove vmware tools script installation'] -> Package[$tools_x_package_name]
+      }
+      if $manage_tools_kmod_package_real == true {
+        Exec['Remove vmware tools script installation'] -> Package[$tools_kmod_package_name]
       }
     }
 
-    if $manage_repo_package_real == true and $manage_tools_package_real == true {
-      Package[$repo_package_name] -> Package[$tools_package_name_real]
+    if $manage_tools_nox_package_real == true {
+      package { $tools_nox_package_name:
+        ensure => $tools_nox_package_ensure,
+      }
+      if $manage_repo_package_real == true {
+        Package[$repo_package_name] -> Package[$tools_nox_package_name]
+      }
+    }
+
+    if $manage_tools_x_package_real == true {
+      package { $tools_x_package_name:
+        ensure => $tools_x_package_ensure,
+      }
+      if $manage_repo_package_real == true {
+        Package[$repo_package_name] -> Package[$tools_x_package_name]
+      }
+    }
+
+    if $manage_tools_kmod_package_real == true {
+      package { $tools_kmod_package_name:
+        ensure => $tools_kmod_package_ensure,
+      }
+      if $manage_repo_package_real == true {
+        Package[$repo_package_name] -> Package[$tools_kmod_package_name]
+      }
     }
   }
 }

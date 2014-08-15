@@ -2,15 +2,17 @@ require 'spec_helper'
 describe 'vmware' do
 
   describe 'with defaults for all parameters on machine running on vmware' do
-    context 'on all machines' do
+    context 'on machine without X installed' do
       let(:facts) do
         { :virtual      => 'vmware',
+          :vmware_has_x => 'false',
         }
       end
 
-      it { should contain_package('vmwaretools-repo').with(      'ensure' => 'present') }
-      it { should contain_package('vmware-tools-esx-nox').with(  'ensure' => 'present') }
+      it { should contain_package('vmwaretools-repo').with('ensure' => 'present') }
+      it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
       it { should contain_package('vmware-tools-esx-kmods').with('ensure' => 'present') }
+      it { should_not contain_package('vmware-tools-esx') }
       it {
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
@@ -29,47 +31,46 @@ describe 'vmware' do
 
       it { should contain_package('vmware-tools-esx').with('ensure' => 'present') }
     end
-
-    context 'on machine without X installed' do
-      let(:facts) do
-        { :vmware_has_x => 'false',
-          :virtual      => 'vmware',
-        }
-      end
-
-      it { should_not contain_package('vmware-tools-esx') }
-    end
   end
 
   context 'with custom values for parameters on machine running on vmware' do
     let(:facts) do
       { :virtual => 'vmware',
+        :vmware_has_x => 'true',
       }
     end
     let(:params) do
       { :repo_package_name => 'vmwaretools-key-custom',
         :repo_package_ensure => 'latest',
-        :tools_package_name => 'vmware-tools-esx-custom',
-        :tools_package_ensure => '0.2-1',
+        :tools_nox_package_name => 'vmware-tools-esx-nox-custom',
+        :tools_nox_package_ensure => '0.2-1',
+        :tools_x_package_name => 'vmware-tools-esx-custom',
+        :tools_x_package_ensure => '0.3-1',
+        :tools_kmod_package_name => 'vmware-tools-esx-kmods-custom',
+        :tools_kmod_package_ensure => '0.4-1',
       }
     end
 
     it { should contain_package('vmwaretools-key-custom').with( 'ensure' => 'latest') }
-    it { should contain_package('vmware-tools-esx-custom').with('ensure' => '0.2-1') }
+    it { should contain_package('vmware-tools-esx-nox-custom').with('ensure' => '0.2-1') }
+    it { should contain_package('vmware-tools-esx-custom').with('ensure' => '0.3-1') }
+    it { should contain_package('vmware-tools-esx-kmods-custom').with('ensure' => '0.4-1') }
   end
 
-  context 'with tools_package_name as an array' do
+  context 'with managing the x package on a machine without x' do
     let(:facts) do
       { :virtual => 'vmware',
+        :vmware_has_x => 'false',
       }
     end
     let(:params) do
-      { :tools_package_name => ['vmware-tools-esx-custom','vmware-tools-esx-custom2'],
+      { :manage_tools_x_package => 'true',
+        :tools_x_package_name => 'vmware-tools-esx-custom',
+        :tools_x_package_ensure => '0.5-1',
       }
     end
 
-    it { should contain_package('vmware-tools-esx-custom').with('ensure' => 'present') }
-    it { should contain_package('vmware-tools-esx-custom2').with('ensure' => 'present') }
+    it { should contain_package('vmware-tools-esx-custom').with('ensure' => '0.5-1') }
   end
 
   context 'without managing packages' do
@@ -79,7 +80,9 @@ describe 'vmware' do
     end
     let(:params) do
       { :manage_repo_package => 'false',
-        :manage_tools_package => 'false',
+        :manage_tools_nox_package => 'false',
+        :manage_tools_x_package => 'false',
+        :manage_tools_kmod_package => 'false',
       }
     end
 
@@ -106,6 +109,7 @@ describe 'vmware' do
   describe 'with incorrect types' do
     let(:facts) do
       { :virtual => 'vmware',
+        :vmware_has_x => 'true',
       }
     end
 
@@ -122,9 +126,35 @@ describe 'vmware' do
       end
     end
 
-    context 'with manage_tools_package as an array' do
+    context 'with manage_tools_nox_package as an array' do
       let(:params) do
-        { :manage_tools_package => ['no'],
+        { :manage_tools_nox_package => ['no'],
+        }
+      end
+
+      it 'should fail' do
+        expect {
+          should contain_class('vmware')
+        }.to raise_error(Puppet::Error,/\["no"\] is not a boolean.  It looks to be a Array/)
+      end
+    end
+
+    context 'with manage_tools_x_package as an array' do
+      let(:params) do
+        { :manage_tools_x_package => ['no'],
+        }
+      end
+
+      it 'should fail' do
+        expect {
+          should contain_class('vmware')
+        }.to raise_error(Puppet::Error,/\["no"\] is not a boolean.  It looks to be a Array/)
+      end
+    end
+
+    context 'with manage_tools_kmod_package as an array' do
+      let(:params) do
+        { :manage_tools_kmod_package => ['no'],
         }
       end
 
@@ -148,16 +178,42 @@ describe 'vmware' do
       end
     end
 
-    context 'with tools_package_name as a bool' do
+    context 'with tools_nox_package_name as a bool' do
       let(:params) do
-        { :tools_package_name => false,
+        { :tools_nox_package_name => false,
         }
       end
 
       it 'should fail' do
         expect {
           should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/vmware::tools_package_name must be a string or an array./)
+        }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
+      end
+    end
+
+    context 'with tools_x_package_name as a bool' do
+      let(:params) do
+        { :tools_x_package_name => false,
+        }
+      end
+
+      it 'should fail' do
+        expect {
+          should contain_class('vmware')
+        }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
+      end
+    end
+
+    context 'with tools_kmod_package_name as a bool' do
+      let(:params) do
+        { :tools_kmod_package_name => false,
+        }
+      end
+
+      it 'should fail' do
+        expect {
+          should contain_class('vmware')
+        }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
       end
     end
 
@@ -174,9 +230,35 @@ describe 'vmware' do
       end
     end
 
-    context 'with tools_package_ensure as a bool' do
+    context 'with tools_nox_package_ensure as a bool' do
       let(:params) do
-        { :tools_package_ensure => false,
+        { :tools_nox_package_ensure => false,
+        }
+      end
+
+      it 'should fail' do
+        expect {
+          should contain_class('vmware')
+        }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
+      end
+    end
+
+    context 'with tools_x_package_ensure as a bool' do
+      let(:params) do
+        { :tools_x_package_ensure => false,
+        }
+      end
+
+      it 'should fail' do
+        expect {
+          should contain_class('vmware')
+        }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
+      end
+    end
+
+    context 'with tools_kmod_package_ensure as a bool' do
+      let(:params) do
+        { :tools_kmod_package_ensure => false,
         }
       end
 
