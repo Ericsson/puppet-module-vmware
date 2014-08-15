@@ -29,20 +29,56 @@ String to pass to ensure attribute for the repo package.
 
 - *Default*: 'present'
 
-manage_tools_package
+manage_tools_nox_package
 --------------------
-Should vmwaretools package be managed?
+Should vmwaretools nox package be managed?
 
 - *Default*: true
 
-tools_package_name
+tools_nox_package_name
 ------------------
-Name of package(s) for vmwaretools.
+Name of package for vmwaretools nox package.
+
+- *Default*: vmware-tools-esx-nox
+
+tools_nox_package_ensure
+--------------------
+String to pass to ensure attribute for the vmwaretools nox package.
+
+- *Default*: 'present'
+
+manage_tools_x_package
+--------------------
+Should vmwaretools x package be managed?
 
 - *Default*: based on if X is installed or not.
 
-tools_package_ensure
+tools_x_package_name
+------------------
+Name of package for vmwaretools x package.
+
+- *Default*: vmware-tools-esx
+
+tools_x_package_ensure
 --------------------
-String to pass to ensure attribute for the vmwaretools package.
+String to pass to ensure attribute for the vmwaretools x package.
+
+- *Default*: 'present'
+
+manage_tools_kmod_package
+--------------------
+Should vmwaretools kmod package be managed?
+
+- *Default*: true
+
+tools_kmod_package_name
+------------------
+Name of package for vmwaretools kmod package.
+
+- *Default*: vmware-tools-esx-kmods
+
+tools_kmod_package_ensure
+--------------------
+String to pass to ensure attribute for the vmwaretools kmod package.
 
 - *Default*: 'present'
