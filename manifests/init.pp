@@ -3,18 +3,18 @@
 # Manage vmware
 #
 class vmware (
-  $manage_repo_package = true,
-  $repo_package_name   = 'vmwaretools-repo',
-  $repo_package_ensure = 'present',
-  $manage_tools_nox_package = true,
-  $tools_nox_package_name = 'vmware-tools-esx-nox',
-  $tools_nox_package_ensure = 'present',
-  $manage_tools_x_package = 'USE_DEFAULTS',
-  $tools_x_package_name = 'vmware-tools-esx',
-  $tools_x_package_ensure = 'present',
+  $manage_repo_package       = true,
+  $manage_tools_nox_package  = true,
   $manage_tools_kmod_package = true,
-  $tools_kmod_package_name = 'vmware-tools-esx-kmods',
+  $manage_tools_x_package    = 'USE_DEFAULTS',
+  $repo_package_name         = 'vmwaretools-repo',
+  $tools_nox_package_name    = 'vmware-tools-esx-nox',
+  $tools_kmod_package_name   = 'vmware-tools-esx-kmods',
+  $tools_x_package_name      = 'vmware-tools-esx',
+  $repo_package_ensure       = 'present',
+  $tools_nox_package_ensure  = 'present',
   $tools_kmod_package_ensure = 'present',
+  $tools_x_package_ensure    = 'present',
 ){
 
   validate_string($repo_package_name)
