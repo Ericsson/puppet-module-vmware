@@ -27,14 +27,14 @@ class vmware (
   validate_string($tools_kmod_package_name)
 
   if $::virtual == 'vmware' {
-    if type($manage_repo_package) == 'string' {
+    if is_string($manage_repo_package) == true {
       $manage_repo_package_real = str2bool($manage_repo_package)
     } else {
       validate_bool($manage_repo_package)
       $manage_repo_package_real = $manage_repo_package
     }
 
-    if type($manage_tools_nox_package) == 'string' {
+    if is_string($manage_tools_nox_package) == true {
       $manage_tools_nox_package_real = str2bool($manage_tools_nox_package)
     } else {
       validate_bool($manage_tools_nox_package)
@@ -46,7 +46,7 @@ class vmware (
     } elsif $::vmware_has_x == 'false' and $manage_tools_x_package == 'USE_DEFAULTS' {
       $manage_tools_x_package_real = false
     } else {
-      if type($manage_tools_x_package) == 'string' {
+      if is_string($manage_tools_x_package) == true {
         $manage_tools_x_package_real = str2bool($manage_tools_x_package)
       } else {
         validate_bool($manage_tools_x_package)
@@ -54,7 +54,7 @@ class vmware (
       }
     }
 
-    if type($manage_tools_kmod_package) == 'string' {
+    if is_string($manage_tools_kmod_package) == true {
       $manage_tools_kmod_package_real = str2bool($manage_tools_kmod_package)
     } else {
       validate_bool($manage_tools_kmod_package)
