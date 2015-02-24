@@ -33,6 +33,84 @@ describe 'vmware' do
     end
   end
 
+  describe 'with defaults for all parameters on RHEL 7 running on vmware' do
+    context 'on machine without X installed' do
+      let(:facts) do
+        { :virtual                   => 'vmware',
+          :vmware_has_x              => 'false',
+          :osfamily                  => 'RedHat',
+          :operatingsystemmajrelease => '7',
+        }
+      end
+
+      it { should contain_package('open-vm-tools').with('ensure' => 'present') }
+      it { should_not contain_package('open-vm-tools-desktop') }
+
+      it { should_not contain_package('vmwaretools-repo') }
+      it { should_not contain_package('vmware-tools-esx-nox') }
+      it { should_not contain_package('vmware-tools-esx-kmods') }
+      it { should_not contain_package('vmware-tools-esx') }
+      it {
+        should contain_exec('Remove vmware tools script installation').with({
+          'command' => 'installer.sh uninstall',
+          'path' => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif' => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+        })
+      }
+    end
+
+    context 'on machine with X installed' do
+      let(:facts) do
+        { :virtual                   => 'vmware',
+          :vmware_has_x              => 'true',
+          :osfamily                  => 'RedHat',
+          :operatingsystemmajrelease => '7',
+        }
+      end
+
+      it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
+    end
+  end
+
+  describe 'with defaults for all parameters on SUSE 12 running on vmware' do
+    context 'on machine without X installed' do
+      let(:facts) do
+        { :virtual           => 'vmware',
+          :vmware_has_x      => 'false',
+          :osfamily          => 'Suse',
+          :lsbmajdistrelease => '12',
+        }
+      end
+
+      it { should contain_package('open-vm-tools').with('ensure' => 'present') }
+      it { should_not contain_package('open-vm-tools-desktop') }
+
+      it { should_not contain_package('vmwaretools-repo') }
+      it { should_not contain_package('vmware-tools-esx-nox') }
+      it { should_not contain_package('vmware-tools-esx-kmods') }
+      it { should_not contain_package('vmware-tools-esx') }
+      it {
+        should contain_exec('Remove vmware tools script installation').with({
+          'command' => 'installer.sh uninstall',
+          'path' => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif' => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+        })
+      }
+    end
+
+    context 'on machine with X installed' do
+      let(:facts) do
+        { :virtual           => 'vmware',
+          :vmware_has_x      => 'true',
+          :osfamily          => 'Suse',
+          :lsbmajdistrelease => '12',
+        }
+      end
+
+      it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
+    end
+  end
+
   context 'with custom values for parameters on machine running on vmware' do
     let(:facts) do
       { :virtual => 'vmware',
