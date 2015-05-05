@@ -31,6 +31,12 @@ describe 'vmware' do
            'proxy' => 'undef',
          })
       }
+      it {
+        should contain_service('vmware-tools-services').with({
+           'ensure'  => 'running',
+           'require' => 'Package[vmware-tools-esx-nox]',
+        })
+      }
     end
 
     context 'on machine with X installed' do
@@ -70,6 +76,12 @@ describe 'vmware' do
       }
       it {
         should_not contain_yumrepo('vmware-osps')
+      }
+      it {
+        should contain_service('vmtoolsd').with({
+           'ensure'  => 'running',
+           'require' => 'Package[open-vm-tools]',
+        })
       }
     end
 
@@ -120,6 +132,12 @@ describe 'vmware' do
            'gpgcheck' => '1',
            'gpgkey' => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
          })
+      }
+      it {
+        should contain_service('vmware-tools-services').with({
+           'ensure'  => 'running',
+           'require' => 'Package[vmware-tools-esx-nox]',
+        })
       }
     end
 
@@ -172,6 +190,12 @@ describe 'vmware' do
            'gpgkey' => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
          })
       }
+      it {
+        should contain_service('vmware-tools-services').with({
+           'ensure' => 'running',
+           'require' => 'Package[vmware-tools-esx-nox]',
+        })
+      }
     end
 
     context 'on machine with X installed' do
@@ -213,6 +237,11 @@ describe 'vmware' do
       it {
         should_not contain_zypprepo('vmware-osps')
       }
+      it {
+        should contain_service('vmtoolsd').with({
+           'ensure' => 'running',
+        })
+      }
     end
 
     context 'on machine with X installed' do
@@ -252,6 +281,13 @@ describe 'vmware' do
       }
       it {
         should_not contain_class('apt')
+      }
+      it {
+        should contain_service('open-vm-tools').with({
+           'ensure'    => 'running',
+           'hasstatus' => 'false',
+           'status'    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
+        })
       }
     end
 
@@ -300,6 +336,12 @@ describe 'vmware' do
             'repos'       => 'main',
             'include_src' => false,
          })
+      }
+      it {
+        should contain_service('vmware-tools-services').with({
+           'ensure'  => 'running',
+           'require' => 'Package[vmware-tools-esx-nox]',
+        })
       }
     end
 
@@ -359,6 +401,12 @@ describe 'vmware' do
     it { should_not contain_package('vmware-tools-esx') }
     it { should_not contain_package('vmware-tools-esx-nox') }
     it { should_not contain_exec('Remove vmware tools script installation') }
+    it {
+      should contain_service('vmware-tools-services').with({
+         'ensure'  => 'running',
+         'require' => 'Package[vmware-tools-esx-nox]',
+      })
+    }
   end
 
   context 'on a machine that does not run on vmware' do
@@ -372,6 +420,7 @@ describe 'vmware' do
     it { should_not contain_package('vmware-tools-esx') }
     it { should_not contain_package('vmware-tools-esx-nox') }
     it { should_not contain_exec('Remove vmware tools script installation') }
+    it { should_not contain_service('vmware-tools-services') }
   end
 
   describe 'with incorrect types' do
@@ -393,6 +442,19 @@ describe 'vmware' do
         expect {
           should contain_class('vmware')
         }.to raise_error(Puppet::Error,/\["no"\] is not a boolean.  It looks to be a Array/)
+      end
+    end
+
+    context 'with manage_service as an array' do
+      let(:params) do
+        { :manage_service => ['no'],
+        }
+      end
+
+      it 'should fail' do
+        expect {
+          should contain_class('vmware')
+        }.to raise_error(Puppet::Error,/str2bool\(\): Requires either string to work with /)
       end
     end
 

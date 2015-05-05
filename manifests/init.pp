@@ -10,6 +10,8 @@ class vmware (
   $proxy_host                = 'absent',
   $proxy_port                = '8080',
   $prefer_open_vm_tools      = true,
+  $manage_service            = true,
+  $service_name              = 'USE_DEFAULTS',
   $manage_tools_nox_package  = true,
   $manage_tools_x_package    = 'USE_DEFAULTS',
   $tools_nox_package_name    = 'USE_DEFAULTS',
@@ -23,6 +25,7 @@ class vmware (
   validate_string($gpgkey_url)
   validate_string($proxy_host)
   validate_string($proxy_port)
+  validate_string($service_name)
   validate_string($tools_nox_package_ensure)
   validate_string($tools_nox_package_name)
   validate_string($tools_x_package_ensure)
@@ -69,12 +72,15 @@ class vmware (
       case $::operatingsystem {
         'RedHat', 'CentOS': {
           $_tools_x_package_name_default = 'open-vm-tools-desktop'
+          $_service_name_default         = 'vmtoolsd'
         }
         'SLES', 'SLES', 'OpenSuSE': {
           $_tools_x_package_name_default = 'open-vm-tools-gui'
+          $_service_name_default         = 'vmtoolsd'
         }
         'Ubuntu': {
           $_tools_x_package_name_default = 'open-vm-toolbox'
+          $_service_name_default         = 'open-vm-tools'
         }
         default: {
           fail("The vmware module is not supported on ${::operatingsystem}")
@@ -83,6 +89,7 @@ class vmware (
     } else { # assume vmware-tools exists for OS
       $_tools_nox_package_name_default = 'vmware-tools-esx-nox'
       $_tools_x_package_name_default   = 'vmware-tools-esx'
+      $_service_name_default           = 'vmware-tools-services'
     }
 
     if $manage_repo == 'USE_DEFAULTS' {
@@ -231,6 +238,33 @@ class vmware (
     if $manage_tools_x_package_real == true {
       package { $tools_x_package_name_real:
         ensure => $tools_x_package_ensure,
+      }
+    }
+
+    if is_bool($manage_service) == true {
+      $manage_service_real = $manage_service
+    } else {
+      $manage_service_real = str2bool($manage_service)
+    }
+
+    if $service_name == 'USE_DEFAULTS' {
+      $service_name_real = $_service_name_default
+    } else {
+      $service_name_real = $service_name
+    }
+
+    if $manage_service_real == true {
+      # workaround for Ubuntu which does not provide the service status
+      if $::operatingsystem == 'Ubuntu' {
+        Service [$service_name_real] {
+          hasstatus => 'false',
+          status    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
+        }
+      }
+
+      service { $service_name_real:
+        ensure => 'running',
+        require => Package[$tools_nox_package_name_real],
       }
     }
   }
