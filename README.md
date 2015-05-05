@@ -23,6 +23,18 @@ Base URL of mirror of packages.vmware.com/tools/esx.
 
 - *Default*: http://packages.vmware.com/tools/esx
 
+manage_service
+--------------
+If vmwaretools service should be managed (boolean)
+
+- *Default*: true
+
+service_name
+------------
+Service name to manage (string).
+
+- *Default*: 'USE_DEFAULTS', based on OS platform
+
 esx_version
 -----------
 Version of ESX (e.g. 5.1, 5.5, 5.5ep06) ... note, it is recommended to explicitly set the esx version rather than default to latest.
