@@ -12,6 +12,8 @@ class vmware (
   $prefer_open_vm_tools      = true,
   $manage_service            = true,
   $service_name              = 'USE_DEFAULTS',
+  $service_provider          = 'USE_DEFAULTS',
+  $service_path              = 'USE_DEFAULTS',
   $manage_tools_nox_package  = true,
   $manage_tools_x_package    = 'USE_DEFAULTS',
   $tools_nox_package_name    = 'USE_DEFAULTS',
@@ -259,6 +261,23 @@ class vmware (
         Service [$service_name_real] {
           hasstatus => 'false',
           status    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
+        }
+      }
+
+      if ! $_use_open_vm_tools {
+        if $service_provider == 'USE_DEFAULTS' {
+          $service_provider_real = 'init'
+        } else {
+          $service_provider_real = $service_provider
+        }
+        if $service_path == 'USE_DEFAULTS' {
+          $service_path_real = '/etc/vmware-tools/init/'
+        } else {
+          $service_path_real = $service_path
+        }
+        Service [$service_name_real] {
+          provider => $service_provider_real,
+          path     => $service_path_real,
         }
       }
 

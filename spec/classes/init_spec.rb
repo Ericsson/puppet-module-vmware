@@ -33,8 +33,10 @@ describe 'vmware' do
       }
       it {
         should contain_service('vmware-tools-services').with({
-           'ensure'  => 'running',
-           'require' => 'Package[vmware-tools-esx-nox]',
+           'ensure'   => 'running',
+           'require'  => 'Package[vmware-tools-esx-nox]',
+           'provider' => 'init',
+           'path'     => '/etc/vmware-tools/init/',
         })
       }
     end
@@ -81,6 +83,11 @@ describe 'vmware' do
         should contain_service('vmtoolsd').with({
            'ensure'  => 'running',
            'require' => 'Package[open-vm-tools]',
+        })
+      }
+      it {
+        should_not contain_service('vmtoolsd').with({
+          'provider' => 'init',
         })
       }
     end
@@ -135,8 +142,10 @@ describe 'vmware' do
       }
       it {
         should contain_service('vmware-tools-services').with({
-           'ensure'  => 'running',
-           'require' => 'Package[vmware-tools-esx-nox]',
+           'ensure'   => 'running',
+           'require'  => 'Package[vmware-tools-esx-nox]',
+           'provider' => 'init',
+           'path'     => '/etc/vmware-tools/init/',
         })
       }
     end
@@ -192,8 +201,10 @@ describe 'vmware' do
       }
       it {
         should contain_service('vmware-tools-services').with({
-           'ensure' => 'running',
-           'require' => 'Package[vmware-tools-esx-nox]',
+           'ensure'   => 'running',
+           'require'  => 'Package[vmware-tools-esx-nox]',
+           'provider' => 'init',
+           'path'     => '/etc/vmware-tools/init/',
         })
       }
     end
@@ -242,6 +253,11 @@ describe 'vmware' do
            'ensure' => 'running',
         })
       }
+      it {
+        should_not contain_service('vmtoolsd').with({
+          'provider' => 'init',
+        })
+      }
     end
 
     context 'on machine with X installed' do
@@ -287,6 +303,11 @@ describe 'vmware' do
            'ensure'    => 'running',
            'hasstatus' => 'false',
            'status'    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
+        })
+      }
+      it {
+        should_not contain_service('vmtoolsd').with({
+          'provider' => 'init',
         })
       }
     end
@@ -339,8 +360,10 @@ describe 'vmware' do
       }
       it {
         should contain_service('vmware-tools-services').with({
-           'ensure'  => 'running',
-           'require' => 'Package[vmware-tools-esx-nox]',
+           'ensure'   => 'running',
+           'require'  => 'Package[vmware-tools-esx-nox]',
+           'provider' => 'init',
+           'path'     => '/etc/vmware-tools/init/',
         })
       }
     end
@@ -403,8 +426,10 @@ describe 'vmware' do
     it { should_not contain_exec('Remove vmware tools script installation') }
     it {
       should contain_service('vmware-tools-services').with({
-         'ensure'  => 'running',
-         'require' => 'Package[vmware-tools-esx-nox]',
+         'ensure'   => 'running',
+         'require'  => 'Package[vmware-tools-esx-nox]',
+         'provider' => 'init',
+         'path'     => '/etc/vmware-tools/init/',
       })
     }
   end
