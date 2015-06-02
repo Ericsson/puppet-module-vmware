@@ -259,7 +259,7 @@ class vmware (
       # workaround for Ubuntu which does not provide the service status
       if $::operatingsystem == 'Ubuntu' {
         Service [$service_name_real] {
-          hasstatus => 'false',
+          hasstatus => false,
           status    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
         }
       }
@@ -282,7 +282,7 @@ class vmware (
       }
 
       service { $service_name_real:
-        ensure => 'running',
+        ensure  => 'running',
         require => Package[$tools_nox_package_name_real],
       }
     }
