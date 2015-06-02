@@ -35,6 +35,18 @@ Service name to manage (string).
 
 - *Default*: 'USE_DEFAULTS', based on OS platform
 
+service_provider
+----------------
+Service provider
+
+- *Default*: 'USE_DEFAULTS', based on package type, "service" for open-vm-tools, "init" for OSP
+
+service_path
+------------
+Path to service init files
+
+- *Default*: 'USE_DEFAULTS', "/etc/vmware-tools/init/", only applicable for "init" service provider
+
 esx_version
 -----------
 Version of ESX (e.g. 5.1, 5.5, 5.5ep06) ... note, it is recommended to explicitly set the esx version rather than default to latest.
