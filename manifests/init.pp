@@ -271,7 +271,11 @@ class vmware (
           $service_provider_real = $service_provider
         }
         if $service_path == 'USE_DEFAULTS' {
-          $service_path_real = '/etc/vmware-tools/init/'
+          if $::osfamily == 'Suse' {
+            $service_path_real = '/etc/init.d/'
+          } else {
+            $service_path_real = '/etc/vmware-tools/init/'
+          }
         } else {
           $service_path_real = $service_path
         }

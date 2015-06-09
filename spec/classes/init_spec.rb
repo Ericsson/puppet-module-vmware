@@ -7,6 +7,7 @@ describe 'vmware' do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'false',
 	  :operatingsystem   => 'RedHat',
+          :osfamily          => 'RedHat',
           :lsbmajdistrelease => '6',
           :architecture      => 'x86_64',
         }
@@ -46,6 +47,7 @@ describe 'vmware' do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'true',
 	  :operatingsystem   => 'RedHat',
+          :osfamily          => 'RedHat',
           :lsbmajdistrelease => '6',
         }
       end
@@ -60,6 +62,7 @@ describe 'vmware' do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'false',
           :operatingsystem   => 'RedHat',
+          :osfamily          => 'RedHat',
           :lsbmajdistrelease => '7',
         }
       end
@@ -97,6 +100,7 @@ describe 'vmware' do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'true',
           :operatingsystem   => 'RedHat',
+          :osfamily          => 'RedHat',
           :lsbmajdistrelease => '7',
         }
       end
@@ -111,6 +115,7 @@ describe 'vmware' do
         { :virtual                => 'vmware',
           :vmware_has_x           => 'false',
           :operatingsystem        => 'SLES',
+          :osfamily               => 'Suse',
           :lsbmajdistrelease      => '11',
           :operatingsystemrelease => '10.2',
           :architecture           => 'x86_64',
@@ -145,7 +150,7 @@ describe 'vmware' do
            'ensure'   => 'running',
            'require'  => 'Package[vmware-tools-esx-nox]',
            'provider' => 'init',
-           'path'     => '/etc/vmware-tools/init/',
+           'path'     => '/etc/init.d/',
         })
       }
     end
@@ -155,6 +160,7 @@ describe 'vmware' do
         { :virtual                => 'vmware',
           :vmware_has_x           => 'true',
           :operatingsystem        => 'SLES',
+          :osfamily               => 'Suse',
           :lsbmajdistrelease      => '10',
         }
       end
@@ -170,6 +176,7 @@ describe 'vmware' do
         { :virtual                => 'vmware',
           :vmware_has_x           => 'false',
           :operatingsystem        => 'SLES',
+          :osfamily               => 'Suse',
           :lsbmajdistrelease      => '11',
           :operatingsystemrelease => '11.2',
           :architecture           => 'x86_64',
@@ -204,7 +211,7 @@ describe 'vmware' do
            'ensure'   => 'running',
            'require'  => 'Package[vmware-tools-esx-nox]',
            'provider' => 'init',
-           'path'     => '/etc/vmware-tools/init/',
+           'path'     => '/etc/init.d/',
         })
       }
     end
@@ -214,6 +221,7 @@ describe 'vmware' do
         { :virtual                => 'vmware',
           :vmware_has_x           => 'true',
           :operatingsystem        => 'SLES',
+          :osfamily               => 'Suse',
           :lsbmajdistrelease      => '11',
         }
       end
@@ -229,6 +237,7 @@ describe 'vmware' do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'false',
           :operatingsystem   => 'OpenSuSE',
+          :osfamily          => 'Suse',
           :lsbmajdistrelease => '12',
         }
       end
@@ -265,6 +274,7 @@ describe 'vmware' do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'true',
           :operatingsystem   => 'OpenSuSE',
+          :osfamily          => 'Suse',
           :lsbmajdistrelease => '12',
         }
       end
@@ -279,6 +289,7 @@ describe 'vmware' do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'false',
           :operatingsystem   => 'Ubuntu',
+          :osfamily          => 'Debian',
           :lsbmajdistrelease => '12',
         }
       end
@@ -317,6 +328,7 @@ describe 'vmware' do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'true',
           :operatingsystem   => 'Ubuntu',
+          :osfamily          => 'Debian',
           :lsbmajdistrelease => '12',
         }
       end
@@ -329,6 +341,7 @@ describe 'vmware' do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'false',
           :operatingsystem   => 'Ubuntu',
+          :osfamily          => 'Debian',
           :lsbmajdistrelease => '12',
           :lsbdistid         => 'ubuntu', # for apt
           :lsbdistcodename   => 'precise',
@@ -375,6 +388,7 @@ describe 'vmware' do
       { :virtual           => 'vmware',
         :vmware_has_x      => 'true',
 	:operatingsystem   => 'RedHat',
+        :osfamily          => 'RedHat',
         :lsbmajdistrelease => '6',
       }
     end
@@ -395,6 +409,7 @@ describe 'vmware' do
       { :virtual           => 'vmware',
         :vmware_has_x      => 'false',
 	:operatingsystem   => 'RedHat',
+        :osfamily          => 'RedHat',
 	:lsbmajdistrelease => '6',
       }
     end
@@ -412,6 +427,7 @@ describe 'vmware' do
     let(:facts) do
       { :virtual           => 'vmware',
 	:operatingsystem   => 'RedHat',
+        :osfamily          => 'RedHat',
 	:lsbmajdistrelease => '6',
       }
     end
@@ -438,6 +454,7 @@ describe 'vmware' do
     let(:facts) do
       { :virtual         => 'physical',
 	:operatingsystem => 'Debian',
+        :osfamily        => 'Debian',
 	:lsbmajdistrelease => '7',
       }
     end
@@ -453,6 +470,7 @@ describe 'vmware' do
       { :virtual      => 'vmware',
         :vmware_has_x => 'true',
 	:operatingsystem => 'RedHat',
+        :osfamily     => 'RedHat',
 	:lsbmajdistrelease => '6',
       }
     end
