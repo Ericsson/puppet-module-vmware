@@ -6,7 +6,7 @@ describe 'vmware' do
       let(:facts) do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'false',
-	  :operatingsystem   => 'RedHat',
+          :operatingsystem   => 'RedHat',
           :osfamily          => 'RedHat',
           :lsbmajdistrelease => '6',
           :architecture      => 'x86_64',
@@ -18,18 +18,18 @@ describe 'vmware' do
       it {
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
-          'path' => '/usr/bin/:/etc/vmware-tools/',
-          'onlyif' => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
       }
       it {
         should contain_yumrepo('vmware-osps').with
         ({
-           'baseurl' => 'http://packages.vmware.com/tools/esx/latest/rhel6/x86_64',
-           'enabled' => '1',
+           'baseurl'  => 'http://packages.vmware.com/tools/esx/latest/rhel6/x86_64',
+           'enabled'  => '1',
            'gpgcheck' => '1',
-           'gpgkey' => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-           'proxy' => 'undef',
+           'gpgkey'   => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+           'proxy'    => 'undef',
          })
       }
       it {
@@ -46,7 +46,7 @@ describe 'vmware' do
       let(:facts) do
         { :virtual           => 'vmware',
           :vmware_has_x      => 'true',
-	  :operatingsystem   => 'RedHat',
+          :operatingsystem   => 'RedHat',
           :osfamily          => 'RedHat',
           :lsbmajdistrelease => '6',
         }
@@ -75,8 +75,8 @@ describe 'vmware' do
       it {
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
-          'path' => '/usr/bin/:/etc/vmware-tools/',
-          'onlyif' => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
       }
       it {
@@ -130,19 +130,19 @@ describe 'vmware' do
       it {
         should contain_exec('Remove vmware tools script installation').with({
            'command' => 'installer.sh uninstall',
-           'path' => '/usr/bin/:/etc/vmware-tools/',
-           'onlyif' => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+           'path'    => '/usr/bin/:/etc/vmware-tools/',
+           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
       }
       it {
         should contain_zypprepo('vmware-osps').with({
            'enabled'     => '1',
            'autorefresh' => '0',
-           'baseurl' => 'http://packages.vmware.com/tools/esx/latest/sles10/x86_64',
+           'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles10/x86_64',
            'path'        => '/',
            'type'        => 'yum',
-           'gpgcheck' => '1',
-           'gpgkey' => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+           'gpgcheck'    => '1',
+           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
          })
       }
       it {
@@ -157,11 +157,11 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :lsbmajdistrelease      => '10',
+        { :virtual           => 'vmware',
+          :vmware_has_x      => 'true',
+          :operatingsystem   => 'SLES',
+          :osfamily          => 'Suse',
+          :lsbmajdistrelease => '10',
         }
       end
 
@@ -191,19 +191,19 @@ describe 'vmware' do
       it {
         should contain_exec('Remove vmware tools script installation').with({
            'command' => 'installer.sh uninstall',
-           'path' => '/usr/bin/:/etc/vmware-tools/',
-           'onlyif' => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+           'path'    => '/usr/bin/:/etc/vmware-tools/',
+           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
       }
       it {
         should contain_zypprepo('vmware-osps').with({
            'enabled'     => '1',
            'autorefresh' => '0',
-           'baseurl' => 'http://packages.vmware.com/tools/esx/latest/sles11.2/x86_64',
+           'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles11.2/x86_64',
            'path'        => '/',
            'type'        => 'yum',
-           'gpgcheck' => '1',
-           'gpgkey' => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+           'gpgcheck'    => '1',
+           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
          })
       }
       it {
@@ -218,11 +218,11 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :lsbmajdistrelease      => '11',
+        { :virtual           => 'vmware',
+          :vmware_has_x      => 'true',
+          :operatingsystem   => 'SLES',
+          :osfamily          => 'Suse',
+          :lsbmajdistrelease => '11',
         }
       end
 
@@ -250,8 +250,8 @@ describe 'vmware' do
       it {
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
-          'path' => '/usr/bin/:/etc/vmware-tools/',
-          'onlyif' => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
       }
       it {
@@ -302,8 +302,8 @@ describe 'vmware' do
       it {
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
-          'path' => '/usr/bin/:/etc/vmware-tools/',
-          'onlyif' => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
       }
       it {
@@ -359,8 +359,8 @@ describe 'vmware' do
       it {
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
-          'path' => '/usr/bin/:/etc/vmware-tools/',
-          'onlyif' => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
       }
       it {
@@ -387,16 +387,16 @@ describe 'vmware' do
     let(:facts) do
       { :virtual           => 'vmware',
         :vmware_has_x      => 'true',
-	:operatingsystem   => 'RedHat',
+        :operatingsystem   => 'RedHat',
         :osfamily          => 'RedHat',
         :lsbmajdistrelease => '6',
       }
     end
     let(:params) do
-      { :tools_nox_package_name => 'vmware-tools-esx-nox-custom',
+      { :tools_nox_package_name   => 'vmware-tools-esx-nox-custom',
         :tools_nox_package_ensure => '0.2-1',
-        :tools_x_package_name => 'vmware-tools-esx-custom',
-        :tools_x_package_ensure => '0.3-1',
+        :tools_x_package_name     => 'vmware-tools-esx-custom',
+        :tools_x_package_ensure   => '0.3-1',
       }
     end
 
@@ -408,9 +408,9 @@ describe 'vmware' do
     let(:facts) do
       { :virtual           => 'vmware',
         :vmware_has_x      => 'false',
-	:operatingsystem   => 'RedHat',
+        :operatingsystem   => 'RedHat',
         :osfamily          => 'RedHat',
-	:lsbmajdistrelease => '6',
+        :lsbmajdistrelease => '6',
       }
     end
     let(:params) do
@@ -426,9 +426,9 @@ describe 'vmware' do
   context 'without managing packages' do
     let(:facts) do
       { :virtual           => 'vmware',
-	:operatingsystem   => 'RedHat',
+        :operatingsystem   => 'RedHat',
         :osfamily          => 'RedHat',
-	:lsbmajdistrelease => '6',
+        :lsbmajdistrelease => '6',
       }
     end
     let(:params) do
@@ -452,10 +452,10 @@ describe 'vmware' do
 
   context 'on a machine that does not run on vmware' do
     let(:facts) do
-      { :virtual         => 'physical',
-	:operatingsystem => 'Debian',
-        :osfamily        => 'Debian',
-	:lsbmajdistrelease => '7',
+      { :virtual           => 'physical',
+        :operatingsystem   => 'Debian',
+        :osfamily          => 'Debian',
+        :lsbmajdistrelease => '7',
       }
     end
 
@@ -467,11 +467,11 @@ describe 'vmware' do
 
   describe 'with incorrect types' do
     let(:facts) do
-      { :virtual      => 'vmware',
-        :vmware_has_x => 'true',
-	:operatingsystem => 'RedHat',
-        :osfamily     => 'RedHat',
-	:lsbmajdistrelease => '6',
+      { :virtual           => 'vmware',
+        :vmware_has_x      => 'true',
+        :operatingsystem   => 'RedHat',
+        :osfamily          => 'RedHat',
+        :lsbmajdistrelease => '6',
       }
     end
 
@@ -591,6 +591,5 @@ describe 'vmware' do
         }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
       end
     end
-
   end
 end
