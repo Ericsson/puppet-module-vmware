@@ -258,7 +258,7 @@ class vmware (
     if $manage_service_real == true {
       # workaround for Ubuntu which does not provide the service status
       if $::operatingsystem == 'Ubuntu' {
-        Service [$service_name_real] {
+        Service[$service_name_real] {
           hasstatus => false,
           status    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
         }
@@ -275,7 +275,7 @@ class vmware (
         } else {
           $service_path_real = $service_path
         }
-        Service [$service_name_real] {
+        Service[$service_name_real] {
           provider => $service_provider_real,
           path     => $service_path_real,
         }
