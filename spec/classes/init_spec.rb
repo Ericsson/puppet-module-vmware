@@ -279,7 +279,7 @@ describe 'vmware' do
         }
       end
 
-      it { should contain_package('open-vm-tools-gui').with('ensure' => 'present') }
+      it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
     end
   end
 
