@@ -20,6 +20,10 @@ class vmware (
   $tools_x_package_name      = 'USE_DEFAULTS',
   $tools_nox_package_ensure  = 'present',
   $tools_x_package_ensure    = 'present',
+  $tools_conf_path           = '/etc/vmware-tools/tools.conf',
+  $disable_tools_version     = true,
+  $enable_sync_driver        = 'auto',
+  $working_kernel_release    = '2.6.35-22',
 ){
 
   validate_string($repo_base_url)
@@ -32,7 +36,7 @@ class vmware (
   validate_string($tools_nox_package_name)
   validate_string($tools_x_package_ensure)
   validate_string($tools_x_package_name)
-
+  validate_absolute_path($tools_conf_path)
 
   if $::virtual == 'vmware' {
 
@@ -290,5 +294,61 @@ class vmware (
         require => Package[$tools_nox_package_name_real],
       }
     }
+
+
+    if is_bool($disable_tools_version) == true {
+      $_disable_tools_version = $disable_tools_version
+    } else {
+      $_disable_tools_version = str2bool($disable_tools_version)
+    }
+    if $_disable_tools_version == true {
+      $_disable_tools_version_string = 'true'
+    } else {
+      $_disable_tools_version_string = 'false'
+    }
+
+    if $enable_sync_driver == 'auto' {
+
+      $_kernel_release_arr = split($::kernelrelease, '[-.]')
+      $_kernel_int = $_kernel_release_arr[0] * 1000000000 + $_kernel_release_arr[1] * 1000000 + $_kernel_release_arr[2] * 1000 + $_kernel_release_arr[3]
+      $_working_kernel_release_arr = split($working_kernel_release, '[-.]')
+      $_working_kernel_int = $_working_kernel_release_arr[0] * 1000000000 + $_working_kernel_release_arr[1] * 1000000 + $_working_kernel_release_arr[2] * 1000 + $_working_kernel_release_arr[3]
+
+      if ( $_kernel_int >= $_working_kernel_int ) {
+        $_enable_sync_driver_string = 'true'
+      } else {
+        $_enable_sync_driver_string = 'false'
+      }
+
+    } else {
+      
+      if is_bool($enable_sync_driver) == true {
+        $_enable_sync_driver = $enable_sync_driver
+      } else {
+        $_enable_sync_driver = str2bool($enable_sync_driver)
+      }
+      if $_enable_sync_driver == true {
+        $_enable_sync_driver_string = 'true'
+      } else {
+        $_enable_sync_driver_string = 'false'
+      }
+
+    }
+
+    file { 'vmtools_conf':
+      ensure => present,
+      path   => $tools_conf_path,
+    }
+
+    augeas { 'vmtools_conf_augeas':
+      lens    => 'puppet.lns',
+      incl    => $tools_conf_path,
+      changes => [
+                  "set /files${tools_conf_path}/vmtools/disable-tools-version ${_disable_tools_version_string}",
+                  "set /files${tools_conf_path}/vmbackup/enableSyncDriver ${_enable_sync_driver_string}",
+                  ],
+      notify  => Service[$service_name_real],
+    }
+
   }
 }

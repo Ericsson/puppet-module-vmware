@@ -112,3 +112,30 @@ tools_x_package_ensure
 String to pass to ensure attribute for the vmwaretools x package.
 
 - *Default*: 'present'
+
+tools_conf_path
+---------------
+Path to vmware-tools configuration file.
+
+- *Default*: /etc/vmware-tools/tools.conf
+
+disable_tools_version
+---------------------
+Disable tools version reporting to vSphere.
+
+- *Default*: true
+
+enable_sync_driver
+------------------
+Enable vmtools sync driver on snapshots.  'true', 'false', "auto" to enable on non-buggy systems
+
+See KB2038606 (http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2038606)
+https://access.redhat.com/solutions/484303
+
+- *Default*: 'auto'
+
+working_kernel_release
+---------------------
+First non-buggy kernel version for sync driver.  For RHEL, set to 2.6.32-358.
+
+- *Default*: '2.6.35-22',
