@@ -326,8 +326,6 @@ class vmware (
       $_kernel_int = $_kernel_release_arr[0] * 1000000000 + $_kernel_release_arr[1] * 1000000 + $_kernel_release_arr[2] * 1000 + $_kernel_release_arr[3]
       $_working_kernel_release_arr = split($_working_kernel_release, '[-.]')
       $_working_kernel_int = $_working_kernel_release_arr[0] * 1000000000 + $_working_kernel_release_arr[1] * 1000000 + $_working_kernel_release_arr[2] * 1000 + $_working_kernel_release_arr[3]
-      notify{"kernel_release: $_kernel_int":}
-      notify{"working_kernel_release: $_working_kernel_int":}
 
       if ( $_kernel_int >= $_working_kernel_int ) {
         $_enable_sync_driver_string = 'true'
@@ -336,7 +334,7 @@ class vmware (
       }
 
     } else {
-      
+
       if is_bool($enable_sync_driver) == true {
         $_enable_sync_driver = $enable_sync_driver
       } else {
