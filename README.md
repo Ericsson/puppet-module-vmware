@@ -127,7 +127,7 @@ Disable tools version reporting to vSphere.
 
 enable_sync_driver
 ------------------
-Enable vmtools sync driver on snapshots.  'true', 'false', "auto" to enable on non-buggy systems
+Enable vmtools sync driver on snapshots.  'true', 'false', 'auto' to enable on non-buggy systems
 
 See KB2038606 (http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2038606)
 https://access.redhat.com/solutions/484303
@@ -136,6 +136,6 @@ https://access.redhat.com/solutions/484303
 
 working_kernel_release
 ---------------------
-First non-buggy kernel version for sync driver.  For RHEL, set to 2.6.32-358.
+First non-buggy kernel version for sync driver.
 
-- *Default*: '2.6.35-22',
+- *Default*: 'USE_DEFAULTS'

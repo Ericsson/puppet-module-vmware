@@ -23,7 +23,7 @@ class vmware (
   $tools_conf_path           = '/etc/vmware-tools/tools.conf',
   $disable_tools_version     = true,
   $enable_sync_driver        = 'auto',
-  $working_kernel_release    = '2.6.35-22',
+  $working_kernel_release    = 'USE_DEFAULTS',
 ){
 
   validate_string($repo_base_url)
@@ -309,10 +309,25 @@ class vmware (
 
     if $enable_sync_driver == 'auto' {
 
+      if $working_kernel_release == 'USE_DEFAULTS' {
+        case $::operatingsystem {
+          'RedHat', 'CentOS': {
+            $_working_kernel_release = '2.6.32-358'
+          }
+          default: {
+            $_working_kernel_release = '2.6.35-22'
+          }
+        }
+      } else {
+        $_working_kernel_release = $working_kernel_release
+      }
+
       $_kernel_release_arr = split($::kernelrelease, '[-.]')
       $_kernel_int = $_kernel_release_arr[0] * 1000000000 + $_kernel_release_arr[1] * 1000000 + $_kernel_release_arr[2] * 1000 + $_kernel_release_arr[3]
-      $_working_kernel_release_arr = split($working_kernel_release, '[-.]')
+      $_working_kernel_release_arr = split($_working_kernel_release, '[-.]')
       $_working_kernel_int = $_working_kernel_release_arr[0] * 1000000000 + $_working_kernel_release_arr[1] * 1000000 + $_working_kernel_release_arr[2] * 1000 + $_working_kernel_release_arr[3]
+      notify{"kernel_release: $_kernel_int":}
+      notify{"working_kernel_release: $_working_kernel_int":}
 
       if ( $_kernel_int >= $_working_kernel_int ) {
         $_enable_sync_driver_string = 'true'

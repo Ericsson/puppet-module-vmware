@@ -636,7 +636,7 @@ describe 'vmware' do
           'lens'    => 'puppet.lns',
           'incl'    => '/etc/vmware-tools/tools.conf',
           'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
-                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver false' ],
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
           'notify'  => /Service\[vmware-tools-services\]/,
         })
       }
@@ -691,11 +691,58 @@ describe 'vmware' do
       }
 
     end
-    context 'with auto' do
+    context 'with auto default' do
+      let(:params) do
+        {
+          :enable_sync_driver => 'auto',
+        }
+      end
+
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+        })
+      }
+
+    end
+    context 'with auto, set kernel <' do
       let(:params) do
         {
           :enable_sync_driver => 'auto',
           :working_kernel_release => '2.6.32-238',
+        }
+      end
+
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+        })
+      }
+
+    end
+    context 'with auto, set kernel >' do
+      let(:params) do
+        {
+          :enable_sync_driver => 'auto',
+          :working_kernel_release => '2.6.32-440',
+        }
+      end
+
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver false' ],
+        })
+      }
+
+    end
+    context 'with auto, set kernel =' do
+      let(:params) do
+        {
+          :enable_sync_driver => 'auto',
+          :working_kernel_release => '2.6.32-431',
         }
       end
 
