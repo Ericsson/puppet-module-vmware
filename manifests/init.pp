@@ -165,7 +165,11 @@ class vmware (
               $_suseos = '10'
             }
             default: {
-              $_suseos = $::operatingsystemrelease
+              if $esx_version == 'latest' or versioncmp($esx_version, '6.0') >= 0 {
+                $_suseos = regsubst($::operatingsystemrelease, '\.', 'sp')
+              } else {
+                $_suseos = $::operatingsystemrelease
+              }
             }
           }
 
