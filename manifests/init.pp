@@ -322,12 +322,7 @@ class vmware (
         $_working_kernel_release = $working_kernel_release
       }
 
-      $_kernel_release_arr = split($::kernelrelease, '[-.]')
-      $_kernel_int = $_kernel_release_arr[0] * 1000000000 + $_kernel_release_arr[1] * 1000000 + $_kernel_release_arr[2] * 1000 + $_kernel_release_arr[3]
-      $_working_kernel_release_arr = split($_working_kernel_release, '[-.]')
-      $_working_kernel_int = $_working_kernel_release_arr[0] * 1000000000 + $_working_kernel_release_arr[1] * 1000000 + $_working_kernel_release_arr[2] * 1000 + $_working_kernel_release_arr[3]
-
-      if ( $_kernel_int >= $_working_kernel_int ) {
+      if (versioncmp($::kernelrelease, $_working_kernel_release) >= 0) {
         $_enable_sync_driver_string = 'true'
       } else {
         $_enable_sync_driver_string = 'false'

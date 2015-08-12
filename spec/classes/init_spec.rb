@@ -742,7 +742,7 @@ describe 'vmware' do
       let(:params) do
         {
           :enable_sync_driver => 'auto',
-          :working_kernel_release => '2.6.32-431',
+          :working_kernel_release => '2.6.32-431.11.2.el6.x86_64',
         }
       end
 
