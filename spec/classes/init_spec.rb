@@ -10,6 +10,7 @@ describe 'vmware' do
           :osfamily          => 'RedHat',
           :lsbmajdistrelease => '6',
           :architecture      => 'x86_64',
+          :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
         }
       end
 
@@ -49,6 +50,7 @@ describe 'vmware' do
           :operatingsystem   => 'RedHat',
           :osfamily          => 'RedHat',
           :lsbmajdistrelease => '6',
+          :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
         }
       end
 
@@ -64,6 +66,7 @@ describe 'vmware' do
           :operatingsystem   => 'RedHat',
           :osfamily          => 'RedHat',
           :lsbmajdistrelease => '7',
+          :kernelrelease     => '3.10.0-123.9.2.el7.x86_64',
         }
       end
 
@@ -102,6 +105,7 @@ describe 'vmware' do
           :operatingsystem   => 'RedHat',
           :osfamily          => 'RedHat',
           :lsbmajdistrelease => '7',
+          :kernelrelease     => '3.10.0-123.9.2.el7.x86_64',
         }
       end
 
@@ -119,6 +123,7 @@ describe 'vmware' do
           :lsbmajdistrelease      => '11',
           :operatingsystemrelease => '10.2',
           :architecture           => 'x86_64',
+          :kernelrelease          => '2.6.18.2-34-default',
         }
       end
 
@@ -162,6 +167,7 @@ describe 'vmware' do
           :operatingsystem   => 'SLES',
           :osfamily          => 'Suse',
           :lsbmajdistrelease => '10',
+          :kernelrelease     => '2.6.18.2-34-default',
         }
       end
 
@@ -180,6 +186,7 @@ describe 'vmware' do
           :lsbmajdistrelease      => '11',
           :operatingsystemrelease => '11.2',
           :architecture           => 'x86_64',
+          :kernelrelease          => '3.0.13-0.27.1',
         }
       end
 
@@ -223,6 +230,7 @@ describe 'vmware' do
           :operatingsystem   => 'SLES',
           :osfamily          => 'Suse',
           :lsbmajdistrelease => '11',
+          :kernelrelease     => '3.0.13-0.27.1',
         }
       end
 
@@ -239,6 +247,7 @@ describe 'vmware' do
           :operatingsystem   => 'OpenSuSE',
           :osfamily          => 'Suse',
           :lsbmajdistrelease => '12',
+          :kernelrelease     => '3.12.28-4.6',
         }
       end
 
@@ -276,6 +285,7 @@ describe 'vmware' do
           :operatingsystem   => 'OpenSuSE',
           :osfamily          => 'Suse',
           :lsbmajdistrelease => '12',
+          :kernelrelease     => '3.12.28-4.6',
         }
       end
 
@@ -291,6 +301,7 @@ describe 'vmware' do
           :operatingsystem   => 'Ubuntu',
           :osfamily          => 'Debian',
           :lsbmajdistrelease => '12',
+          :kernelrelease     => '3.2.0-23-generic',
         }
       end
 
@@ -330,6 +341,7 @@ describe 'vmware' do
           :operatingsystem   => 'Ubuntu',
           :osfamily          => 'Debian',
           :lsbmajdistrelease => '12',
+          :kernelrelease     => '3.2.0-23-generic',
         }
       end
 
@@ -345,6 +357,8 @@ describe 'vmware' do
           :lsbmajdistrelease => '12',
           :lsbdistid         => 'ubuntu', # for apt
           :lsbdistcodename   => 'precise',
+          :lsbmajdistrelease => '12',
+          :kernelrelease     => '3.2.0-23-generic',
         }
       end
       let(:params) do
@@ -390,6 +404,7 @@ describe 'vmware' do
         :operatingsystem   => 'RedHat',
         :osfamily          => 'RedHat',
         :lsbmajdistrelease => '6',
+        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
       }
     end
     let(:params) do
@@ -411,6 +426,7 @@ describe 'vmware' do
         :operatingsystem   => 'RedHat',
         :osfamily          => 'RedHat',
         :lsbmajdistrelease => '6',
+        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
       }
     end
     let(:params) do
@@ -429,6 +445,7 @@ describe 'vmware' do
         :operatingsystem   => 'RedHat',
         :osfamily          => 'RedHat',
         :lsbmajdistrelease => '6',
+        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
       }
     end
     let(:params) do
@@ -456,6 +473,7 @@ describe 'vmware' do
         :operatingsystem   => 'Debian',
         :osfamily          => 'Debian',
         :lsbmajdistrelease => '7',
+        :kernelrelease     => '3.2.0-23-generic',
       }
     end
 
@@ -472,6 +490,7 @@ describe 'vmware' do
         :operatingsystem   => 'RedHat',
         :osfamily          => 'RedHat',
         :lsbmajdistrelease => '6',
+        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
       }
     end
 
@@ -590,6 +609,179 @@ describe 'vmware' do
           should contain_class('vmware')
         }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
       end
+    end
+  end
+
+  context 'managing tools.conf' do
+    let(:facts) do
+      { :virtual           => 'vmware',
+        :vmware_has_x      => 'false',
+        :operatingsystem   => 'RedHat',
+        :osfamily          => 'RedHat',
+        :lsbmajdistrelease => '6',
+        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
+      }
+    end
+
+    context 'with defaults' do
+
+      it {
+        should contain_file('vmtools_conf').with({
+          'ensure' => 'present',
+          'path'   => '/etc/vmware-tools/tools.conf',
+        })
+      }
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'lens'    => 'puppet.lns',
+          'incl'    => '/etc/vmware-tools/tools.conf',
+          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+          'notify'  => /Service\[vmware-tools-services\]/,
+        })
+      }
+
+    end
+
+    context 'with true' do
+      let(:params) do
+        { :tools_conf_path => '/path/to/file',
+          :disable_tools_version => true,
+          :enable_sync_driver => true,
+        }
+      end
+
+      it {
+        should contain_file('vmtools_conf').with({
+          'ensure' => 'present',
+          'path'   => '/path/to/file',
+        })
+      }
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'lens'    => 'puppet.lns',
+          'incl'    => '/path/to/file',
+          'changes' => [ 'set /files/path/to/file/vmtools/disable-tools-version true',
+                         'set /files/path/to/file/vmbackup/enableSyncDriver true' ],
+          'notify'  => /Service\[vmware-tools-services\]/,
+        })
+      }
+
+    end
+    context 'with false' do
+      let(:params) do
+        { :disable_tools_version => false,
+          :enable_sync_driver => false,
+        }
+      end
+
+      it {
+        should contain_file('vmtools_conf').with({
+          'ensure' => 'present',
+          'path'   => '/etc/vmware-tools/tools.conf',
+        })
+      }
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'lens'    => 'puppet.lns',
+          'incl'    => '/etc/vmware-tools/tools.conf',
+          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version false',
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver false' ],
+        })
+      }
+
+    end
+    context 'with auto default' do
+      let(:params) do
+        {
+          :enable_sync_driver => 'auto',
+        }
+      end
+
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+        })
+      }
+
+    end
+    context 'with auto, set kernel <' do
+      let(:params) do
+        {
+          :enable_sync_driver => 'auto',
+          :working_kernel_release => '2.6.32-238',
+        }
+      end
+
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+        })
+      }
+
+    end
+    context 'with auto, set kernel >' do
+      let(:params) do
+        {
+          :enable_sync_driver => 'auto',
+          :working_kernel_release => '2.6.32-440',
+        }
+      end
+
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver false' ],
+        })
+      }
+
+    end
+    context 'with auto, set kernel =' do
+      let(:params) do
+        {
+          :enable_sync_driver => 'auto',
+          :working_kernel_release => '2.6.32-431.11.2.el6.x86_64',
+        }
+      end
+
+      it {
+        should contain_augeas('vmtools_conf_augeas').with({
+          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
+                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+        })
+      }
+
+    end
+    context 'invalid disable_tools_version' do
+      let(:params) do
+        {
+          :disable_tools_version  => 'invalid',
+          :working_kernel_release => '2.6.32-238',
+        }
+      end
+
+      it {
+        expect {
+          should contain_augeas('vmtools_conf_augeas')
+        }.to raise_error(Puppet::Error,/Unknown type of boolean/)
+      }
+    end
+    context 'invalid enable_sync_driver' do
+      let(:params) do
+        {
+          :enable_sync_driver     => 'invalid',
+          :working_kernel_release => '2.6.32-238',
+        }
+      end
+
+      it {
+        expect {
+          should contain_augeas('vmtools_conf_augeas')
+        }.to raise_error(Puppet::Error,/Unknown type of boolean/)
+      }
+
     end
   end
 end
