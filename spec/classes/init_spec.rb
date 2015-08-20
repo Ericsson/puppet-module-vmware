@@ -642,7 +642,7 @@ describe 'vmware' do
     end
   end
 
-  context 'managing tools.conf' do
+  context 'managing tools.conf on RHEL6' do
     let(:facts) do
       { :virtual           => 'vmware',
         :vmware_has_x      => 'false',
@@ -657,8 +657,9 @@ describe 'vmware' do
 
       it {
         should contain_file('vmtools_conf').with({
-          'ensure' => 'present',
-          'path'   => '/etc/vmware-tools/tools.conf',
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'require' => 'Package[vmware-tools-esx-nox]',
         })
       }
       it {
@@ -683,8 +684,9 @@ describe 'vmware' do
 
       it {
         should contain_file('vmtools_conf').with({
-          'ensure' => 'present',
-          'path'   => '/path/to/file',
+          'ensure'  => 'present',
+          'path'    => '/path/to/file',
+          'require' => 'Package[vmware-tools-esx-nox]',
         })
       }
       it {
@@ -707,8 +709,9 @@ describe 'vmware' do
 
       it {
         should contain_file('vmtools_conf').with({
-          'ensure' => 'present',
-          'path'   => '/etc/vmware-tools/tools.conf',
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'require' => 'Package[vmware-tools-esx-nox]',
         })
       }
       it {
@@ -812,6 +815,29 @@ describe 'vmware' do
         }.to raise_error(Puppet::Error,/Unknown type of boolean/)
       }
 
+    end
+  end
+
+  context 'managing tools.conf on RHEL7' do
+    let(:facts) do
+      { :virtual           => 'vmware',
+        :vmware_has_x      => 'false',
+        :operatingsystem   => 'RedHat',
+        :osfamily          => 'RedHat',
+        :lsbmajdistrelease => '7',
+        :kernelrelease     => '3.10.0-229.7.2.el7.x86_64',
+      }
+    end
+
+    context 'with defaults' do
+
+      it {
+        should contain_file('vmtools_conf').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'require' => 'Package[open-vm-tools]',
+        })
+      }
     end
   end
 end

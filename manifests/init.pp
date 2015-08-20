@@ -348,8 +348,9 @@ class vmware (
     }
 
     file { 'vmtools_conf':
-      ensure => present,
-      path   => $tools_conf_path,
+      ensure  => present,
+      path    => $tools_conf_path,
+      require => Package[$tools_nox_package_name_real],
     }
 
     augeas { 'vmtools_conf_augeas':
