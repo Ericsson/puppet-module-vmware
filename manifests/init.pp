@@ -279,7 +279,7 @@ class vmware (
           $service_provider_real = $service_provider
         }
         if $service_path == 'USE_DEFAULTS' {
-          if $::osfamily == 'Suse' {
+          if $::osfamily == 'Suse' or ($::osfamily == 'RedHat' and $::operatingsystemmajrelease == 5) {
             $service_path_real = '/etc/init.d/'
           } else {
             $service_path_real = '/etc/vmware-tools/init/'

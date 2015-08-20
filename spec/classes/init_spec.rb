@@ -58,6 +58,66 @@ describe 'vmware' do
     end
   end
 
+  describe 'with defaults for all parameters on RHEL 5 running on vmware' do
+    context 'on machine without X installed' do
+      let(:facts) do
+        { :virtual                   => 'vmware',
+          :vmware_has_x              => 'false',
+          :operatingsystem           => 'RedHat',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '5',
+          :operatingsystemmajrelease => '5',
+          :kernelrelease             => '2.6.18-400.1.1.el5',
+          :architecture              => 'x86_64',
+        }
+      end
+
+      it { should_not contain_package('open-vm-tools') }
+      it { should_not contain_package('open-vm-tools-desktop') }
+
+      it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
+      it { should_not contain_package('vmware-tools-esx') }
+      it {
+        should contain_exec('Remove vmware tools script installation').with({
+           'command' => 'installer.sh uninstall',
+           'path'    => '/usr/bin/:/etc/vmware-tools/',
+           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+        })
+      }
+      it {
+        should contain_yumrepo('vmware-osps').with({
+           'enabled'     => '1',
+           'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/rhel5/x86_64',
+           'gpgcheck'    => '1',
+           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+         })
+      }
+      it {
+        should contain_service('vmware-tools-services').with({
+           'ensure'   => 'running',
+           'require'  => 'Package[vmware-tools-esx-nox]',
+           'provider' => 'init',
+           'path'     => '/etc/init.d/',
+        })
+      }
+    end
+
+    context 'on machine with X installed' do
+      let(:facts) do
+        { :virtual           => 'vmware',
+          :vmware_has_x      => 'true',
+          :operatingsystem   => 'SLES',
+          :osfamily          => 'Suse',
+          :lsbmajdistrelease => '10',
+          :kernelrelease     => '2.6.18.2-34-default',
+        }
+      end
+
+      it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
+
+    end
+  end
+
   describe 'with defaults for all parameters on RHEL 7 running on vmware' do
     context 'on machine without X installed' do
       let(:facts) do
