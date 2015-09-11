@@ -361,6 +361,7 @@ class vmware (
                   "set /files${tools_conf_path}/vmbackup/enableSyncDriver ${_enable_sync_driver_string}",
                   ],
       notify  => Service[$service_name_real],
+      require => File['vmtools_conf'],
     }
 
   }

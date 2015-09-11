@@ -729,6 +729,7 @@ describe 'vmware' do
           'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
                          'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
           'notify'  => /Service\[vmware-tools-services\]/,
+          'require' => 'File[vmtools_conf]',
         })
       }
 
@@ -756,6 +757,7 @@ describe 'vmware' do
           'changes' => [ 'set /files/path/to/file/vmtools/disable-tools-version true',
                          'set /files/path/to/file/vmbackup/enableSyncDriver true' ],
           'notify'  => /Service\[vmware-tools-services\]/,
+          'require' => 'File[vmtools_conf]',
         })
       }
 
@@ -780,6 +782,7 @@ describe 'vmware' do
           'incl'    => '/etc/vmware-tools/tools.conf',
           'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version false',
                          'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver false' ],
+          'require' => 'File[vmtools_conf]',
         })
       }
 
@@ -795,6 +798,7 @@ describe 'vmware' do
         should contain_augeas('vmtools_conf_augeas').with({
           'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
                          'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+          'require' => 'File[vmtools_conf]',
         })
       }
 
@@ -811,6 +815,7 @@ describe 'vmware' do
         should contain_augeas('vmtools_conf_augeas').with({
           'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
                          'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+          'require' => 'File[vmtools_conf]',
         })
       }
 
@@ -827,6 +832,7 @@ describe 'vmware' do
         should contain_augeas('vmtools_conf_augeas').with({
           'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
                          'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver false' ],
+          'require' => 'File[vmtools_conf]',
         })
       }
 
@@ -843,6 +849,7 @@ describe 'vmware' do
         should contain_augeas('vmtools_conf_augeas').with({
           'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
                          'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+          'require' => 'File[vmtools_conf]',
         })
       }
 
