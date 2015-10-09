@@ -76,7 +76,7 @@ class vmware (
           $_tools_x_package_name_default = 'open-vm-tools-desktop'
           $_service_name_default         = 'vmtoolsd'
         }
-        'SLES', 'SLES', 'OpenSuSE': {
+        'SLED', 'SLES', 'OpenSuSE': {
           $_tools_x_package_name_default = 'open-vm-tools-desktop'
           $_service_name_default         = 'vmtoolsd'
         }
