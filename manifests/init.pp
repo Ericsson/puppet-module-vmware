@@ -165,18 +165,26 @@ class vmware (
               $_suseos = '10'
             }
             default: {
-              if $esx_version == 'latest' or versioncmp($esx_version, '6.0') >= 0 {
+              if versioncmp($esx_version, '6.0') == 0 {
                 $_suseos = regsubst($::operatingsystemrelease, '\.', 'sp')
               } else {
                 $_suseos = $::operatingsystemrelease
               }
             }
           }
+          case $::architecture {
+            /^i386/: {
+              $architecture_real = 'i586'
+            }
+            default: {
+              $architecture_real = $::architecture
+            }
+          }
 
           zypprepo { 'vmware-osps':
             enabled     => 1,
             autorefresh => 0,
-            baseurl     => "${repo_base_url}/${esx_version}/sles${_suseos}/${::architecture}",
+            baseurl     => "${repo_base_url}/${esx_version}/sles${_suseos}/${architecture_real}",
             path        => '/',
             type        => 'yum',
             gpgcheck    => 1,
