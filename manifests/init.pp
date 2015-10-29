@@ -80,8 +80,12 @@ class vmware (
           $_tools_x_package_name_default = 'open-vm-tools-desktop'
           $_service_name_default         = 'vmtoolsd'
         }
-        'SLED', 'SLES', 'OpenSuSE': {
+        'SLED', 'SLES': {
           $_tools_x_package_name_default = 'open-vm-tools-desktop'
+          $_service_name_default         = 'vmtoolsd'
+        }
+        'OpenSuSE': {
+          $_tools_x_package_name_default = 'open-vm-tools-gui'
           $_service_name_default         = 'vmtoolsd'
         }
         'Ubuntu': {
