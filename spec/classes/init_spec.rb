@@ -321,7 +321,7 @@ describe 'vmware' do
         should contain_zypprepo('vmware-osps').with({
            'enabled'     => '1',
            'autorefresh' => '0',
-           'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles11sp2/x86_64',
+           'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles11.2/x86_64',
            'path'        => '/',
            'type'        => 'yum',
            'gpgcheck'    => '1',
@@ -353,7 +353,37 @@ describe 'vmware' do
 
     end
 
-    context 'with esx_version < 6.0' do
+    context 'with esx_version = 6.0, x86_64' do
+      let(:facts) do
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'SLES',
+          :osfamily               => 'Suse',
+          :lsbmajdistrelease      => '11',
+          :operatingsystemrelease => '11.2',
+          :architecture           => 'x86_64',
+        }
+      end
+
+      let(:params) do
+        { :esx_version => '6.0',
+        }
+      end
+
+      it {
+        should contain_zypprepo('vmware-osps').with({
+           'enabled'     => '1',
+           'autorefresh' => '0',
+           'baseurl'     => 'http://packages.vmware.com/tools/esx/6.0/sles11sp2/x86_64',
+           'path'        => '/',
+           'type'        => 'yum',
+           'gpgcheck'    => '1',
+           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+         })
+      }
+    end
+
+    context 'with esx_version < 6.0, x86_64' do
       let(:facts) do
         { :virtual                => 'vmware',
           :vmware_has_x           => 'false',
@@ -375,6 +405,35 @@ describe 'vmware' do
            'enabled'     => '1',
            'autorefresh' => '0',
            'baseurl'     => 'http://packages.vmware.com/tools/esx/5.5latest/sles11.2/x86_64',
+           'path'        => '/',
+           'type'        => 'yum',
+           'gpgcheck'    => '1',
+           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+         })
+      }
+    end
+    context 'with esx_version < 6.0, i386' do
+      let(:facts) do
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'SLES',
+          :osfamily               => 'Suse',
+          :lsbmajdistrelease      => '11',
+          :operatingsystemrelease => '11.2',
+          :architecture           => 'i386',
+        }
+      end
+
+      let(:params) do
+        { :esx_version => '5.5latest',
+        }
+      end
+
+      it {
+        should contain_zypprepo('vmware-osps').with({
+           'enabled'     => '1',
+           'autorefresh' => '0',
+           'baseurl'     => 'http://packages.vmware.com/tools/esx/5.5latest/sles11.2/i586',
            'path'        => '/',
            'type'        => 'yum',
            'gpgcheck'    => '1',
