@@ -150,6 +150,7 @@ class vmware (
 
           yumrepo { 'vmware-osps':
             baseurl  => "${repo_base_url}/${esx_version}/rhel${::operatingsystemmajrelease}/${::architecture}",
+            descr    => 'VMware Tools OSPs',
             enabled  => 1,
             gpgcheck => 1,
             gpgkey   => $gpgkey_url,
