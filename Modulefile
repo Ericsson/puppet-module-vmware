@@ -1,5 +1,5 @@
 name    'puppet-module-vmware'
-version '1.3.5'
+version '1.4.0'
 source 'git://github.com/emahags/puppet-module-vmware.git'
 author 'emahags'
 license 'Apache License, Version 2.0'
