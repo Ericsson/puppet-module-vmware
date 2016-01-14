@@ -366,16 +366,16 @@ class vmware (
       require => Package[$tools_nox_package_name_real],
     }
 
-    augeas { 'vmtools_conf_augeas':
-      lens    => 'puppet.lns',
-      incl    => $tools_conf_path,
-      changes => [
-                  "set /files${tools_conf_path}/vmtools/disable-tools-version ${_disable_tools_version_string}",
-                  "set /files${tools_conf_path}/vmbackup/enableSyncDriver ${_enable_sync_driver_string}",
-                  ],
-      notify  => Service[$service_name_real],
-      require => File['vmtools_conf'],
+    $vmtools_defaults = {
+      'ensure'  => present,
+      'path'    => $tools_conf_path,
+      'notify'  => Service[$service_name_real],
+      'require' => File['vmtools_conf'],
     }
-
+    $vmtools_settings = {
+      'vmtools'  => { 'disable-tools-version' => $_disable_tools_version_string, },
+      'vmbackup' => { 'enableSyncDriver'      => $_enable_sync_driver_string, },
+    }
+    create_ini_settings($vmtools_settings, $vmtools_defaults)
   }
 }

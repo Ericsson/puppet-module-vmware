@@ -837,16 +837,25 @@ describe 'vmware' do
         })
       }
       it {
-        should contain_augeas('vmtools_conf_augeas').with({
-          'lens'    => 'puppet.lns',
-          'incl'    => '/etc/vmware-tools/tools.conf',
-          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
-                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+        should contain_ini_setting('[vmtools] disable-tools-version').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'section' => 'vmtools',
+          'value'   => 'true',
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
       }
-
+      it {
+        should contain_ini_setting('[vmbackup] enableSyncDriver').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'section' => 'vmbackup',
+          'value'   => 'true',
+          'notify'  => /Service\[vmware-tools-services\]/,
+          'require' => 'File[vmtools_conf]',
+        })
+      }
     end
 
     context 'with true' do
@@ -865,16 +874,25 @@ describe 'vmware' do
         })
       }
       it {
-        should contain_augeas('vmtools_conf_augeas').with({
-          'lens'    => 'puppet.lns',
-          'incl'    => '/path/to/file',
-          'changes' => [ 'set /files/path/to/file/vmtools/disable-tools-version true',
-                         'set /files/path/to/file/vmbackup/enableSyncDriver true' ],
+        should contain_ini_setting('[vmtools] disable-tools-version').with({
+          'ensure'  => 'present',
+          'path'    => '/path/to/file',
+          'section' => 'vmtools',
+          'value'   => 'true',
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
       }
-
+      it {
+        should contain_ini_setting('[vmbackup] enableSyncDriver').with({
+          'ensure'  => 'present',
+          'path'    => '/path/to/file',
+          'section' => 'vmbackup',
+          'value'   => 'true',
+          'notify'  => /Service\[vmware-tools-services\]/,
+          'require' => 'File[vmtools_conf]',
+        })
+      }
     end
     context 'with false' do
       let(:params) do
@@ -891,15 +909,25 @@ describe 'vmware' do
         })
       }
       it {
-        should contain_augeas('vmtools_conf_augeas').with({
-          'lens'    => 'puppet.lns',
-          'incl'    => '/etc/vmware-tools/tools.conf',
-          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version false',
-                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver false' ],
+        should contain_ini_setting('[vmtools] disable-tools-version').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'section' => 'vmtools',
+          'value'   => 'false',
+          'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
       }
-
+      it {
+        should contain_ini_setting('[vmbackup] enableSyncDriver').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'section' => 'vmbackup',
+          'value'   => 'false',
+          'notify'  => /Service\[vmware-tools-services\]/,
+          'require' => 'File[vmtools_conf]',
+        })
+      }
     end
     context 'with auto default' do
       let(:params) do
@@ -909,13 +937,15 @@ describe 'vmware' do
       end
 
       it {
-        should contain_augeas('vmtools_conf_augeas').with({
-          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
-                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+        should contain_ini_setting('[vmbackup] enableSyncDriver').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'section' => 'vmbackup',
+          'value'   => 'true',
+          'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
       }
-
     end
     context 'with auto, set kernel <' do
       let(:params) do
@@ -926,13 +956,15 @@ describe 'vmware' do
       end
 
       it {
-        should contain_augeas('vmtools_conf_augeas').with({
-          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
-                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+        should contain_ini_setting('[vmbackup] enableSyncDriver').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'section' => 'vmbackup',
+          'value'   => 'true',
+          'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
       }
-
     end
     context 'with auto, set kernel >' do
       let(:params) do
@@ -943,13 +975,15 @@ describe 'vmware' do
       end
 
       it {
-        should contain_augeas('vmtools_conf_augeas').with({
-          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
-                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver false' ],
+        should contain_ini_setting('[vmbackup] enableSyncDriver').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'section' => 'vmbackup',
+          'value'   => 'false',
+          'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
       }
-
     end
     context 'with auto, set kernel =' do
       let(:params) do
@@ -960,13 +994,15 @@ describe 'vmware' do
       end
 
       it {
-        should contain_augeas('vmtools_conf_augeas').with({
-          'changes' => [ 'set /files/etc/vmware-tools/tools.conf/vmtools/disable-tools-version true',
-                         'set /files/etc/vmware-tools/tools.conf/vmbackup/enableSyncDriver true' ],
+        should contain_ini_setting('[vmbackup] enableSyncDriver').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/vmware-tools/tools.conf',
+          'section' => 'vmbackup',
+          'value'   => 'true',
+          'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
       }
-
     end
     context 'invalid disable_tools_version' do
       let(:params) do
@@ -978,7 +1014,7 @@ describe 'vmware' do
 
       it {
         expect {
-          should contain_augeas('vmtools_conf_augeas')
+          should contain_ini_settings('[vmtools] disable-tools-version')
         }.to raise_error(Puppet::Error,/Unknown type of boolean/)
       }
     end
@@ -992,7 +1028,7 @@ describe 'vmware' do
 
       it {
         expect {
-          should contain_augeas('vmtools_conf_augeas')
+          should contain_ini_setting('[vmbackup] enableSyncDriver')
         }.to raise_error(Puppet::Error,/Unknown type of boolean/)
       }
 
