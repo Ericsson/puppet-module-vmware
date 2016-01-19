@@ -38,6 +38,12 @@ class vmware (
   validate_string($tools_x_package_name)
   validate_absolute_path($tools_conf_path)
 
+  if is_string($::vmware_has_x) {
+    $vmware_has_x_bool = str2bool($::vmware_has_x)
+  } else {
+    $vmware_has_x_bool = $::vmware_has_x
+  }
+
   if $::virtual == 'vmware' {
 
     if is_string($prefer_open_vm_tools) == true {
@@ -124,9 +130,9 @@ class vmware (
       $manage_tools_nox_package_real = $manage_tools_nox_package
     }
 
-    if $::vmware_has_x == 'true' and $manage_tools_x_package == 'USE_DEFAULTS' {
+    if $vmware_has_x_bool == true and $manage_tools_x_package == 'USE_DEFAULTS' {
       $manage_tools_x_package_real = true
-    } elsif $::vmware_has_x == 'false' and $manage_tools_x_package == 'USE_DEFAULTS' {
+    } elsif $vmware_has_x_bool == false and $manage_tools_x_package == 'USE_DEFAULTS' {
       $manage_tools_x_package_real = false
     } else {
       if is_string($manage_tools_x_package) == true {
@@ -319,9 +325,9 @@ class vmware (
       $_disable_tools_version = str2bool($disable_tools_version)
     }
     if $_disable_tools_version == true {
-      $_disable_tools_version_string = 'true'
+      $_disable_tools_version_string = 'true' # lint:ignore:quoted_booleans
     } else {
-      $_disable_tools_version_string = 'false'
+      $_disable_tools_version_string = 'false' # lint:ignore:quoted_booleans
     }
 
     if $enable_sync_driver == 'auto' {
@@ -340,9 +346,9 @@ class vmware (
       }
 
       if (versioncmp($::kernelrelease, $_working_kernel_release) >= 0) {
-        $_enable_sync_driver_string = 'true'
+        $_enable_sync_driver_string = 'true' # lint:ignore:quoted_booleans
       } else {
-        $_enable_sync_driver_string = 'false'
+        $_enable_sync_driver_string = 'false' # lint:ignore:quoted_booleans
       }
 
     } else {
@@ -353,9 +359,9 @@ class vmware (
         $_enable_sync_driver = str2bool($enable_sync_driver)
       }
       if $_enable_sync_driver == true {
-        $_enable_sync_driver_string = 'true'
+        $_enable_sync_driver_string = 'true' # lint:ignore:quoted_booleans
       } else {
-        $_enable_sync_driver_string = 'false'
+        $_enable_sync_driver_string = 'false' # lint:ignore:quoted_booleans
       }
 
     }
