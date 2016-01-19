@@ -9,6 +9,20 @@ Manage VMware - Install vmwaretools. Will remove vmware tools that has been inst
 
 # Class `vmware`
 
+## Compatibility
+This module has been tested to work on the following systems with Puppet v3
+with and without the future parser and Puppet v4 versions 4.2 and newer.
+These Puppet versions has been tested in combination with Ruby versions 1.8.7,
+1.9.3, 2.0.0 and 2.1.0.
+
+Puppet 4.0 and Puppet 4.1 unsupported because of issues with inifile.
+See https://tickets.puppetlabs.com/browse/MODULES-2867 for more information.
+
+* Ubuntu
+* RHEL/CentOS
+* OpenSuSE
+* SLE
+
 ## Parameters
 
 manage_repo
