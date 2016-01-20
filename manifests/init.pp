@@ -38,6 +38,14 @@ class vmware (
   validate_string($tools_x_package_name)
   validate_absolute_path($tools_conf_path)
 
+  if is_bool($::vmware_has_x) == true {
+    $vmware_has_x_bool = $::vmware_has_x
+  } else {
+    $vmware_has_x_bool = str2bool($::vmware_has_x)
+  }
+
+  $lsbmajdistrelease_int = 0 + $::lsbmajdistrelease
+
   if $::virtual == 'vmware' {
 
     if is_string($prefer_open_vm_tools) == true {
@@ -50,21 +58,21 @@ class vmware (
     # OSs that have open-vm-tools
     case $::operatingsystem {
       'RedHat', 'CentOS': {
-        $_use_open_vm_tools = $::lsbmajdistrelease >= 7
+        $_use_open_vm_tools = $lsbmajdistrelease_int >= 7
       }
       'SLED', 'SLES': {
-        $_use_open_vm_tools = $::lsbmajdistrelease >= 12
+        $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
       }
       'OpenSuSE': {
-        $_use_open_vm_tools = $::lsbmajdistrelease >= 12
+        $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
       }
       'Ubuntu': {
         if $prefer_open_vm_tools_real == true {
           # include Ubuntu 12.04
-          $_use_open_vm_tools = $::lsbmajdistrelease >= 12
+          $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
         } else {
           # skip Ubuntu 12.04
-          $_use_open_vm_tools = $::lsbmajdistrelease > 12
+          $_use_open_vm_tools = $lsbmajdistrelease_int > 12
         }
       }
       default: {
@@ -124,9 +132,9 @@ class vmware (
       $manage_tools_nox_package_real = $manage_tools_nox_package
     }
 
-    if $::vmware_has_x == 'true' and $manage_tools_x_package == 'USE_DEFAULTS' {
+    if $vmware_has_x_bool == true and $manage_tools_x_package == 'USE_DEFAULTS' {
       $manage_tools_x_package_real = true
-    } elsif $::vmware_has_x == 'false' and $manage_tools_x_package == 'USE_DEFAULTS' {
+    } elsif $vmware_has_x_bool == false and $manage_tools_x_package == 'USE_DEFAULTS' {
       $manage_tools_x_package_real = false
     } else {
       if is_string($manage_tools_x_package) == true {
@@ -149,7 +157,7 @@ class vmware (
           }
 
           yumrepo { 'vmware-osps':
-            baseurl  => "${repo_base_url}/${esx_version}/rhel${::operatingsystemmajrelease}/${::architecture}",
+            baseurl  => "${repo_base_url}/${esx_version}/rhel${lsbmajdistrelease_int}/${::architecture}",
             descr    => 'VMware Tools OSPs',
             enabled  => 1,
             gpgcheck => 1,
@@ -159,7 +167,7 @@ class vmware (
         }
 
         'SLED', 'SLES', 'OpenSuSE': {
-          include zypprepo
+          include ::zypprepo
 
           if $proxy_host != 'absent' {
             fail("The vmware::proxy_host parameter is not supported on ${::operatingsystem}")
@@ -199,10 +207,10 @@ class vmware (
         'Ubuntu': {
 
           if $proxy_host == 'absent' {
-            include apt
+            include ::apt
           } else {
             # will only work if apt is not already defined elsewhere
-            class { 'apt':
+            class { '::apt':
               proxy_host => $proxy_host,
               proxy_port => '8080',
             }
@@ -292,7 +300,7 @@ class vmware (
           $service_provider_real = $service_provider
         }
         if $service_path == 'USE_DEFAULTS' {
-          if $::osfamily == 'Suse' or ($::osfamily == 'RedHat' and $::operatingsystemmajrelease == 5) {
+          if $::osfamily == 'Suse' or ($::osfamily == 'RedHat' and $lsbmajdistrelease_int == 5) {
             $service_path_real = '/etc/init.d/'
           } else {
             $service_path_real = '/etc/vmware-tools/init/'
@@ -319,9 +327,9 @@ class vmware (
       $_disable_tools_version = str2bool($disable_tools_version)
     }
     if $_disable_tools_version == true {
-      $_disable_tools_version_string = 'true'
+      $_disable_tools_version_string = 'true' # lint:ignore:quoted_booleans
     } else {
-      $_disable_tools_version_string = 'false'
+      $_disable_tools_version_string = 'false' # lint:ignore:quoted_booleans
     }
 
     if $enable_sync_driver == 'auto' {
@@ -339,10 +347,10 @@ class vmware (
         $_working_kernel_release = $working_kernel_release
       }
 
-      if (versioncmp($::kernelrelease, $_working_kernel_release) >= 0) {
-        $_enable_sync_driver_string = 'true'
+      if (versioncmp("${::kernelrelease}", "${_working_kernel_release}") >= 0) { # lint:ignore:only_variable_string
+        $_enable_sync_driver_string = 'true' # lint:ignore:quoted_booleans
       } else {
-        $_enable_sync_driver_string = 'false'
+        $_enable_sync_driver_string = 'false' # lint:ignore:quoted_booleans
       }
 
     } else {
@@ -353,9 +361,9 @@ class vmware (
         $_enable_sync_driver = str2bool($enable_sync_driver)
       }
       if $_enable_sync_driver == true {
-        $_enable_sync_driver_string = 'true'
+        $_enable_sync_driver_string = 'true' # lint:ignore:quoted_booleans
       } else {
-        $_enable_sync_driver_string = 'false'
+        $_enable_sync_driver_string = 'false' # lint:ignore:quoted_booleans
       }
 
     }
