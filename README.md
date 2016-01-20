@@ -91,6 +91,12 @@ Prefer open-vm-tools over vmware-tools in the case that both are available (e.g.
 
 - *Default*: true
 
+force_open_vm_tools
+-------------------
+Force open-vm-tools over vmware-tools. Using this option is suitable in cases where EPEL is available for EL systems.
+
+- *Default*: false
+
 manage_tools_nox_package
 ------------------------
 Should vmwaretools nox package be managed?

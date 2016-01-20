@@ -10,6 +10,7 @@ class vmware (
   $proxy_host                = 'absent',
   $proxy_port                = '8080',
   $prefer_open_vm_tools      = true,
+  $force_open_vm_tools       = false,
   $manage_service            = true,
   $service_name              = 'USE_DEFAULTS',
   $service_provider          = 'USE_DEFAULTS',
@@ -55,28 +56,39 @@ class vmware (
       $prefer_open_vm_tools_real = $prefer_open_vm_tools
     }
 
-    # OSs that have open-vm-tools
-    case $::operatingsystem {
-      'RedHat', 'CentOS': {
-        $_use_open_vm_tools = $lsbmajdistrelease_int >= 7
-      }
-      'SLED', 'SLES': {
-        $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
-      }
-      'OpenSuSE': {
-        $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
-      }
-      'Ubuntu': {
-        if $prefer_open_vm_tools_real == true {
-          # include Ubuntu 12.04
-          $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
-        } else {
-          # skip Ubuntu 12.04
-          $_use_open_vm_tools = $lsbmajdistrelease_int > 12
+    if is_string($force_open_vm_tools) == true {
+      $force_open_vm_tools_real = str2bool($force_open_vm_tools)
+    } else {
+      validate_bool($force_open_vm_tools)
+      $force_open_vm_tools_real = $force_open_vm_tools
+    }
+
+    if $force_open_vm_tools_real == true {
+      $_use_open_vm_tools = true
+    } else {
+      # OSs that have open-vm-tools
+      case $::operatingsystem {
+        'RedHat', 'CentOS': {
+          $_use_open_vm_tools = $lsbmajdistrelease_int >= 7
         }
-      }
-      default: {
-          fail("The vmware module is not supported on ${::operatingsystem}")
+        'SLED', 'SLES': {
+          $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
+        }
+        'OpenSuSE': {
+          $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
+        }
+        'Ubuntu': {
+          if $prefer_open_vm_tools_real == true {
+            # include Ubuntu 12.04
+            $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
+          } else {
+            # skip Ubuntu 12.04
+            $_use_open_vm_tools = $lsbmajdistrelease_int > 12
+          }
+        }
+        default: {
+            fail("The vmware module is not supported on ${::operatingsystem}")
+        }
       }
     }
 
