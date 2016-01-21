@@ -66,7 +66,6 @@ describe 'vmware' do
           :operatingsystem           => 'RedHat',
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '5',
-          :operatingsystemmajrelease => '5',
           :kernelrelease             => '2.6.18-400.1.1.el5',
           :architecture              => 'x86_64',
         }
@@ -126,7 +125,6 @@ describe 'vmware' do
           :operatingsystem           => 'RedHat',
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
           :kernelrelease             => '2.6.32-431.11.2.el6.x86_64',
           :architecture              => 'x86_64',
         }
@@ -163,7 +161,6 @@ describe 'vmware' do
           :operatingsystem           => 'RedHat',
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
           :kernelrelease             => '2.6.32-431.11.2.el6.x86_64',
           :architecture              => 'x86_64',
         }
