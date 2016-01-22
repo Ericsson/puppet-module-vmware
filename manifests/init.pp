@@ -74,7 +74,11 @@ class vmware (
           $_use_open_vm_tools = $osmajrelease_int >= 7
         }
         'SLED', 'SLES': {
-          $_use_open_vm_tools = $osmajrelease_int >= 12
+          if $osmajrelease_int >= 12 {
+            $_use_open_vm_tools = true
+          } elsif $osmajrelease_int >= 11 and $osminrelease_int >= 4 {
+            $_use_open_vm_tools = true
+          }
         }
         'OpenSuSE': {
           $_use_open_vm_tools = $osmajrelease_int >= 12

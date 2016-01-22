@@ -292,6 +292,61 @@ describe 'vmware' do
     end
   end
 
+  describe 'with defaults for all parameters on SLED 11.4 running on vmware' do
+    context 'on machine without X installed' do
+      let(:facts) do
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'SLED',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '11.4',
+          :kernelrelease          => '3.0.101-63-default',
+        }
+      end
+
+      it { should contain_package('open-vm-tools').with('ensure' => 'present') }
+      it { should_not contain_package('open-vm-tools-desktop') }
+
+      it { should_not contain_package('vmware-tools-esx-nox') }
+      it { should_not contain_package('vmware-tools-esx') }
+      it {
+        should contain_exec('Remove vmware tools script installation').with({
+          'command' => 'installer.sh uninstall',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+        })
+      }
+      it {
+        should_not contain_yumrepo('vmware-osps')
+      }
+      it {
+        should contain_service('vmtoolsd').with({
+           'ensure'  => 'running',
+           'require' => 'Package[open-vm-tools]',
+        })
+      }
+      it {
+        should_not contain_service('vmtoolsd').with({
+          'provider' => 'init',
+        })
+      }
+    end
+
+    context 'on machine with X installed' do
+      let(:facts) do
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'SLED',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '11.4',
+          :kernelrelease          => '3.0.101-63-default',
+        }
+      end
+
+      it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
+    end
+  end
+
   describe 'with defaults for all parameters on SLED 12 running on vmware' do
     context 'on machine without X installed' do
       let(:facts) do
