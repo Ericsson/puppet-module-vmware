@@ -45,7 +45,9 @@ class vmware (
     $vmware_has_x_bool = str2bool($::vmware_has_x)
   }
 
-  $lsbmajdistrelease_int = 0 + $::lsbmajdistrelease
+  $osrelease_array = split($::operatingsystemrelease, '\.')
+  $osmajrelease_int = 0 + $osrelease_array[0]
+  $osminrelease_int = 0 + $osrelease_array[1]
 
   if $::virtual == 'vmware' {
 
@@ -69,21 +71,21 @@ class vmware (
       # OSs that have open-vm-tools
       case $::operatingsystem {
         'RedHat', 'CentOS': {
-          $_use_open_vm_tools = $lsbmajdistrelease_int >= 7
+          $_use_open_vm_tools = $osmajrelease_int >= 7
         }
         'SLED', 'SLES': {
-          $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
+          $_use_open_vm_tools = $osmajrelease_int >= 12
         }
         'OpenSuSE': {
-          $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
+          $_use_open_vm_tools = $osmajrelease_int >= 12
         }
         'Ubuntu': {
           if $prefer_open_vm_tools_real == true {
             # include Ubuntu 12.04
-            $_use_open_vm_tools = $lsbmajdistrelease_int >= 12
+            $_use_open_vm_tools = $osmajrelease_int >= 12
           } else {
             # skip Ubuntu 12.04
-            $_use_open_vm_tools = $lsbmajdistrelease_int > 12
+            $_use_open_vm_tools = $osmajrelease_int > 12
           }
         }
         default: {
@@ -169,7 +171,7 @@ class vmware (
           }
 
           yumrepo { 'vmware-osps':
-            baseurl  => "${repo_base_url}/${esx_version}/rhel${lsbmajdistrelease_int}/${::architecture}",
+            baseurl  => "${repo_base_url}/${esx_version}/rhel${osmajrelease_int}/${::architecture}",
             descr    => 'VMware Tools OSPs',
             enabled  => 1,
             gpgcheck => 1,
@@ -312,7 +314,7 @@ class vmware (
           $service_provider_real = $service_provider
         }
         if $service_path == 'USE_DEFAULTS' {
-          if $::osfamily == 'Suse' or ($::osfamily == 'RedHat' and $lsbmajdistrelease_int == 5) {
+          if $::osfamily == 'Suse' or ($::osfamily == 'RedHat' and $osmajrelease_int == 5) {
             $service_path_real = '/etc/init.d/'
           } else {
             $service_path_real = '/etc/vmware-tools/init/'
