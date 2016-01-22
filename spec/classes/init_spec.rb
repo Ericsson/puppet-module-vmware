@@ -66,7 +66,6 @@ describe 'vmware' do
           :operatingsystem           => 'RedHat',
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '5',
-          :operatingsystemmajrelease => '5',
           :kernelrelease             => '2.6.18-400.1.1.el5',
           :architecture              => 'x86_64',
         }
@@ -114,6 +113,64 @@ describe 'vmware' do
       end
 
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
+
+    end
+  end
+
+  describe 'with defaults for all parameters except force_open_vm_tools => true on RHEL 5 running on vmware' do
+    context 'on machine without X installed' do
+      let(:facts) do
+        { :virtual                   => 'vmware',
+          :vmware_has_x              => 'false',
+          :operatingsystem           => 'RedHat',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :kernelrelease             => '2.6.32-431.11.2.el6.x86_64',
+          :architecture              => 'x86_64',
+        }
+      end
+      let(:params) do
+        { :force_open_vm_tools      => true, }
+      end
+
+      it { should_not contain_package('vmware-tools-esx-nox') }
+      it { should_not contain_package('vmware-tools-esx') }
+
+      it { should contain_package('open-vm-tools') }
+      it { should_not contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
+
+      it {
+        should contain_exec('Remove vmware tools script installation').with({
+           'command' => 'installer.sh uninstall',
+           'path'    => '/usr/bin/:/etc/vmware-tools/',
+           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+        })
+      }
+      it {
+        should contain_service('vmtoolsd').with({
+           'ensure'   => 'running',
+           'require'  => 'Package[open-vm-tools]',
+        })
+      }
+    end
+
+    context 'on machine with X installed' do
+      let(:facts) do
+        { :virtual                   => 'vmware',
+          :vmware_has_x              => 'true',
+          :operatingsystem           => 'RedHat',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :kernelrelease             => '2.6.32-431.11.2.el6.x86_64',
+          :architecture              => 'x86_64',
+        }
+      end
+      let(:params) do
+        { :force_open_vm_tools      => true, }
+      end
+
+      it { should contain_package('open-vm-tools').with('ensure' => 'present') }
+      it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
 
     end
   end
@@ -1055,6 +1112,50 @@ describe 'vmware' do
           'require' => 'Package[open-vm-tools]',
         })
       }
+    end
+  end
+
+  describe 'variable type and content validations' do
+    let(:facts) do
+      { :virtual                   => 'vmware',
+        :vmware_has_x              => 'true',
+        :operatingsystem           => 'RedHat',
+        :osfamily                  => 'RedHat',
+        :lsbmajdistrelease         => '6',
+        :kernelrelease             => '2.6.32-431.11.2.el6.x86_64',
+        :architecture              => 'x86_64',
+      }
+    end
+
+    validations = {
+      'bool (true|false)' => {
+        :name => %w{force_open_vm_tools},
+        :valid => [true, 'true', false, 'false'],
+        :invalid => ['string', %w{array}, { 'ha' => 'sh' }, 3, 2.42, nil],
+      },
+    }
+
+    validations.sort.each do |type, var|
+      var[:name].each do |var_name|
+        var[:params] = {} if var[:params].nil?
+        var[:valid].each do |valid|
+          context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
+            let(:params) { [ var[:params], { :"#{var_name}" => valid, }].reduce(:merge) }
+            it { should compile }
+          end
+        end
+
+        var[:invalid].each do |invalid|
+          context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
+            let(:params) { [ var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
+            it 'should fail' do
+              expect {
+                should contain_class('vmware')
+              }.to raise_error(Puppet::Error)
+            end
+          end
+        end
+      end
     end
   end
 end
