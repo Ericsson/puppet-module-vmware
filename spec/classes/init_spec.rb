@@ -4,13 +4,13 @@ describe 'vmware' do
   describe 'with defaults for all parameters on machine running on vmware' do
     context 'on machine without X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'false',
-          :operatingsystem   => 'RedHat',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :architecture      => 'x86_64',
-          :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'RedHat',
+          :osfamily               => 'RedHat',
+          :operatingsystemrelease => '6.0',
+          :architecture           => 'x86_64',
+          :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
         }
       end
 
@@ -45,12 +45,12 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'true',
-          :operatingsystem   => 'RedHat',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'RedHat',
+          :osfamily               => 'RedHat',
+          :operatingsystemrelease => '6.0',
+          :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
         }
       end
 
@@ -65,7 +65,7 @@ describe 'vmware' do
           :vmware_has_x              => 'false',
           :operatingsystem           => 'RedHat',
           :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '5',
+          :operatingsystemrelease    => '5.0',
           :kernelrelease             => '2.6.18-400.1.1.el5',
           :architecture              => 'x86_64',
         }
@@ -103,12 +103,12 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'true',
-          :operatingsystem   => 'SLES',
-          :osfamily          => 'Suse',
-          :lsbmajdistrelease => '10',
-          :kernelrelease     => '2.6.18.2-34-default',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'SLES',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '10.0',
+          :kernelrelease          => '2.6.18.2-34-default',
         }
       end
 
@@ -120,13 +120,13 @@ describe 'vmware' do
   describe 'with defaults for all parameters except force_open_vm_tools => true on RHEL 5 running on vmware' do
     context 'on machine without X installed' do
       let(:facts) do
-        { :virtual                   => 'vmware',
-          :vmware_has_x              => 'false',
-          :operatingsystem           => 'RedHat',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :kernelrelease             => '2.6.32-431.11.2.el6.x86_64',
-          :architecture              => 'x86_64',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'RedHat',
+          :osfamily               => 'RedHat',
+          :operatingsystemrelease => '6.0',
+          :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
+          :architecture           => 'x86_64',
         }
       end
       let(:params) do
@@ -156,13 +156,13 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual                   => 'vmware',
-          :vmware_has_x              => 'true',
-          :operatingsystem           => 'RedHat',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :kernelrelease             => '2.6.32-431.11.2.el6.x86_64',
-          :architecture              => 'x86_64',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'RedHat',
+          :osfamily               => 'RedHat',
+          :operatingsystemrelease => '6.0',
+          :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
+          :architecture           => 'x86_64',
         }
       end
       let(:params) do
@@ -178,12 +178,12 @@ describe 'vmware' do
   describe 'with defaults for all parameters on RHEL 7 running on vmware' do
     context 'on machine without X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'false',
-          :operatingsystem   => 'RedHat',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '7',
-          :kernelrelease     => '3.10.0-123.9.2.el7.x86_64',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'RedHat',
+          :osfamily               => 'RedHat',
+          :operatingsystemrelease => '7.0',
+          :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
         }
       end
 
@@ -217,12 +217,12 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'true',
-          :operatingsystem   => 'RedHat',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '7',
-          :kernelrelease     => '3.10.0-123.9.2.el7.x86_64',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'RedHat',
+          :osfamily               => 'RedHat',
+          :operatingsystemrelease => '7.0',
+          :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
         }
       end
 
@@ -237,7 +237,6 @@ describe 'vmware' do
           :vmware_has_x           => 'false',
           :operatingsystem        => 'SLES',
           :osfamily               => 'Suse',
-          :lsbmajdistrelease      => '11',
           :operatingsystemrelease => '10.2',
           :architecture           => 'x86_64',
           :kernelrelease          => '2.6.18.2-34-default',
@@ -279,12 +278,12 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'true',
-          :operatingsystem   => 'SLES',
-          :osfamily          => 'Suse',
-          :lsbmajdistrelease => '10',
-          :kernelrelease     => '2.6.18.2-34-default',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'SLES',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '10.0',
+          :kernelrelease          => '2.6.18.2-34-default',
         }
       end
 
@@ -293,15 +292,15 @@ describe 'vmware' do
     end
   end
 
-  describe 'with defaults for all parameters on SLED 12 running on vmware' do
+  describe 'with defaults for all parameters on SLED 11.4 running on vmware' do
     context 'on machine without X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'false',
-          :operatingsystem   => 'SLED',
-          :osfamily          => 'Suse',
-          :lsbmajdistrelease => '12',
-          :kernelrelease     => '3.10.0-123.9.2.el7.x86_64',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'SLED',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '11.4',
+          :kernelrelease          => '3.0.101-63-default',
         }
       end
 
@@ -335,12 +334,67 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'true',
-          :operatingsystem   => 'SLED',
-          :osfamily          => 'Suse',
-          :lsbmajdistrelease => '12',
-          :kernelrelease     => '3.10.0-123.9.2.el7.x86_64',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'SLED',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '11.4',
+          :kernelrelease          => '3.0.101-63-default',
+        }
+      end
+
+      it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
+    end
+  end
+
+  describe 'with defaults for all parameters on SLED 12 running on vmware' do
+    context 'on machine without X installed' do
+      let(:facts) do
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'SLED',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '12.0',
+          :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
+        }
+      end
+
+      it { should contain_package('open-vm-tools').with('ensure' => 'present') }
+      it { should_not contain_package('open-vm-tools-desktop') }
+
+      it { should_not contain_package('vmware-tools-esx-nox') }
+      it { should_not contain_package('vmware-tools-esx') }
+      it {
+        should contain_exec('Remove vmware tools script installation').with({
+          'command' => 'installer.sh uninstall',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+        })
+      }
+      it {
+        should_not contain_yumrepo('vmware-osps')
+      }
+      it {
+        should contain_service('vmtoolsd').with({
+           'ensure'  => 'running',
+           'require' => 'Package[open-vm-tools]',
+        })
+      }
+      it {
+        should_not contain_service('vmtoolsd').with({
+          'provider' => 'init',
+        })
+      }
+    end
+
+    context 'on machine with X installed' do
+      let(:facts) do
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'SLED',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '12.0',
+          :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
         }
       end
 
@@ -355,7 +409,6 @@ describe 'vmware' do
           :vmware_has_x           => 'false',
           :operatingsystem        => 'SLES',
           :osfamily               => 'Suse',
-          :lsbmajdistrelease      => '11',
           :operatingsystemrelease => '11.2',
           :architecture           => 'x86_64',
           :kernelrelease          => '3.0.13-0.27.1',
@@ -397,12 +450,12 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'true',
-          :operatingsystem   => 'SLES',
-          :osfamily          => 'Suse',
-          :lsbmajdistrelease => '11',
-          :kernelrelease     => '3.0.13-0.27.1',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'SLES',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '11.0',
+          :kernelrelease          => '3.0.13-0.27.1',
         }
       end
 
@@ -416,7 +469,6 @@ describe 'vmware' do
           :vmware_has_x           => 'false',
           :operatingsystem        => 'SLES',
           :osfamily               => 'Suse',
-          :lsbmajdistrelease      => '11',
           :operatingsystemrelease => '11.2',
           :architecture           => 'x86_64',
         }
@@ -446,7 +498,6 @@ describe 'vmware' do
           :vmware_has_x           => 'false',
           :operatingsystem        => 'SLES',
           :osfamily               => 'Suse',
-          :lsbmajdistrelease      => '11',
           :operatingsystemrelease => '11.2',
           :architecture           => 'x86_64',
         }
@@ -475,7 +526,6 @@ describe 'vmware' do
           :vmware_has_x           => 'false',
           :operatingsystem        => 'SLES',
           :osfamily               => 'Suse',
-          :lsbmajdistrelease      => '11',
           :operatingsystemrelease => '11.2',
           :architecture           => 'i386',
         }
@@ -503,12 +553,12 @@ describe 'vmware' do
   describe 'with defaults for all parameters on OpenSuSE 12 running on vmware' do
     context 'on machine without X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'false',
-          :operatingsystem   => 'OpenSuSE',
-          :osfamily          => 'Suse',
-          :lsbmajdistrelease => '12',
-          :kernelrelease     => '3.12.28-4.6',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'OpenSuSE',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '12.0',
+          :kernelrelease          => '3.12.28-4.6',
         }
       end
 
@@ -541,12 +591,12 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'true',
-          :operatingsystem   => 'OpenSuSE',
-          :osfamily          => 'Suse',
-          :lsbmajdistrelease => '12',
-          :kernelrelease     => '3.12.28-4.6',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'OpenSuSE',
+          :osfamily               => 'Suse',
+          :operatingsystemrelease => '12.0',
+          :kernelrelease          => '3.12.28-4.6',
         }
       end
 
@@ -557,12 +607,12 @@ describe 'vmware' do
   describe 'with defaults for all parameters on Ubuntu 12.04 running on vmware' do
     context 'on machine without X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'false',
-          :operatingsystem   => 'Ubuntu',
-          :osfamily          => 'Debian',
-          :lsbmajdistrelease => '12',
-          :kernelrelease     => '3.2.0-23-generic',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'Ubuntu',
+          :osfamily               => 'Debian',
+          :operatingsystemrelease => '12.0',
+          :kernelrelease          => '3.2.0-23-generic',
         }
       end
 
@@ -597,12 +647,12 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'true',
-          :operatingsystem   => 'Ubuntu',
-          :osfamily          => 'Debian',
-          :lsbmajdistrelease => '12',
-          :kernelrelease     => '3.2.0-23-generic',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'true',
+          :operatingsystem        => 'Ubuntu',
+          :osfamily               => 'Debian',
+          :operatingsystemrelease => '12.0',
+          :kernelrelease          => '3.2.0-23-generic',
         }
       end
 
@@ -611,15 +661,14 @@ describe 'vmware' do
 
     context 'with prefer_open_vm_tools = false' do
       let(:facts) do
-        { :virtual           => 'vmware',
-          :vmware_has_x      => 'false',
-          :operatingsystem   => 'Ubuntu',
-          :osfamily          => 'Debian',
-          :lsbmajdistrelease => '12',
-          :lsbdistid         => 'ubuntu', # for apt
-          :lsbdistcodename   => 'precise',
-          :lsbmajdistrelease => '12',
-          :kernelrelease     => '3.2.0-23-generic',
+        { :virtual                => 'vmware',
+          :vmware_has_x           => 'false',
+          :operatingsystem        => 'Ubuntu',
+          :osfamily               => 'Debian',
+          :operatingsystemrelease => '12.0',
+          :lsbdistid              => 'ubuntu', # for apt
+          :lsbdistcodename        => 'precise',
+          :kernelrelease          => '3.2.0-23-generic',
         }
       end
       let(:params) do
@@ -660,12 +709,12 @@ describe 'vmware' do
 
   context 'with custom values for parameters on machine running on vmware' do
     let(:facts) do
-      { :virtual           => 'vmware',
-        :vmware_has_x      => 'true',
-        :operatingsystem   => 'RedHat',
-        :osfamily          => 'RedHat',
-        :lsbmajdistrelease => '6',
-        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
+      { :virtual                => 'vmware',
+        :vmware_has_x           => 'true',
+        :operatingsystem        => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystemrelease => '6.0',
+        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
       }
     end
     let(:params) do
@@ -682,12 +731,12 @@ describe 'vmware' do
 
   context 'with managing the x package on a machine without x' do
     let(:facts) do
-      { :virtual           => 'vmware',
-        :vmware_has_x      => 'false',
-        :operatingsystem   => 'RedHat',
-        :osfamily          => 'RedHat',
-        :lsbmajdistrelease => '6',
-        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
+      { :virtual                => 'vmware',
+        :vmware_has_x           => 'false',
+        :operatingsystem        => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystemrelease => '6.0',
+        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
       }
     end
     let(:params) do
@@ -702,11 +751,11 @@ describe 'vmware' do
 
   context 'without managing packages' do
     let(:facts) do
-      { :virtual           => 'vmware',
-        :operatingsystem   => 'RedHat',
-        :osfamily          => 'RedHat',
-        :lsbmajdistrelease => '6',
-        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
+      { :virtual                => 'vmware',
+        :operatingsystem        => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystemrelease => '6.0',
+        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
       }
     end
     let(:params) do
@@ -730,11 +779,11 @@ describe 'vmware' do
 
   context 'on a machine that does not run on vmware' do
     let(:facts) do
-      { :virtual           => 'physical',
-        :operatingsystem   => 'Debian',
-        :osfamily          => 'Debian',
-        :lsbmajdistrelease => '7',
-        :kernelrelease     => '3.2.0-23-generic',
+      { :virtual                => 'physical',
+        :operatingsystem        => 'Debian',
+        :osfamily               => 'Debian',
+        :operatingsystemrelease => '7.0',
+        :kernelrelease          => '3.2.0-23-generic',
       }
     end
 
@@ -746,12 +795,12 @@ describe 'vmware' do
 
   describe 'with incorrect types' do
     let(:facts) do
-      { :virtual           => 'vmware',
-        :vmware_has_x      => 'true',
-        :operatingsystem   => 'RedHat',
-        :osfamily          => 'RedHat',
-        :lsbmajdistrelease => '6',
-        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
+      { :virtual                => 'vmware',
+        :vmware_has_x           => 'true',
+        :operatingsystem        => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystemrelease => '6.0',
+        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
       }
     end
 
@@ -875,12 +924,12 @@ describe 'vmware' do
 
   context 'managing tools.conf on RHEL6' do
     let(:facts) do
-      { :virtual           => 'vmware',
-        :vmware_has_x      => 'false',
-        :operatingsystem   => 'RedHat',
-        :osfamily          => 'RedHat',
-        :lsbmajdistrelease => '6',
-        :kernelrelease     => '2.6.32-431.11.2.el6.x86_64',
+      { :virtual                => 'vmware',
+        :vmware_has_x           => 'false',
+        :operatingsystem        => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystemrelease => '6.0',
+        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
       }
     end
 
@@ -1094,12 +1143,12 @@ describe 'vmware' do
 
   context 'managing tools.conf on RHEL7' do
     let(:facts) do
-      { :virtual           => 'vmware',
-        :vmware_has_x      => 'false',
-        :operatingsystem   => 'RedHat',
-        :osfamily          => 'RedHat',
-        :lsbmajdistrelease => '7',
-        :kernelrelease     => '3.10.0-229.7.2.el7.x86_64',
+      { :virtual                => 'vmware',
+        :vmware_has_x           => 'false',
+        :operatingsystem        => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystemrelease => '7.0',
+        :kernelrelease          => '3.10.0-229.7.2.el7.x86_64',
       }
     end
 
@@ -1117,13 +1166,13 @@ describe 'vmware' do
 
   describe 'variable type and content validations' do
     let(:facts) do
-      { :virtual                   => 'vmware',
-        :vmware_has_x              => 'true',
-        :operatingsystem           => 'RedHat',
-        :osfamily                  => 'RedHat',
-        :lsbmajdistrelease         => '6',
-        :kernelrelease             => '2.6.32-431.11.2.el6.x86_64',
-        :architecture              => 'x86_64',
+      { :virtual                => 'vmware',
+        :vmware_has_x           => 'true',
+        :operatingsystem        => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystemrelease => '6.0',
+        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
+        :architecture           => 'x86_64',
       }
     end
 
