@@ -11,6 +11,9 @@ RSpec.configure do |config|
     Facter.clear_messages
   end
   config.default_facts = {
-    :environment => 'rp_env',
+    :environment   => 'rp_env',
+    :architecture  => nil,
+    :kernelrelease => nil,
+    :vmware_has_x  => 'false',
   }
 end

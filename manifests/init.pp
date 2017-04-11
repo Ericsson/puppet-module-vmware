@@ -79,6 +79,9 @@ class vmware (
           } elsif $osmajrelease_int >= 11 and $osminrelease_int >= 4 {
             $_use_open_vm_tools = true
           }
+          else {
+            $_use_open_vm_tools = false
+          }
         }
         'OpenSuSE': {
           $_use_open_vm_tools = $osmajrelease_int >= 12
