@@ -1,8 +1,0 @@
-name    'puppet-module-vmware'
-version '1.6.0'
-source 'git://github.com/emahags/puppet-module-vmware.git'
-author 'emahags'
-license 'Apache License, Version 2.0'
-summary 'Manage VMware'
-description 'Manage VMware - Install vmwaretools'
-project_page 'https://github.com/emahags/puppet-module-vmware'
