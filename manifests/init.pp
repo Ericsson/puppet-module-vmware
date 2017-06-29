@@ -79,6 +79,9 @@ class vmware (
           } elsif $osmajrelease_int >= 11 and $osminrelease_int >= 4 {
             $_use_open_vm_tools = true
           }
+          else {
+            $_use_open_vm_tools = false
+          }
         }
         'OpenSuSE': {
           $_use_open_vm_tools = $osmajrelease_int >= 12
@@ -387,7 +390,7 @@ class vmware (
     }
 
     file { 'vmtools_conf':
-      ensure  => present,
+      ensure  => file,
       path    => $tools_conf_path,
       require => Package[$tools_nox_package_name_real],
     }

@@ -937,7 +937,7 @@ describe 'vmware' do
 
       it {
         should contain_file('vmtools_conf').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/vmware-tools/tools.conf',
           'require' => 'Package[vmware-tools-esx-nox]',
         })
@@ -974,7 +974,7 @@ describe 'vmware' do
 
       it {
         should contain_file('vmtools_conf').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/path/to/file',
           'require' => 'Package[vmware-tools-esx-nox]',
         })
@@ -1009,7 +1009,7 @@ describe 'vmware' do
 
       it {
         should contain_file('vmtools_conf').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/vmware-tools/tools.conf',
           'require' => 'Package[vmware-tools-esx-nox]',
         })
@@ -1156,7 +1156,7 @@ describe 'vmware' do
 
       it {
         should contain_file('vmtools_conf').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/vmware-tools/tools.conf',
           'require' => 'Package[open-vm-tools]',
         })

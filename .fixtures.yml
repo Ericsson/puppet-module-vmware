@@ -10,6 +10,7 @@ fixtures:
       repo: 'git://github.com/puppetlabs/puppetlabs-stdlib.git'
       ref: '4.2.0'
     zypprepo:
-      repo: 'git://github.com/deadpoint/puppet-zypprepo.git'
+      repo: 'git://github.com/voxpupuli/puppet-zypprepo.git'
+      ref: 'v1.0.2'
   symlinks:
     vmware: "#{source_dir}"
