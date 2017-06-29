@@ -675,100 +675,6 @@ describe 'vmware' do
     it { should_not contain_service('vmware-tools-services') }
   end
 
-  describe 'with incorrect types' do
-    let(:facts) { [default_facts, :vmware_has_x => 'true' ].reduce(:merge) }
-
-    context 'with manage_repo as an array' do
-      let(:params) { { :manage_repo => ['no'] } }
-
-      it 'should fail' do
-        expect {
-          should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/\["no"\] is not a boolean.  It looks to be a Array/)
-      end
-    end
-
-    context 'with manage_service as an array' do
-      let(:params) { { :manage_service => ['no'] } }
-
-      it 'should fail' do
-        expect {
-          should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/str2bool\(\): Requires either string to work with /)
-      end
-    end
-
-    context 'with prefer_open_vm_tools as an array' do
-      let(:params) { { :prefer_open_vm_tools => ['no'] } }
-
-      it 'should fail' do
-        expect {
-          should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/\["no"\] is not a boolean.  It looks to be a Array/)
-      end
-    end
-
-    context 'with manage_tools_nox_package as an array' do
-      let(:params) { { :manage_tools_nox_package => ['no'] } }
-
-      it 'should fail' do
-        expect {
-          should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/\["no"\] is not a boolean.  It looks to be a Array/)
-      end
-    end
-
-    context 'with manage_tools_x_package as an array' do
-      let(:params) { { :manage_tools_x_package => ['no'] } }
-
-      it 'should fail' do
-        expect {
-          should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/\["no"\] is not a boolean.  It looks to be a Array/)
-      end
-    end
-
-    context 'with tools_nox_package_name as a bool' do
-      let(:params) { { :tools_nox_package_name => false } }
-
-      it 'should fail' do
-        expect {
-          should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
-      end
-    end
-
-    context 'with tools_x_package_name as a bool' do
-      let(:params) { { :tools_x_package_name => false } }
-
-      it 'should fail' do
-        expect {
-          should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
-      end
-    end
-
-    context 'with tools_nox_package_ensure as a bool' do
-      let(:params) { { :tools_nox_package_ensure => false } }
-
-      it 'should fail' do
-        expect {
-          should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
-      end
-    end
-
-    context 'with tools_x_package_ensure as a bool' do
-      let(:params) { { :tools_x_package_ensure => false } }
-
-      it 'should fail' do
-        expect {
-          should contain_class('vmware')
-        }.to raise_error(Puppet::Error,/false is not a string.  It looks to be a FalseClass/)
-      end
-    end
-  end
-
   context 'managing tools.conf on RHEL6' do
     context 'with defaults' do
 
@@ -973,7 +879,6 @@ describe 'vmware' do
           should contain_ini_setting('[vmbackup] enableSyncDriver')
         }.to raise_error(Puppet::Error,/Unknown type of boolean/)
       }
-
     end
   end
 
@@ -985,7 +890,6 @@ describe 'vmware' do
     let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
     context 'with defaults' do
-
       it {
         should contain_file('vmtools_conf').with({
           'ensure'  => 'file',
@@ -997,13 +901,42 @@ describe 'vmware' do
   end
 
   describe 'variable type and content validations' do
-    let(:facts) { [default_facts, :vmware_has_x => 'true' ].reduce(:merge) }
-
     validations = {
-      'bool (true|false)' => {
-        :name => %w{force_open_vm_tools},
-        :valid => [true, 'true', false, 'false'],
-        :invalid => ['string', %w{array}, { 'ha' => 'sh' }, 3, 2.42, nil],
+      'absolute_path' => {
+        :name    => %w[tools_conf_path],
+        :valid   => ['/absolute/filepath', '/absolute/directory/'],
+        :invalid => ['./relative/path', %w[array], { 'ha' => 'sh' }, 3, 2.42, true, nil],
+        :message => 'is not an absolute path',
+      },
+      'boolean & stringified' => {
+        :name    => %w[force_open_vm_tools manage_repo manage_tools_x_package prefer_open_vm_tools],
+        :valid   => [true, 'true', false, 'false'],
+        :invalid => ['string', %w[array], { 'ha' => 'sh' }, 3, 2.42, nil],
+        :message => '(is not a boolean|str2bool)',
+      },
+      'boolean & stringified (manage_service)' => {
+        :name    => %w[manage_service],
+        :valid   => [true, 'true'], # needs fix: on false it fails with "Could not retrieve dependency 'Service[vmware-tools-services]' of Ini_setting[[vmtools] disable-tools-version]"
+        :invalid => ['string', %w[array], { 'ha' => 'sh' }, 3, 2.42, nil],
+        :message => '(is not a boolean|str2bool)',
+      },
+      'boolean & stringified (manage_tools_nox_package)' => {
+        :name    => %w[manage_tools_nox_package],
+        :valid   => [true, 'true'], # needs fix: on false it fails with "Could not retrieve dependency 'Package[vmware-tools-esx-nox]' of Service[vmware-tools-services]"
+        :invalid => ['string', %w[array], { 'ha' => 'sh' }, 3, 2.42, nil],
+        :message => '(is not a boolean|str2bool)',
+      },
+      'string' => {
+        :name    => %w[esx_version proxy_host proxy_port service_name tools_nox_package_ensure tools_nox_package_name tools_x_package_ensure tools_x_package_name],
+        :valid   => ['valid'],
+        :invalid => [%w[array], { 'ha' => 'sh' }, true], # validate_string doesn't fail on integers, floats, and undef, needs implementation change
+        :message => 'is not a string',
+      },
+      'string (URL)' => {
+        :name    => %w[repo_base_url gpgkey_url],
+        :valid   => ['http://spec.test.local/path'],
+        :invalid => [%w[array], { 'ha' => 'sh' }, true], # validate_string doesn't fail on integers, floats, and undef, needs implementation change
+        :message => 'is not a string',
       },
     }
 
@@ -1012,18 +945,16 @@ describe 'vmware' do
         var[:params] = {} if var[:params].nil?
         var[:valid].each do |valid|
           context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
-            let(:params) { [ var[:params], { :"#{var_name}" => valid, }].reduce(:merge) }
+            let(:params) { [var[:params], { :"#{var_name}" => valid, }].reduce(:merge) }
             it { should compile }
           end
         end
 
         var[:invalid].each do |invalid|
           context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
-            let(:params) { [ var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
+            let(:params) { [var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
             it 'should fail' do
-              expect {
-                should contain_class('vmware')
-              }.to raise_error(Puppet::Error)
+              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
             end
           end
         end
