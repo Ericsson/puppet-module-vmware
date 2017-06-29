@@ -17,31 +17,30 @@ describe 'vmware' do
     context 'on machine without X installed' do
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
-        should contain_yumrepo('vmware-osps').with
-        ({
-           'baseurl'  => 'http://packages.vmware.com/tools/esx/latest/rhel6/x86_64',
-           'enabled'  => '1',
-           'gpgcheck' => '1',
-           'gpgkey'   => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-           'proxy'    => 'undef',
-         })
-      }
-      it {
-        should contain_service('vmware-tools-services').with({
-           'ensure'   => 'running',
-           'require'  => 'Package[vmware-tools-esx-nox]',
-           'provider' => 'init',
-           'path'     => '/etc/vmware-tools/init/',
+      end
+      it do
+        should contain_yumrepo('vmware-osps').with({
+          'baseurl'  => 'http://packages.vmware.com/tools/esx/latest/rhel6/x86_64',
+          'enabled'  => '1',
+          'gpgcheck' => '1',
+          'gpgkey'   => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+          'proxy'    => nil,
         })
-      }
+      end
+      it do
+        should contain_service('vmware-tools-services').with({
+          'ensure'   => 'running',
+          'require'  => 'Package[vmware-tools-esx-nox]',
+          'provider' => 'init',
+          'path'     => '/etc/vmware-tools/init/',
+        })
+      end
     end
 
     context 'on machine with X installed' do
@@ -63,29 +62,29 @@ describe 'vmware' do
       it { should_not contain_package('open-vm-tools-desktop') }
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
-           'command' => 'installer.sh uninstall',
-           'path'    => '/usr/bin/:/etc/vmware-tools/',
-           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+          'command' => 'installer.sh uninstall',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
+      end
+      it do
         should contain_yumrepo('vmware-osps').with({
-           'enabled'     => '1',
-           'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/rhel5/x86_64',
-           'gpgcheck'    => '1',
-           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-         })
-      }
-      it {
-        should contain_service('vmware-tools-services').with({
-           'ensure'   => 'running',
-           'require'  => 'Package[vmware-tools-esx-nox]',
-           'provider' => 'init',
-           'path'     => '/etc/init.d/',
+          'enabled'     => '1',
+          'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/rhel5/x86_64',
+          'gpgcheck'    => '1',
+          'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
         })
-      }
+      end
+      it do
+        should contain_service('vmware-tools-services').with({
+          'ensure'   => 'running',
+          'require'  => 'Package[vmware-tools-esx-nox]',
+          'provider' => 'init',
+          'path'     => '/etc/init.d/',
+        })
+      end
     end
 
     context 'on machine with X installed' do
@@ -99,7 +98,6 @@ describe 'vmware' do
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
-
     end
   end
 
@@ -113,19 +111,19 @@ describe 'vmware' do
       it { should contain_package('open-vm-tools') }
       it { should_not contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
 
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
-           'command' => 'installer.sh uninstall',
-           'path'    => '/usr/bin/:/etc/vmware-tools/',
-           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+          'command' => 'installer.sh uninstall',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
+      end
+      it do
         should contain_service('vmtoolsd').with({
-           'ensure'   => 'running',
-           'require'  => 'Package[open-vm-tools]',
+          'ensure'   => 'running',
+          'require'  => 'Package[open-vm-tools]',
         })
-      }
+      end
     end
 
     context 'on machine with X installed' do
@@ -134,7 +132,6 @@ describe 'vmware' do
 
       it { should contain_package('open-vm-tools').with('ensure' => 'present') }
       it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
-
     end
   end
 
@@ -151,27 +148,21 @@ describe 'vmware' do
 
       it { should_not contain_package('vmware-tools-esx-nox') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
-        should_not contain_yumrepo('vmware-osps')
-      }
-      it {
+      end
+      it { should_not contain_yumrepo('vmware-osps') }
+      it do
         should contain_service('vmtoolsd').with({
-           'ensure'  => 'running',
-           'require' => 'Package[open-vm-tools]',
+          'ensure'  => 'running',
+          'require' => 'Package[open-vm-tools]',
         })
-      }
-      it {
-        should_not contain_service('vmtoolsd').with({
-          'provider' => 'init',
-        })
-      }
+      end
+      it { should_not contain_service('vmtoolsd').with('provider' => 'init') }
     end
 
     context 'on machine with X installed' do
@@ -201,32 +192,32 @@ describe 'vmware' do
 
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
-           'command' => 'installer.sh uninstall',
-           'path'    => '/usr/bin/:/etc/vmware-tools/',
-           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+          'command' => 'installer.sh uninstall',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
+      end
+      it do
         should contain_zypprepo('vmware-osps').with({
-           'enabled'     => '1',
-           'autorefresh' => '0',
-           'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles10/x86_64',
-           'path'        => '/',
-           'type'        => 'yum',
-           'gpgcheck'    => '1',
-           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-         })
-      }
-      it {
-        should contain_service('vmware-tools-services').with({
-           'ensure'   => 'running',
-           'require'  => 'Package[vmware-tools-esx-nox]',
-           'provider' => 'init',
-           'path'     => '/etc/init.d/',
+          'enabled'     => '1',
+          'autorefresh' => '0',
+          'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles10/x86_64',
+          'path'        => '/',
+          'type'        => 'yum',
+          'gpgcheck'    => '1',
+          'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
         })
-      }
+      end
+      it do
+        should contain_service('vmware-tools-services').with({
+          'ensure'   => 'running',
+          'require'  => 'Package[vmware-tools-esx-nox]',
+          'provider' => 'init',
+          'path'     => '/etc/init.d/',
+        })
+      end
     end
 
     context 'on machine with X installed' do
@@ -255,30 +246,23 @@ describe 'vmware' do
 
       it { should contain_package('open-vm-tools').with('ensure' => 'present') }
       it { should_not contain_package('open-vm-tools-desktop') }
-
       it { should_not contain_package('vmware-tools-esx-nox') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
-        should_not contain_yumrepo('vmware-osps')
-      }
-      it {
+      end
+      it { should_not contain_yumrepo('vmware-osps') }
+      it do
         should contain_service('vmtoolsd').with({
-           'ensure'  => 'running',
-           'require' => 'Package[open-vm-tools]',
+          'ensure'  => 'running',
+          'require' => 'Package[open-vm-tools]',
         })
-      }
-      it {
-        should_not contain_service('vmtoolsd').with({
-          'provider' => 'init',
-        })
-      }
+      end
+      it { should_not contain_service('vmtoolsd').with('provider' => 'init') }
     end
 
     context 'on machine with X installed' do
@@ -310,27 +294,21 @@ describe 'vmware' do
 
       it { should_not contain_package('vmware-tools-esx-nox') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
-        should_not contain_yumrepo('vmware-osps')
-      }
-      it {
+      end
+      it { should_not contain_yumrepo('vmware-osps') }
+      it do
         should contain_service('vmtoolsd').with({
-           'ensure'  => 'running',
-           'require' => 'Package[open-vm-tools]',
+          'ensure'  => 'running',
+          'require' => 'Package[open-vm-tools]',
         })
-      }
-      it {
-        should_not contain_service('vmtoolsd').with({
-          'provider' => 'init',
-        })
-      }
+      end
+      it { should_not contain_service('vmtoolsd').with('provider' => 'init') }
     end
 
     context 'on machine with X installed' do
@@ -362,32 +340,32 @@ describe 'vmware' do
 
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
-           'command' => 'installer.sh uninstall',
-           'path'    => '/usr/bin/:/etc/vmware-tools/',
-           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+          'command' => 'installer.sh uninstall',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
+      end
+      it do
         should contain_zypprepo('vmware-osps').with({
-           'enabled'     => '1',
-           'autorefresh' => '0',
-           'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles11.2/x86_64',
-           'path'        => '/',
-           'type'        => 'yum',
-           'gpgcheck'    => '1',
-           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-         })
-      }
-      it {
-        should contain_service('vmware-tools-services').with({
-           'ensure'   => 'running',
-           'require'  => 'Package[vmware-tools-esx-nox]',
-           'provider' => 'init',
-           'path'     => '/etc/init.d/',
+          'enabled'     => '1',
+          'autorefresh' => '0',
+          'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles11.2/x86_64',
+          'path'        => '/',
+          'type'        => 'yum',
+          'gpgcheck'    => '1',
+          'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
         })
-      }
+      end
+      it do
+        should contain_service('vmware-tools-services').with({
+          'ensure'   => 'running',
+          'require'  => 'Package[vmware-tools-esx-nox]',
+          'provider' => 'init',
+          'path'     => '/etc/init.d/',
+        })
+      end
     end
 
     context 'on machine with X installed' do
@@ -412,17 +390,17 @@ describe 'vmware' do
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { :esx_version => '6.0' } }
 
-      it {
+      it do
         should contain_zypprepo('vmware-osps').with({
-           'enabled'     => '1',
-           'autorefresh' => '0',
-           'baseurl'     => 'http://packages.vmware.com/tools/esx/6.0/sles11sp2/x86_64',
-           'path'        => '/',
-           'type'        => 'yum',
-           'gpgcheck'    => '1',
-           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-         })
-      }
+          'enabled'     => '1',
+          'autorefresh' => '0',
+          'baseurl'     => 'http://packages.vmware.com/tools/esx/6.0/sles11sp2/x86_64',
+          'path'        => '/',
+          'type'        => 'yum',
+          'gpgcheck'    => '1',
+          'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+        })
+      end
     end
 
     context 'with esx_version < 6.0, x86_64' do
@@ -434,17 +412,17 @@ describe 'vmware' do
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { :esx_version => '5.5latest' } }
 
-      it {
+      it do
         should contain_zypprepo('vmware-osps').with({
-           'enabled'     => '1',
-           'autorefresh' => '0',
-           'baseurl'     => 'http://packages.vmware.com/tools/esx/5.5latest/sles11.2/x86_64',
-           'path'        => '/',
-           'type'        => 'yum',
-           'gpgcheck'    => '1',
-           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-         })
-      }
+          'enabled'     => '1',
+          'autorefresh' => '0',
+          'baseurl'     => 'http://packages.vmware.com/tools/esx/5.5latest/sles11.2/x86_64',
+          'path'        => '/',
+          'type'        => 'yum',
+          'gpgcheck'    => '1',
+          'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+        })
+      end
     end
 
     context 'with esx_version < 6.0, i386' do
@@ -457,17 +435,17 @@ describe 'vmware' do
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { :esx_version => '5.5latest' } }
 
-      it {
+      it do
         should contain_zypprepo('vmware-osps').with({
-           'enabled'     => '1',
-           'autorefresh' => '0',
-           'baseurl'     => 'http://packages.vmware.com/tools/esx/5.5latest/sles11.2/i586',
-           'path'        => '/',
-           'type'        => 'yum',
-           'gpgcheck'    => '1',
-           'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-         })
-      }
+          'enabled'     => '1',
+          'autorefresh' => '0',
+          'baseurl'     => 'http://packages.vmware.com/tools/esx/5.5latest/sles11.2/i586',
+          'path'        => '/',
+          'type'        => 'yum',
+          'gpgcheck'    => '1',
+          'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+        })
+      end
     end
   end
 
@@ -486,26 +464,16 @@ describe 'vmware' do
 
       it { should_not contain_package('vmware-tools-esx-nox') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
-        should_not contain_zypprepo('vmware-osps')
-      }
-      it {
-        should contain_service('vmtoolsd').with({
-           'ensure' => 'running',
-        })
-      }
-      it {
-        should_not contain_service('vmtoolsd').with({
-          'provider' => 'init',
-        })
-      }
+      end
+      it { should_not contain_zypprepo('vmware-osps') }
+      it { should contain_service('vmtoolsd').with('ensure' => 'running') }
+      it { should_not contain_service('vmtoolsd').with('provider' => 'init') }
     end
 
     context 'on machine with X installed' do
@@ -537,28 +505,22 @@ describe 'vmware' do
 
       it { should_not contain_package('vmware-tools-esx-nox') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
-        should_not contain_class('apt')
-      }
-      it {
+      end
+      it { should_not contain_class('apt') }
+      it do
         should contain_service('open-vm-tools').with({
-           'ensure'    => 'running',
-           'hasstatus' => 'false',
-           'status'    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
+          'ensure'    => 'running',
+          'hasstatus' => 'false',
+          'status'    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
         })
-      }
-      it {
-        should_not contain_service('vmtoolsd').with({
-          'provider' => 'init',
-        })
-      }
+      end
+      it { should_not contain_service('vmtoolsd').with('provider' => 'init') }
     end
 
     context 'on machine with X installed' do
@@ -591,31 +553,30 @@ describe 'vmware' do
 
       it { should contain_package('vmware-tools-esx-nox') }
       it { should_not contain_package('vmware-tools-esx') }
-      it {
+      it do
         should contain_exec('Remove vmware tools script installation').with({
           'command' => 'installer.sh uninstall',
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         })
-      }
-      it {
+      end
+      it do
         should contain_apt__source('vmware-osps').with({
-            'location'    => 'http://packages.vmware.com/tools/esx/latest/ubuntu',
-            'release'     => 'precise',
-            'repos'       => 'main',
-            'include_src' => false,
-         })
-      }
-      it {
-        should contain_service('vmware-tools-services').with({
-           'ensure'   => 'running',
-           'require'  => 'Package[vmware-tools-esx-nox]',
-           'provider' => 'init',
-           'path'     => '/etc/vmware-tools/init/',
+          'location'    => 'http://packages.vmware.com/tools/esx/latest/ubuntu',
+          'release'     => 'precise',
+          'repos'       => 'main',
+          'include_src' => false,
         })
-      }
+      end
+      it do
+        should contain_service('vmware-tools-services').with({
+          'ensure'   => 'running',
+          'require'  => 'Package[vmware-tools-esx-nox]',
+          'provider' => 'init',
+          'path'     => '/etc/vmware-tools/init/',
+        })
+      end
     end
-
   end
 
   context 'with custom values for parameters on machine running on vmware' do
@@ -656,14 +617,14 @@ describe 'vmware' do
     it { should_not contain_package('vmware-tools-esx') }
     it { should_not contain_package('vmware-tools-esx-nox') }
     it { should_not contain_exec('Remove vmware tools script installation') }
-    it {
+    it do
       should contain_service('vmware-tools-services').with({
-         'ensure'   => 'running',
-         'require'  => 'Package[vmware-tools-esx-nox]',
-         'provider' => 'init',
-         'path'     => '/etc/vmware-tools/init/',
+        'ensure'   => 'running',
+        'require'  => 'Package[vmware-tools-esx-nox]',
+        'provider' => 'init',
+        'path'     => '/etc/vmware-tools/init/',
       })
-    }
+    end
   end
 
   context 'on a machine that does not run on vmware' do
@@ -677,15 +638,14 @@ describe 'vmware' do
 
   context 'managing tools.conf on RHEL6' do
     context 'with defaults' do
-
-      it {
+      it do
         should contain_file('vmtools_conf').with({
           'ensure'  => 'file',
           'path'    => '/etc/vmware-tools/tools.conf',
           'require' => 'Package[vmware-tools-esx-nox]',
         })
-      }
-      it {
+      end
+      it do
         should contain_ini_setting('[vmtools] disable-tools-version').with({
           'ensure'  => 'present',
           'path'    => '/etc/vmware-tools/tools.conf',
@@ -694,8 +654,8 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
-      it {
+      end
+      it do
         should contain_ini_setting('[vmbackup] enableSyncDriver').with({
           'ensure'  => 'present',
           'path'    => '/etc/vmware-tools/tools.conf',
@@ -704,7 +664,7 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
+      end
     end
 
     context 'with true' do
@@ -716,14 +676,14 @@ describe 'vmware' do
         }
       end
 
-      it {
+      it do
         should contain_file('vmtools_conf').with({
           'ensure'  => 'file',
           'path'    => '/path/to/file',
           'require' => 'Package[vmware-tools-esx-nox]',
         })
-      }
-      it {
+      end
+      it do
         should contain_ini_setting('[vmtools] disable-tools-version').with({
           'ensure'  => 'present',
           'path'    => '/path/to/file',
@@ -732,8 +692,8 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
-      it {
+      end
+      it do
         should contain_ini_setting('[vmbackup] enableSyncDriver').with({
           'ensure'  => 'present',
           'path'    => '/path/to/file',
@@ -742,7 +702,7 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
+      end
     end
     context 'with false' do
       let(:params) do
@@ -752,14 +712,14 @@ describe 'vmware' do
         }
       end
 
-      it {
+      it do
         should contain_file('vmtools_conf').with({
           'ensure'  => 'file',
           'path'    => '/etc/vmware-tools/tools.conf',
           'require' => 'Package[vmware-tools-esx-nox]',
         })
-      }
-      it {
+      end
+      it do
         should contain_ini_setting('[vmtools] disable-tools-version').with({
           'ensure'  => 'present',
           'path'    => '/etc/vmware-tools/tools.conf',
@@ -768,8 +728,8 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
-      it {
+      end
+      it do
         should contain_ini_setting('[vmbackup] enableSyncDriver').with({
           'ensure'  => 'present',
           'path'    => '/etc/vmware-tools/tools.conf',
@@ -778,12 +738,12 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
+      end
     end
     context 'with auto default' do
       let(:params) { { :enable_sync_driver => 'auto' } }
 
-      it {
+      it do
         should contain_ini_setting('[vmbackup] enableSyncDriver').with({
           'ensure'  => 'present',
           'path'    => '/etc/vmware-tools/tools.conf',
@@ -792,7 +752,7 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
+      end
     end
     context 'with auto, set kernel <' do
       let(:params) do
@@ -802,7 +762,7 @@ describe 'vmware' do
         }
       end
 
-      it {
+      it do
         should contain_ini_setting('[vmbackup] enableSyncDriver').with({
           'ensure'  => 'present',
           'path'    => '/etc/vmware-tools/tools.conf',
@@ -811,7 +771,7 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
+      end
     end
     context 'with auto, set kernel >' do
       let(:params) do
@@ -821,7 +781,7 @@ describe 'vmware' do
         }
       end
 
-      it {
+      it do
         should contain_ini_setting('[vmbackup] enableSyncDriver').with({
           'ensure'  => 'present',
           'path'    => '/etc/vmware-tools/tools.conf',
@@ -830,7 +790,7 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
+      end
     end
     context 'with auto, set kernel =' do
       let(:params) do
@@ -840,7 +800,7 @@ describe 'vmware' do
         }
       end
 
-      it {
+      it do
         should contain_ini_setting('[vmbackup] enableSyncDriver').with({
           'ensure'  => 'present',
           'path'    => '/etc/vmware-tools/tools.conf',
@@ -849,7 +809,7 @@ describe 'vmware' do
           'notify'  => /Service\[vmware-tools-services\]/,
           'require' => 'File[vmtools_conf]',
         })
-      }
+      end
     end
 
     context 'invalid disable_tools_version' do
@@ -860,12 +820,11 @@ describe 'vmware' do
         }
       end
 
-      it {
-        expect {
-          should contain_ini_settings('[vmtools] disable-tools-version')
-        }.to raise_error(Puppet::Error,/Unknown type of boolean/)
-      }
+      it 'should fail' do
+        expect { should contain_ini_setting('[vmtools] disable-tools-version') }.to raise_error(Puppet::Error, /Unknown type of boolean/)
+      end
     end
+
     context 'invalid enable_sync_driver' do
       let(:params) do
         {
@@ -874,11 +833,9 @@ describe 'vmware' do
         }
       end
 
-      it {
-        expect {
-          should contain_ini_setting('[vmbackup] enableSyncDriver')
-        }.to raise_error(Puppet::Error,/Unknown type of boolean/)
-      }
+      it 'should fail' do
+        expect { should contain_ini_setting('[vmbackup] enableSyncDriver') }.to raise_error(Puppet::Error, /Unknown type of boolean/)
+      end
     end
   end
 
@@ -890,13 +847,13 @@ describe 'vmware' do
     let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
     context 'with defaults' do
-      it {
+      it do
         should contain_file('vmtools_conf').with({
           'ensure'  => 'file',
           'path'    => '/etc/vmware-tools/tools.conf',
           'require' => 'Package[open-vm-tools]',
         })
-      }
+      end
     end
   end
 
