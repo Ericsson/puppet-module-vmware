@@ -1,19 +1,20 @@
 require 'spec_helper'
 describe 'vmware' do
+  let(:default_facts) do
+    {
+      :virtual                => 'vmware',
+      :vmware_has_x           => 'false',
+      :operatingsystem        => 'RedHat',
+      :osfamily               => 'RedHat',
+      :operatingsystemrelease => '6.0',
+      :architecture           => 'x86_64',
+      :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
+    }
+  end
+  let(:facts) { default_facts }
 
   describe 'with defaults for all parameters on machine running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'RedHat',
-          :osfamily               => 'RedHat',
-          :operatingsystemrelease => '6.0',
-          :architecture           => 'x86_64',
-          :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-        }
-      end
-
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
       it { should_not contain_package('vmware-tools-esx') }
       it {
@@ -44,15 +45,7 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'RedHat',
-          :osfamily               => 'RedHat',
-          :operatingsystemrelease => '6.0',
-          :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-        }
-      end
+      let(:facts) { [default_facts, { :vmware_has_x => 'true' }].reduce(:merge) }
 
       it { should contain_package('vmware-tools-esx').with('ensure' => 'present') }
     end
@@ -60,20 +53,14 @@ describe 'vmware' do
 
   describe 'with defaults for all parameters on RHEL 5 running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                   => 'vmware',
-          :vmware_has_x              => 'false',
-          :operatingsystem           => 'RedHat',
-          :osfamily                  => 'RedHat',
-          :operatingsystemrelease    => '5.0',
-          :kernelrelease             => '2.6.18-400.1.1.el5',
-          :architecture              => 'x86_64',
-        }
-      end
+      specific_facts = {
+        :operatingsystemrelease => '5.0',
+        :kernelrelease          => '2.6.18-400.1.1.el5',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should_not contain_package('open-vm-tools') }
       it { should_not contain_package('open-vm-tools-desktop') }
-
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
       it { should_not contain_package('vmware-tools-esx') }
       it {
@@ -102,36 +89,23 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '10.0',
-          :kernelrelease          => '2.6.18.2-34-default',
-        }
-      end
+      specific_facts = {
+        :vmware_has_x           => 'true',
+        :operatingsystem        => 'SLES',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '10.0',
+        :kernelrelease          => '2.6.18.2-34-default',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
 
     end
   end
 
-  describe 'with defaults for all parameters except force_open_vm_tools => true on RHEL 5 running on vmware' do
+  describe 'with defaults for all parameters except force_open_vm_tools => true on RHEL 6 running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'RedHat',
-          :osfamily               => 'RedHat',
-          :operatingsystemrelease => '6.0',
-          :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-          :architecture           => 'x86_64',
-        }
-      end
-      let(:params) do
-        { :force_open_vm_tools      => true, }
-      end
+      let(:params) { { :force_open_vm_tools => true } }
 
       it { should_not contain_package('vmware-tools-esx-nox') }
       it { should_not contain_package('vmware-tools-esx') }
@@ -155,19 +129,8 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'RedHat',
-          :osfamily               => 'RedHat',
-          :operatingsystemrelease => '6.0',
-          :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-          :architecture           => 'x86_64',
-        }
-      end
-      let(:params) do
-        { :force_open_vm_tools      => true, }
-      end
+      let(:facts) { [default_facts, { :vmware_has_x => 'true' }].reduce(:merge) }
+      let(:params) { { :force_open_vm_tools => true } }
 
       it { should contain_package('open-vm-tools').with('ensure' => 'present') }
       it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
@@ -177,15 +140,11 @@ describe 'vmware' do
 
   describe 'with defaults for all parameters on RHEL 7 running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'RedHat',
-          :osfamily               => 'RedHat',
-          :operatingsystemrelease => '7.0',
-          :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
-        }
-      end
+      specific_facts = {
+        :operatingsystemrelease => '7.0',
+        :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-tools').with('ensure' => 'present') }
       it { should_not contain_package('open-vm-tools-desktop') }
@@ -216,15 +175,12 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'RedHat',
-          :osfamily               => 'RedHat',
-          :operatingsystemrelease => '7.0',
-          :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
-        }
-      end
+      specific_facts = {
+        :operatingsystemrelease => '7.0',
+        :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
+        :vmware_has_x           => 'true',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
     end
@@ -232,16 +188,13 @@ describe 'vmware' do
 
   describe 'with defaults for all parameters on SLES 10 running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '10.2',
-          :architecture           => 'x86_64',
-          :kernelrelease          => '2.6.18.2-34-default',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLES',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '10.2',
+        :kernelrelease          => '2.6.18.2-34-default',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should_not contain_package('open-vm-tools') }
       it { should_not contain_package('open-vm-tools-desktop') }
@@ -277,32 +230,28 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '10.0',
-          :kernelrelease          => '2.6.18.2-34-default',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLES',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '10.0',
+        :kernelrelease          => '2.6.18.2-34-default',
+        :vmware_has_x           => 'true',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
-
     end
   end
 
   describe 'with defaults for all parameters on SLED 11.4 running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'SLED',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '11.4',
-          :kernelrelease          => '3.0.101-63-default',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLED',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '11.4',
+        :kernelrelease          => '3.0.101-63-default',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-tools').with('ensure' => 'present') }
       it { should_not contain_package('open-vm-tools-desktop') }
@@ -333,15 +282,14 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'SLED',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '11.4',
-          :kernelrelease          => '3.0.101-63-default',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLED',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '11.4',
+        :kernelrelease          => '3.0.101-63-default',
+        :vmware_has_x           => 'true',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
     end
@@ -349,15 +297,13 @@ describe 'vmware' do
 
   describe 'with defaults for all parameters on SLED 12 running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'SLED',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '12.0',
-          :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLED',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '12.0',
+        :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-tools').with('ensure' => 'present') }
       it { should_not contain_package('open-vm-tools-desktop') }
@@ -388,15 +334,14 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'SLED',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '12.0',
-          :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLED',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '12.0',
+        :kernelrelease          => '3.10.0-123.9.2.el7.x86_64',
+        :vmware_has_x           => 'true',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
     end
@@ -404,16 +349,13 @@ describe 'vmware' do
 
   describe 'with defaults for all parameters on SLES 11 running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '11.2',
-          :architecture           => 'x86_64',
-          :kernelrelease          => '3.0.13-0.27.1',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLES',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '11.2',
+        :kernelrelease          => '3.0.13-0.27.1',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should_not contain_package('open-vm-tools') }
       it { should_not contain_package('open-vm-tools-desktop') }
@@ -449,35 +391,26 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '11.0',
-          :kernelrelease          => '3.0.13-0.27.1',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLES',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '11.0',
+        :kernelrelease          => '3.0.13-0.27.1',
+        :vmware_has_x           => 'true',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('vmware-tools-esx-nox').with('ensure' => 'present') }
-
     end
 
     context 'with esx_version = 6.0, x86_64' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '11.2',
-          :architecture           => 'x86_64',
-        }
-      end
-
-      let(:params) do
-        { :esx_version => '6.0',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLES',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '11.2',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
+      let(:params) { { :esx_version => '6.0' } }
 
       it {
         should contain_zypprepo('vmware-osps').with({
@@ -493,20 +426,13 @@ describe 'vmware' do
     end
 
     context 'with esx_version < 6.0, x86_64' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '11.2',
-          :architecture           => 'x86_64',
-        }
-      end
-
-      let(:params) do
-        { :esx_version => '5.5latest',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'SLES',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '11.2',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
+      let(:params) { { :esx_version => '5.5latest' } }
 
       it {
         should contain_zypprepo('vmware-osps').with({
@@ -520,21 +446,16 @@ describe 'vmware' do
          })
       }
     end
-    context 'with esx_version < 6.0, i386' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'SLES',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '11.2',
-          :architecture           => 'i386',
-        }
-      end
 
-      let(:params) do
-        { :esx_version => '5.5latest',
-        }
-      end
+    context 'with esx_version < 6.0, i386' do
+      specific_facts = {
+        :operatingsystem        => 'SLES',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '11.2',
+        :architecture           => 'i386',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
+      let(:params) { { :esx_version => '5.5latest' } }
 
       it {
         should contain_zypprepo('vmware-osps').with({
@@ -552,15 +473,13 @@ describe 'vmware' do
 
   describe 'with defaults for all parameters on OpenSuSE 12 running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'OpenSuSE',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '12.0',
-          :kernelrelease          => '3.12.28-4.6',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'OpenSuSE',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '12.0',
+        :kernelrelease          => '3.12.28-4.6',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-tools').with('ensure' => 'present') }
       it { should_not contain_package('open-vm-tools-desktop') }
@@ -590,15 +509,14 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'OpenSuSE',
-          :osfamily               => 'Suse',
-          :operatingsystemrelease => '12.0',
-          :kernelrelease          => '3.12.28-4.6',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'OpenSuSE',
+        :osfamily               => 'Suse',
+        :operatingsystemrelease => '12.0',
+        :kernelrelease          => '3.12.28-4.6',
+        :vmware_has_x           => 'true',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-tools-gui').with('ensure' => 'present') }
     end
@@ -606,15 +524,13 @@ describe 'vmware' do
 
   describe 'with defaults for all parameters on Ubuntu 12.04 running on vmware' do
     context 'on machine without X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'Ubuntu',
-          :osfamily               => 'Debian',
-          :operatingsystemrelease => '12.0',
-          :kernelrelease          => '3.2.0-23-generic',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'Ubuntu',
+        :osfamily               => 'Debian',
+        :operatingsystemrelease => '12.0',
+        :kernelrelease          => '3.2.0-23-generic',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-tools').with('ensure' => 'present') }
       it { should_not contain_package('open-vm-toolbox') }
@@ -646,35 +562,30 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'true',
-          :operatingsystem        => 'Ubuntu',
-          :osfamily               => 'Debian',
-          :operatingsystemrelease => '12.0',
-          :kernelrelease          => '3.2.0-23-generic',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'Ubuntu',
+        :osfamily               => 'Debian',
+        :operatingsystemrelease => '12.0',
+        :kernelrelease          => '3.2.0-23-generic',
+        :vmware_has_x           => 'true',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { should contain_package('open-vm-toolbox').with('ensure' => 'present') }
     end
 
     context 'with prefer_open_vm_tools = false' do
-      let(:facts) do
-        { :virtual                => 'vmware',
-          :vmware_has_x           => 'false',
-          :operatingsystem        => 'Ubuntu',
-          :osfamily               => 'Debian',
-          :operatingsystemrelease => '12.0',
-          :lsbdistid              => 'ubuntu', # for apt
-          :lsbdistcodename        => 'precise',
-          :kernelrelease          => '3.2.0-23-generic',
-        }
-      end
-      let(:params) do
-        { :prefer_open_vm_tools => 'false',
-        }
-      end
+      specific_facts = {
+        :operatingsystem        => 'Ubuntu',
+        :osfamily               => 'Debian',
+        :operatingsystemrelease => '12.0',
+        :kernelrelease          => '3.2.0-23-generic',
+        :lsbdistid              => 'ubuntu',  # needed for apt
+        :lsbdistcodename        => 'precise', # needed for apt
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
+      let(:params) { { :prefer_open_vm_tools => 'false' } }
+
       it { should_not contain_package('open-vm-tools') }
       it { should_not contain_package('open-vm-toolbox') }
 
@@ -708,17 +619,10 @@ describe 'vmware' do
   end
 
   context 'with custom values for parameters on machine running on vmware' do
-    let(:facts) do
-      { :virtual                => 'vmware',
-        :vmware_has_x           => 'true',
-        :operatingsystem        => 'RedHat',
-        :osfamily               => 'RedHat',
-        :operatingsystemrelease => '6.0',
-        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-      }
-    end
+    let(:facts) { [default_facts, { :vmware_has_x => 'true' }].reduce(:merge) }
     let(:params) do
-      { :tools_nox_package_name   => 'vmware-tools-esx-nox-custom',
+      {
+        :tools_nox_package_name   => 'vmware-tools-esx-nox-custom',
         :tools_nox_package_ensure => '0.2-1',
         :tools_x_package_name     => 'vmware-tools-esx-custom',
         :tools_x_package_ensure   => '0.3-1',
@@ -730,17 +634,9 @@ describe 'vmware' do
   end
 
   context 'with managing the x package on a machine without x' do
-    let(:facts) do
-      { :virtual                => 'vmware',
-        :vmware_has_x           => 'false',
-        :operatingsystem        => 'RedHat',
-        :osfamily               => 'RedHat',
-        :operatingsystemrelease => '6.0',
-        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-      }
-    end
     let(:params) do
-      { :manage_tools_x_package => 'true',
+      {
+        :manage_tools_x_package => 'true',
         :tools_x_package_name   => 'vmware-tools-esx-custom',
         :tools_x_package_ensure => '0.5-1',
       }
@@ -750,16 +646,9 @@ describe 'vmware' do
   end
 
   context 'without managing packages' do
-    let(:facts) do
-      { :virtual                => 'vmware',
-        :operatingsystem        => 'RedHat',
-        :osfamily               => 'RedHat',
-        :operatingsystemrelease => '6.0',
-        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-      }
-    end
     let(:params) do
-      { :manage_tools_nox_package => 'false',
+      {
+        :manage_tools_nox_package => 'false',
         :manage_tools_x_package   => 'false',
       }
     end
@@ -778,14 +667,7 @@ describe 'vmware' do
   end
 
   context 'on a machine that does not run on vmware' do
-    let(:facts) do
-      { :virtual                => 'physical',
-        :operatingsystem        => 'Debian',
-        :osfamily               => 'Debian',
-        :operatingsystemrelease => '7.0',
-        :kernelrelease          => '3.2.0-23-generic',
-      }
-    end
+    let(:facts) { [default_facts, { :virtual => 'physical' }].reduce(:merge) }
 
     it { should_not contain_package('vmware-tools-esx') }
     it { should_not contain_package('vmware-tools-esx-nox') }
@@ -794,21 +676,10 @@ describe 'vmware' do
   end
 
   describe 'with incorrect types' do
-    let(:facts) do
-      { :virtual                => 'vmware',
-        :vmware_has_x           => 'true',
-        :operatingsystem        => 'RedHat',
-        :osfamily               => 'RedHat',
-        :operatingsystemrelease => '6.0',
-        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-      }
-    end
+    let(:facts) { [default_facts, :vmware_has_x => 'true' ].reduce(:merge) }
 
     context 'with manage_repo as an array' do
-      let(:params) do
-        { :manage_repo => ['no'],
-        }
-      end
+      let(:params) { { :manage_repo => ['no'] } }
 
       it 'should fail' do
         expect {
@@ -818,10 +689,7 @@ describe 'vmware' do
     end
 
     context 'with manage_service as an array' do
-      let(:params) do
-        { :manage_service => ['no'],
-        }
-      end
+      let(:params) { { :manage_service => ['no'] } }
 
       it 'should fail' do
         expect {
@@ -831,10 +699,7 @@ describe 'vmware' do
     end
 
     context 'with prefer_open_vm_tools as an array' do
-      let(:params) do
-        { :prefer_open_vm_tools => ['no'],
-        }
-      end
+      let(:params) { { :prefer_open_vm_tools => ['no'] } }
 
       it 'should fail' do
         expect {
@@ -844,10 +709,7 @@ describe 'vmware' do
     end
 
     context 'with manage_tools_nox_package as an array' do
-      let(:params) do
-        { :manage_tools_nox_package => ['no'],
-        }
-      end
+      let(:params) { { :manage_tools_nox_package => ['no'] } }
 
       it 'should fail' do
         expect {
@@ -857,10 +719,7 @@ describe 'vmware' do
     end
 
     context 'with manage_tools_x_package as an array' do
-      let(:params) do
-        { :manage_tools_x_package => ['no'],
-        }
-      end
+      let(:params) { { :manage_tools_x_package => ['no'] } }
 
       it 'should fail' do
         expect {
@@ -870,10 +729,7 @@ describe 'vmware' do
     end
 
     context 'with tools_nox_package_name as a bool' do
-      let(:params) do
-        { :tools_nox_package_name => false,
-        }
-      end
+      let(:params) { { :tools_nox_package_name => false } }
 
       it 'should fail' do
         expect {
@@ -883,10 +739,7 @@ describe 'vmware' do
     end
 
     context 'with tools_x_package_name as a bool' do
-      let(:params) do
-        { :tools_x_package_name => false,
-        }
-      end
+      let(:params) { { :tools_x_package_name => false } }
 
       it 'should fail' do
         expect {
@@ -896,10 +749,7 @@ describe 'vmware' do
     end
 
     context 'with tools_nox_package_ensure as a bool' do
-      let(:params) do
-        { :tools_nox_package_ensure => false,
-        }
-      end
+      let(:params) { { :tools_nox_package_ensure => false } }
 
       it 'should fail' do
         expect {
@@ -909,10 +759,7 @@ describe 'vmware' do
     end
 
     context 'with tools_x_package_ensure as a bool' do
-      let(:params) do
-        { :tools_x_package_ensure => false,
-        }
-      end
+      let(:params) { { :tools_x_package_ensure => false } }
 
       it 'should fail' do
         expect {
@@ -923,16 +770,6 @@ describe 'vmware' do
   end
 
   context 'managing tools.conf on RHEL6' do
-    let(:facts) do
-      { :virtual                => 'vmware',
-        :vmware_has_x           => 'false',
-        :operatingsystem        => 'RedHat',
-        :osfamily               => 'RedHat',
-        :operatingsystemrelease => '6.0',
-        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-      }
-    end
-
     context 'with defaults' do
 
       it {
@@ -966,9 +803,10 @@ describe 'vmware' do
 
     context 'with true' do
       let(:params) do
-        { :tools_conf_path => '/path/to/file',
+        {
+          :tools_conf_path       => '/path/to/file',
           :disable_tools_version => true,
-          :enable_sync_driver => true,
+          :enable_sync_driver    => true,
         }
       end
 
@@ -1002,8 +840,9 @@ describe 'vmware' do
     end
     context 'with false' do
       let(:params) do
-        { :disable_tools_version => false,
-          :enable_sync_driver => false,
+        {
+          :disable_tools_version => false,
+          :enable_sync_driver    => false,
         }
       end
 
@@ -1036,11 +875,7 @@ describe 'vmware' do
       }
     end
     context 'with auto default' do
-      let(:params) do
-        {
-          :enable_sync_driver => 'auto',
-        }
-      end
+      let(:params) { { :enable_sync_driver => 'auto' } }
 
       it {
         should contain_ini_setting('[vmbackup] enableSyncDriver').with({
@@ -1056,7 +891,7 @@ describe 'vmware' do
     context 'with auto, set kernel <' do
       let(:params) do
         {
-          :enable_sync_driver => 'auto',
+          :enable_sync_driver     => 'auto',
           :working_kernel_release => '2.6.32-238',
         }
       end
@@ -1075,7 +910,7 @@ describe 'vmware' do
     context 'with auto, set kernel >' do
       let(:params) do
         {
-          :enable_sync_driver => 'auto',
+          :enable_sync_driver     => 'auto',
           :working_kernel_release => '2.6.32-440',
         }
       end
@@ -1094,7 +929,7 @@ describe 'vmware' do
     context 'with auto, set kernel =' do
       let(:params) do
         {
-          :enable_sync_driver => 'auto',
+          :enable_sync_driver     => 'auto',
           :working_kernel_release => '2.6.32-431.11.2.el6.x86_64',
         }
       end
@@ -1110,6 +945,7 @@ describe 'vmware' do
         })
       }
     end
+
     context 'invalid disable_tools_version' do
       let(:params) do
         {
@@ -1142,15 +978,11 @@ describe 'vmware' do
   end
 
   context 'managing tools.conf on RHEL7' do
-    let(:facts) do
-      { :virtual                => 'vmware',
-        :vmware_has_x           => 'false',
-        :operatingsystem        => 'RedHat',
-        :osfamily               => 'RedHat',
-        :operatingsystemrelease => '7.0',
-        :kernelrelease          => '3.10.0-229.7.2.el7.x86_64',
-      }
-    end
+    specific_facts = {
+      :operatingsystemrelease => '7.0',
+      :kernelrelease          => '3.10.0-229.7.2.el7.x86_64',
+    }
+    let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
     context 'with defaults' do
 
@@ -1165,16 +997,7 @@ describe 'vmware' do
   end
 
   describe 'variable type and content validations' do
-    let(:facts) do
-      { :virtual                => 'vmware',
-        :vmware_has_x           => 'true',
-        :operatingsystem        => 'RedHat',
-        :osfamily               => 'RedHat',
-        :operatingsystemrelease => '6.0',
-        :kernelrelease          => '2.6.32-431.11.2.el6.x86_64',
-        :architecture           => 'x86_64',
-      }
-    end
+    let(:facts) { [default_facts, :vmware_has_x => 'true' ].reduce(:merge) }
 
     validations = {
       'bool (true|false)' => {
