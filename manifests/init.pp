@@ -285,6 +285,10 @@ class vmware (
       package { $tools_nox_package_name_real:
         ensure => $tools_nox_package_ensure,
       }
+      $_require_manage_tools_nox_package = "Package[${tools_nox_package_name_real}]"
+    }
+    else {
+      $_require_manage_tools_nox_package = undef
     }
 
     if $manage_tools_x_package_real == true {
@@ -306,6 +310,7 @@ class vmware (
     }
 
     if $manage_service_real == true {
+      $_notify_ini_setting = "Service[${service_name_real}]"
       # workaround for Ubuntu which does not provide the service status
       if $::operatingsystem == 'Ubuntu' {
         Service[$service_name_real] {
@@ -337,8 +342,11 @@ class vmware (
 
       service { $service_name_real:
         ensure  => 'running',
-        require => Package[$tools_nox_package_name_real],
+        require => $_require_manage_tools_nox_package,
       }
+    }
+    else {
+      $_notify_ini_setting = undef
     }
 
 
@@ -392,13 +400,13 @@ class vmware (
     file { 'vmtools_conf':
       ensure  => file,
       path    => $tools_conf_path,
-      require => Package[$tools_nox_package_name_real],
+      require => $_require_manage_tools_nox_package,
     }
 
     $vmtools_defaults = {
       'ensure'  => present,
       'path'    => $tools_conf_path,
-      'notify'  => Service[$service_name_real],
+      'notify'  => $_notify_ini_setting,
       'require' => File['vmtools_conf'],
     }
     $vmtools_settings = {
