@@ -620,7 +620,7 @@ describe 'vmware' do
     it do
       should contain_service('vmware-tools-services').with({
         'ensure'   => 'running',
-        'require'  => 'Package[vmware-tools-esx-nox]',
+        'require'  => nil,
         'provider' => 'init',
         'path'     => '/etc/vmware-tools/init/',
       })
@@ -866,20 +866,8 @@ describe 'vmware' do
         :message => 'is not an absolute path',
       },
       'boolean & stringified' => {
-        :name    => %w[force_open_vm_tools manage_repo manage_tools_x_package prefer_open_vm_tools],
+        :name    => %w[force_open_vm_tools manage_repo manage_service manage_tools_nox_package manage_tools_x_package prefer_open_vm_tools],
         :valid   => [true, 'true', false, 'false'],
-        :invalid => ['string', %w[array], { 'ha' => 'sh' }, 3, 2.42, nil],
-        :message => '(is not a boolean|str2bool)',
-      },
-      'boolean & stringified (manage_service)' => {
-        :name    => %w[manage_service],
-        :valid   => [true, 'true'], # needs fix: on false it fails with "Could not retrieve dependency 'Service[vmware-tools-services]' of Ini_setting[[vmtools] disable-tools-version]"
-        :invalid => ['string', %w[array], { 'ha' => 'sh' }, 3, 2.42, nil],
-        :message => '(is not a boolean|str2bool)',
-      },
-      'boolean & stringified (manage_tools_nox_package)' => {
-        :name    => %w[manage_tools_nox_package],
-        :valid   => [true, 'true'], # needs fix: on false it fails with "Could not retrieve dependency 'Package[vmware-tools-esx-nox]' of Service[vmware-tools-services]"
         :invalid => ['string', %w[array], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|str2bool)',
       },
