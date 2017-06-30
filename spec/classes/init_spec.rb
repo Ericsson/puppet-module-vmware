@@ -871,16 +871,28 @@ describe 'vmware' do
         :invalid => ['string', %w[array], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|str2bool)',
       },
+      'integer & stringified' => {
+        :name    => %w(proxy_port),
+        :valid   => [242, '242', -242, '-242', 2.42],
+        :invalid => ['string', %w[array], { 'ha' => 'sh' }, true, nil],
+        :message => 'floor\(\): Wrong argument type given',
+      },
       'string' => {
-        :name    => %w[esx_version proxy_host proxy_port service_name tools_nox_package_ensure tools_nox_package_name tools_x_package_ensure tools_x_package_name],
+        :name    => %w[proxy_host service_name tools_nox_package_ensure tools_nox_package_name tools_x_package_ensure tools_x_package_name],
         :valid   => ['valid'],
-        :invalid => [%w[array], { 'ha' => 'sh' }, true], # validate_string doesn't fail on integers, floats, and undef, needs implementation change
+        :invalid => [%w[array], { 'ha' => 'sh' }, 3, 2.42, true],
         :message => 'is not a string',
       },
       'string (URL)' => {
         :name    => %w[repo_base_url gpgkey_url],
         :valid   => ['http://spec.test.local/path'],
-        :invalid => [%w[array], { 'ha' => 'sh' }, true], # validate_string doesn't fail on integers, floats, and undef, needs implementation change
+        :invalid => [%w[array], { 'ha' => 'sh' }, 3, 2.42, true],
+        :message => 'is not a string',
+      },
+      'esx_version (string)' => {
+        :name    => %w[esx_version],
+        :valid   => ['6.0', '5.5latest'],
+        :invalid => [%w[array], { 'ha' => 'sh' }, true], # esx_version can contain strings like '6.0' therefore we use validate_string() instead of is_string()
         :message => 'is not a string',
       },
     }
