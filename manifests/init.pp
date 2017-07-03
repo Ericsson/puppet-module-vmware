@@ -8,7 +8,7 @@ class vmware (
   $esx_version               = 'latest',
   $gpgkey_url                = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
   $proxy_host                = 'absent',
-  $proxy_port                = '8080',
+  $proxy_port                = 8080,
   $prefer_open_vm_tools      = true,
   $force_open_vm_tools       = false,
   $manage_service            = true,
@@ -27,16 +27,24 @@ class vmware (
   $working_kernel_release    = 'USE_DEFAULTS',
 ){
 
-  validate_string($repo_base_url)
+  # variable preparation
+  $proxy_port_int = floor($proxy_port)
+
+  # variable validations
+  if is_integer($proxy_port_int) == false { fail('vmware::proxy_port is not an integer') }
+
+  if is_string($repo_base_url)            == false { fail('vmware::repo_base_url is not a string') }
+  if is_string($gpgkey_url)               == false { fail('vmware::gpgkey_url is not a string') }
+  if is_string($proxy_host)               == false { fail('vmware::proxy_host is not a string') }
+  if is_string($service_name)             == false { fail('vmware::service_name is not a string') }
+  if is_string($tools_nox_package_ensure) == false { fail('vmware::tools_nox_package_ensure is not a string') }
+  if is_string($tools_nox_package_name)   == false { fail('vmware::tools_nox_package_name is not a string') }
+  if is_string($tools_x_package_ensure)   == false { fail('vmware::tools_x_package_ensure is not a string') }
+  if is_string($tools_x_package_name)     == false { fail('vmware::tools_x_package_name is not a string') }
+
+  # esx_version can contain strings like '6.0' which is_string() falsely classifies as integer. So we use validate_string() instead
   validate_string($esx_version)
-  validate_string($gpgkey_url)
-  validate_string($proxy_host)
-  validate_string($proxy_port)
-  validate_string($service_name)
-  validate_string($tools_nox_package_ensure)
-  validate_string($tools_nox_package_name)
-  validate_string($tools_x_package_ensure)
-  validate_string($tools_x_package_name)
+
   validate_absolute_path($tools_conf_path)
 
   if is_bool($::vmware_has_x) == true {
@@ -174,7 +182,7 @@ class vmware (
           if $proxy_host == 'absent' {
             $_proxy = undef
           } else {
-            $_proxy = "http://${proxy_host}:${proxy_port}"
+            $_proxy = "http://${proxy_host}:${proxy_port_int}"
           }
 
           yumrepo { 'vmware-osps':
