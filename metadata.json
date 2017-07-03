@@ -56,7 +56,7 @@
   "dependencies": [
     { "name": "puppetlabs/apt", "version_requirement": ">= 1.4.2 < 2.0.0" },
     { "name": "puppetlabs/inifile", "version_requirement": ">= 1.4.2 < 2.0.0" },
-    { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.2.0 < 6.0.0" },
+    { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.10.0 < 6.0.0" },
     { "name": "voxpupuli/zypprepo", "version_requirement": ">= 1.0.2 < 2.0.0" }
   ]
 }

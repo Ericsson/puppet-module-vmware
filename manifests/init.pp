@@ -29,6 +29,12 @@ class vmware (
 
   # variable preparation
   $proxy_port_int = floor($proxy_port)
+  $prefer_open_vm_tools_bool = str2bool($prefer_open_vm_tools)
+  $force_open_vm_tools_bool = str2bool($force_open_vm_tools)
+  $manage_service_bool = str2bool($manage_service)
+  $manage_tools_nox_package_bool = str2bool($manage_tools_nox_package)
+  $disable_tools_version_bool = str2bool($disable_tools_version)
+  $vmware_has_x_bool = str2bool($::vmware_has_x)
 
   # variable validations
   if is_integer($proxy_port_int) == false { fail('vmware::proxy_port is not an integer') }
@@ -47,33 +53,13 @@ class vmware (
 
   validate_absolute_path($tools_conf_path)
 
-  if is_bool($::vmware_has_x) == true {
-    $vmware_has_x_bool = $::vmware_has_x
-  } else {
-    $vmware_has_x_bool = str2bool($::vmware_has_x)
-  }
-
   $osrelease_array = split($::operatingsystemrelease, '\.')
   $osmajrelease_int = 0 + $osrelease_array[0]
   $osminrelease_int = 0 + $osrelease_array[1]
 
   if $::virtual == 'vmware' {
 
-    if is_string($prefer_open_vm_tools) == true {
-      $prefer_open_vm_tools_real = str2bool($prefer_open_vm_tools)
-    } else {
-      validate_bool($prefer_open_vm_tools)
-      $prefer_open_vm_tools_real = $prefer_open_vm_tools
-    }
-
-    if is_string($force_open_vm_tools) == true {
-      $force_open_vm_tools_real = str2bool($force_open_vm_tools)
-    } else {
-      validate_bool($force_open_vm_tools)
-      $force_open_vm_tools_real = $force_open_vm_tools
-    }
-
-    if $force_open_vm_tools_real == true {
+    if $force_open_vm_tools_bool == true {
       $_use_open_vm_tools = true
     } else {
       # OSs that have open-vm-tools
@@ -95,7 +81,7 @@ class vmware (
           $_use_open_vm_tools = $osmajrelease_int >= 12
         }
         'Ubuntu': {
-          if $prefer_open_vm_tools_real == true {
+          if $prefer_open_vm_tools_bool == true {
             # include Ubuntu 12.04
             $_use_open_vm_tools = $osmajrelease_int >= 12
           } else {
@@ -141,40 +127,23 @@ class vmware (
 
     if $manage_repo == 'USE_DEFAULTS' {
       if $_use_open_vm_tools {
-        $manage_repo_real = false
+        $manage_repo_bool = false
       } else {
-        $manage_repo_real = true
+        $manage_repo_bool = true
       }
     } else {
-      if is_string($manage_repo) == true {
-        $manage_repo_real = str2bool($manage_repo)
-      } else {
-        validate_bool($manage_repo)
-        $manage_repo_real = $manage_repo
-      }
-    }
-
-    if is_string($manage_tools_nox_package) == true {
-      $manage_tools_nox_package_real = str2bool($manage_tools_nox_package)
-    } else {
-      validate_bool($manage_tools_nox_package)
-      $manage_tools_nox_package_real = $manage_tools_nox_package
+      $manage_repo_bool = str2bool($manage_repo)
     }
 
     if $vmware_has_x_bool == true and $manage_tools_x_package == 'USE_DEFAULTS' {
-      $manage_tools_x_package_real = true
+      $manage_tools_x_package_bool = true
     } elsif $vmware_has_x_bool == false and $manage_tools_x_package == 'USE_DEFAULTS' {
-      $manage_tools_x_package_real = false
+      $manage_tools_x_package_bool = false
     } else {
-      if is_string($manage_tools_x_package) == true {
-        $manage_tools_x_package_real = str2bool($manage_tools_x_package)
-      } else {
-        validate_bool($manage_tools_x_package)
-        $manage_tools_x_package_real = $manage_tools_x_package
-      }
+      $manage_tools_x_package_bool = str2bool($manage_tools_x_package)
     }
 
-    if $manage_repo_real == true {
+    if $manage_repo_bool == true {
 
       case $::operatingsystem {
         'RedHat', 'CentOS': {
@@ -275,21 +244,21 @@ class vmware (
       $tools_x_package_name_real = $tools_x_package_name
     }
 
-    if $manage_tools_nox_package_real == true or $manage_tools_x_package_real == true {
+    if $manage_tools_nox_package_bool == true or $manage_tools_x_package_bool == true {
       exec { 'Remove vmware tools script installation':
         path    => '/usr/bin/:/etc/vmware-tools/',
         onlyif  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         command => 'installer.sh uninstall',
       }
-      if $manage_tools_nox_package_real == true {
+      if $manage_tools_nox_package_bool == true {
         Exec['Remove vmware tools script installation'] -> Package[$tools_nox_package_name_real]
       }
-      if $manage_tools_x_package_real == true {
+      if $manage_tools_x_package_bool == true {
         Exec['Remove vmware tools script installation'] -> Package[$tools_x_package_name_real]
       }
     }
 
-    if $manage_tools_nox_package_real == true {
+    if $manage_tools_nox_package_bool == true {
       package { $tools_nox_package_name_real:
         ensure => $tools_nox_package_ensure,
       }
@@ -299,16 +268,10 @@ class vmware (
       $_require_manage_tools_nox_package = undef
     }
 
-    if $manage_tools_x_package_real == true {
+    if $manage_tools_x_package_bool == true {
       package { $tools_x_package_name_real:
         ensure => $tools_x_package_ensure,
       }
-    }
-
-    if is_bool($manage_service) == true {
-      $manage_service_real = $manage_service
-    } else {
-      $manage_service_real = str2bool($manage_service)
     }
 
     if $service_name == 'USE_DEFAULTS' {
@@ -317,7 +280,7 @@ class vmware (
       $service_name_real = $service_name
     }
 
-    if $manage_service_real == true {
+    if $manage_service_bool == true {
       $_notify_ini_setting = "Service[${service_name_real}]"
       # workaround for Ubuntu which does not provide the service status
       if $::operatingsystem == 'Ubuntu' {
@@ -357,16 +320,10 @@ class vmware (
       $_notify_ini_setting = undef
     }
 
-
-    if is_bool($disable_tools_version) == true {
-      $_disable_tools_version = $disable_tools_version
+    if $disable_tools_version_bool == true {
+      $_disable_tools_version_bool = true
     } else {
-      $_disable_tools_version = str2bool($disable_tools_version)
-    }
-    if $_disable_tools_version == true {
-      $_disable_tools_version_string = 'true' # lint:ignore:quoted_booleans
-    } else {
-      $_disable_tools_version_string = 'false' # lint:ignore:quoted_booleans
+      $_disable_tools_version_bool = false
     }
 
     if $enable_sync_driver == 'auto' {
@@ -385,24 +342,13 @@ class vmware (
       }
 
       if (versioncmp("${::kernelrelease}", "${_working_kernel_release}") >= 0) { # lint:ignore:only_variable_string
-        $_enable_sync_driver_string = 'true' # lint:ignore:quoted_booleans
+        $_enable_sync_driver_bool = true
       } else {
-        $_enable_sync_driver_string = 'false' # lint:ignore:quoted_booleans
+        $_enable_sync_driver_bool = false
       }
 
     } else {
-
-      if is_bool($enable_sync_driver) == true {
-        $_enable_sync_driver = $enable_sync_driver
-      } else {
-        $_enable_sync_driver = str2bool($enable_sync_driver)
-      }
-      if $_enable_sync_driver == true {
-        $_enable_sync_driver_string = 'true' # lint:ignore:quoted_booleans
-      } else {
-        $_enable_sync_driver_string = 'false' # lint:ignore:quoted_booleans
-      }
-
+      $_enable_sync_driver_bool = str2bool($enable_sync_driver)
     }
 
     file { 'vmtools_conf':
@@ -418,8 +364,8 @@ class vmware (
       'require' => File['vmtools_conf'],
     }
     $vmtools_settings = {
-      'vmtools'  => { 'disable-tools-version' => $_disable_tools_version_string, },
-      'vmbackup' => { 'enableSyncDriver'      => $_enable_sync_driver_string, },
+      'vmtools'  => { 'disable-tools-version' => bool2str($_disable_tools_version_bool), },
+      'vmbackup' => { 'enableSyncDriver'      => bool2str($_enable_sync_driver_bool), },
     }
     create_ini_settings($vmtools_settings, $vmtools_defaults)
   }
