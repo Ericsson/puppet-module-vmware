@@ -1,7 +1,7 @@
 # puppet-module-vmware
 ===
 
-[![Build Status](https://travis-ci.org/emahags/puppet-module-vmware.png?branch=master)](https://travis-ci.org/emahags/puppet-module-vmware)
+[![Build Status](https://travis-ci.org/gillarkod/puppet-module-vmware.png?branch=master)](https://travis-ci.org/gillarkod/puppet-module-vmware)
 
 Manage VMware - Install vmwaretools. Will remove vmware tools that has been installed from script if present. Will use open-vm-tools by default on RHEL 7+, SUSE 12+, and Ubuntu 12+, for all other the default is VMware OSP packages.
 
