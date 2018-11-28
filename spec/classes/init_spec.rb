@@ -875,7 +875,7 @@ describe 'vmware' do
         :name    => %w(proxy_port),
         :valid   => [242, '242', -242, '-242', 2.42],
         :invalid => ['string', %w[array], { 'ha' => 'sh' }, true, nil],
-        :message => 'floor\(\): Wrong argument type given',
+        :message => '(Wrong argument type given|expects a value of type Numeric or String|cannot convert given value to a floating point value)', # (<Puppet6|Puppet6|Puppet6)
       },
       'string' => {
         :name    => %w[proxy_host service_name tools_nox_package_ensure tools_nox_package_name tools_x_package_ensure tools_x_package_name],
