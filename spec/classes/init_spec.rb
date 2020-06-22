@@ -636,6 +636,53 @@ describe 'vmware' do
     it { should_not contain_service('vmware-tools-services') }
   end
 
+  describe 'with defaults for all parameters on Ubuntu 16.04 running on vmware' do
+    context 'on machine without X installed' do
+      specific_facts = {
+        :operatingsystem        => 'Ubuntu',
+        :osfamily               => 'Debian',
+        :operatingsystemrelease => '16.0',
+        :kernelrelease          => '4.4.0-166-generic',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
+
+      it { should contain_package('open-vm-tools').with('ensure' => 'present') }
+      it { should_not contain_package('open-vm-toolbox') }
+
+      it { should_not contain_package('vmware-tools-esx-nox') }
+      it { should_not contain_package('vmware-tools-esx') }
+      it do
+        should contain_exec('Remove vmware tools script installation').with({
+          'command' => 'installer.sh uninstall',
+          'path'    => '/usr/bin/:/etc/vmware-tools/',
+          'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+        })
+      end
+      it { should_not contain_class('apt') }
+      it do
+        should contain_service('open-vm-tools').with({
+          'ensure'    => 'running',
+          'hasstatus' => 'false',
+          'status'    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
+        })
+      end
+      it { should_not contain_service('vmtoolsd').with('provider' => 'init') }
+    end
+
+    context 'on machine with X installed' do
+      specific_facts = {
+        :operatingsystem        => 'Ubuntu',
+        :osfamily               => 'Debian',
+        :operatingsystemrelease => '16.0',
+        :kernelrelease          => '4.4.0-166-generic',
+        :vmware_has_x           => 'true',
+      }
+      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
+
+      it { should contain_package('open-vm-tools-desktop').with('ensure' => 'present') }
+    end
+  end
+
   context 'managing tools.conf on RHEL6' do
     context 'with defaults' do
       it do

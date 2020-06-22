@@ -112,7 +112,11 @@ class vmware (
           $_service_name_default         = 'vmtoolsd'
         }
         'Ubuntu': {
-          $_tools_x_package_name_default = 'open-vm-toolbox'
+          if $osmajrelease_int > 14 {
+            $_tools_x_package_name_default = 'open-vm-tools-desktop'
+          } else {
+            $_tools_x_package_name_default = 'open-vm-toolbox'
+          }
           $_service_name_default         = 'open-vm-tools'
         }
         default: {

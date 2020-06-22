@@ -12,7 +12,7 @@ Manage VMware - Install vmwaretools. Will remove vmware tools that has been inst
 ## Compatibility
 This module has been tested to work on the following systems with Puppet v3
 with and without the future parser, Puppet v4.2+, Puppet v5 and Puppet v6.
-Puppet v3 has been tested in combination with Ruby versions 1.8.7, 1.9.3,
+Puppet v3 has been tested in combination with Ruby versions 1.9.3,
 2.0.0 and 2.1.0.
 
 * Ubuntu
