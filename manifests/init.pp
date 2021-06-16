@@ -296,7 +296,12 @@ class vmware (
 
       if ! $_use_open_vm_tools {
         if $service_provider == 'USE_DEFAULTS' {
-          $service_provider_real = 'init'
+          if $::operatingsystem == 'Ubuntu' {
+            $service_provider_real = 'init'
+          } else {
+            # Default to redhat
+            $service_provider_real = 'redhat'
+          }
         } else {
           $service_provider_real = $service_provider
         }
@@ -308,6 +313,15 @@ class vmware (
           }
         } else {
           $service_path_real = $service_path
+        }
+        # For non-Ubuntu systems we need to specify the location of of the scripts
+        # to ensure the start script is found on the non-standard locations.
+        if $::operatingsystem != 'Ubuntu' {
+          Service[$service_name_real] {
+            start  =>  "${service_path_real}${_service_name_default} start",
+            stop   =>  "${service_path_real}${_service_name_default} stop",
+            status =>  "${service_path_real}${_service_name_default} status",
+          }
         }
         Service[$service_name_real] {
           provider => $service_provider_real,
