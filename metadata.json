@@ -3,15 +3,26 @@
   "version": "1.7.0",
   "author": "gillarkod",
   "summary": "Manage VMwaretools",
-  "description": "Install and manage vmwaretools",
   "license": "Apache-2.0",
   "source": "https://github.com/gillarkod/puppet-module-vmware.git",
   "project_page": "https://github.com/gillarkod/puppet-module-vmware",
   "issues_url": "https://github.com/gillarkod/puppet-module-vmware/issues",
-  "requirements": [
+  "dependencies": [
     {
-      "name": "puppet",
-      "version_requirement": ">= 3.0.0 < 7.0.0"
+      "name": "puppetlabs/apt",
+      "version_requirement": ">= 1.4.2 < 2.0.0"
+    },
+    {
+      "name": "puppetlabs/inifile",
+      "version_requirement": ">= 1.4.2 < 2.0.0"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.10.0 < 6.0.0"
+    },
+    {
+      "name": "voxpupuli/zypprepo",
+      "version_requirement": ">= 1.0.2 < 2.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -31,7 +42,6 @@
         "6",
         "7",
         "8"
-
       ]
     },
     {
@@ -61,10 +71,14 @@
       ]
     }
   ],
-  "dependencies": [
-    { "name": "puppetlabs/apt", "version_requirement": ">= 1.4.2 < 2.0.0" },
-    { "name": "puppetlabs/inifile", "version_requirement": ">= 1.4.2 < 2.0.0" },
-    { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.10.0 < 6.0.0" },
-    { "name": "voxpupuli/zypprepo", "version_requirement": ">= 1.0.2 < 2.0.0" }
-  ]
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.0.0 < 7.0.0"
+    }
+  ],
+  "description": "Install and manage vmwaretools",
+  "pdk-version": "2.1.0",
+  "template-url": "pdk-default#2.1.0",
+  "template-ref": "tags/2.1.0-0-ga675ea5"
 }
