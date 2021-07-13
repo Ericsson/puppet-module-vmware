@@ -18,7 +18,7 @@
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.10.0 < 6.0.0"
+      "version_requirement": ">= 5.2.0 < 8.0.0"
     },
     {
       "name": "voxpupuli/zypprepo",
