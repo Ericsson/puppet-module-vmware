@@ -55,7 +55,6 @@ class vmware (
 
   $osrelease_array = split($::operatingsystemrelease, '\.')
   $osmajrelease_int = 0 + $osrelease_array[0]
-  $osminrelease_int = 0 + $osrelease_array[1]
 
   if $::virtual == 'vmware' {
 
@@ -68,6 +67,7 @@ class vmware (
           $_use_open_vm_tools = $osmajrelease_int >= 7
         }
         'SLED', 'SLES': {
+          $osminrelease_int = 0 + $osrelease_array[1]
           if $osmajrelease_int >= 12 {
             $_use_open_vm_tools = true
           } elsif $osmajrelease_int >= 11 and $osminrelease_int >= 4 {
