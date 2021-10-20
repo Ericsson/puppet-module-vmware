@@ -508,7 +508,7 @@ describe 'vmware' do
       specific_facts = {
         operatingsystem: 'Ubuntu',
         osfamily: 'Debian',
-        operatingsystemrelease: '12.0',
+        operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
@@ -540,7 +540,7 @@ describe 'vmware' do
       specific_facts = {
         operatingsystem: 'Ubuntu',
         osfamily: 'Debian',
-        operatingsystemrelease: '12.0',
+        operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
         vmware_has_x: 'true',
       }
@@ -553,7 +553,7 @@ describe 'vmware' do
       specific_facts = {
         operatingsystem: 'Ubuntu',
         osfamily: 'Debian',
-        operatingsystemrelease: '12.0',
+        operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
         lsbdistid: 'ubuntu',  # needed for apt
         lsbdistcodename: 'precise', # needed for apt
@@ -655,7 +655,7 @@ describe 'vmware' do
       specific_facts = {
         operatingsystem: 'Ubuntu',
         osfamily: 'Debian',
-        operatingsystemrelease: '16.0',
+        operatingsystemrelease: '16.04',
         kernelrelease: '4.4.0-166-generic',
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
@@ -687,7 +687,7 @@ describe 'vmware' do
       specific_facts = {
         operatingsystem: 'Ubuntu',
         osfamily: 'Debian',
-        operatingsystemrelease: '16.0',
+        operatingsystemrelease: '16.04',
         kernelrelease: '4.4.0-166-generic',
         vmware_has_x: 'true',
       }
