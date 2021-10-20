@@ -6,16 +6,23 @@ defaults:  # Used for any hierarchy level that omits these keys.
   data_hash: yaml_data  # Use the built-in YAML backend.
 
 hierarchy:
-  - name: "osfamily/major release"
-    paths:
-        # Used to distinguish between Debian and Ubuntu
-      - "os/%{facts.os.name}/%{facts.os.release.major}.yaml"
-      - "os/%{facts.os.family}/%{facts.os.release.major}.yaml"
-        # Used for Solaris
-      - "os/%{facts.os.family}/%{facts.kernelrelease}.yaml"
-  - name: "osfamily"
-    paths:
-      - "os/%{facts.os.name}.yaml"
-      - "os/%{facts.os.family}.yaml"
-  - name: 'common'
+  - name: 'Distribution major version.minor version'
+    path: 'distro/%{facts.os.name}/%{facts.os.release.major}.%{facts.os.release.minor}.yaml'
+
+  - name: 'Operating system family major version.minor version'
+    path: 'os/%{facts.os.family}/%{facts.os.release.major}.%{facts.os.release.minor}.yaml'
+
+  - name: 'Distribution major version'
+    path: 'distro/%{facts.os.name}/%{facts.os.release.major}.yaml'
+
+  - name: 'Operating system family major version'
+    path: 'os/%{facts.os.family}/%{facts.os.release.major}.yaml'
+
+  - name: 'Distribution name'
+    path: 'distro/%{facts.os.name}.yaml'
+
+  - name: 'Operating system family'
+    path: 'os/%{facts.os.family}.yaml'
+
+  - name: 'Default values'
     path: 'common.yaml'
