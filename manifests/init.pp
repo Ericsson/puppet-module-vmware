@@ -1,6 +1,80 @@
-# == Class: vmware
+# Manage installation of VMware Tools and related options.
+# Will remove vmware tools that has been installed from script if present.
+# Will use open-vm-tools by default on RHEL 7+, SUSE 12+, and Ubuntu 12+,
+# for all other the default is VMware OSP packages.
 #
-# Manage vmware
+# @summary Manage installation of VMware Tools and related options.
+#
+# @example install VMware tools with all default settings
+#   class { 'vmware': }
+#
+# @param manage_repo
+#   If repo file should be managed.
+#
+# @param repo_base_url
+#   Base URL of mirror of packages.vmware.com/tools/esx.
+#
+# @param manage_service
+#   If vmwaretools service should be managed.
+#
+# @param service_name
+#   Service name to manage.
+#
+# @param service_provider
+#   Service provider, based on package type, `service` for open-vm-tools, `init` for OSP.
+#
+# @param service_path
+#   Path to service init files. `/etc/vmwre-tools/init/`, only applicable for `init` service provider.
+#
+# @param esx_version
+#   Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
+#
+# @param gpgkey_url
+#   URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
+#
+# @param proxy_host
+#   Hostname of web proxy (not supported on SUSE).
+#
+# @param proxy_port
+#   Port number of web proxy.
+#
+# @param prefer_open_vm_tools
+#   Prefer open-vm-tools over vmware-tools in the case that both are available (e.g. Ubuntu 12.04).
+#
+# @param force_open_vm_tools
+#   Force open-vm-tools over vmware-tools. Using this option is suitable in cases where EPEL is available for EL systems.
+#
+# @param manage_tools_nox_package
+#   If vmwaretools nox package should be managed.
+#
+# @param tools_nox_package_name
+#   Name of package for vmwaretools nox package.
+#
+# @param tools_nox_package_ensure
+#   String to pass to ensure attribute for the vmwaretools nox package.
+#
+# @param manage_tools_x_package
+#   If vmwaretools x package should be managed.
+#
+# @param tools_x_package_name
+#   Name of package for vmwaretools x package.
+#
+# @param tools_x_package_ensure
+#   String to pass to ensure attribute for the vmwaretools x package.
+#
+# @param tools_conf_path
+#   Path to vmware-tools configuration file.
+#
+# @param disable_tools_version
+#   Disable tools version reporting to vSphere.
+#
+# @param enable_sync_driver
+#   Enable vmtools sync driver on snapshots.  `true`, `false`, `auto` to enable on non-buggy systems.
+#   See KB2038606 (http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2038606)
+#   https://access.redhat.com/solutions/484303
+#
+# @param working_kernel_release
+#   First non-buggy kernel version for sync driver.
 #
 class vmware (
   $manage_repo               = 'USE_DEFAULTS',
