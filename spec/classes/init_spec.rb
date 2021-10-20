@@ -58,6 +58,15 @@ describe 'vmware' do
       specific_facts = {
         operatingsystemrelease: '5.0',
         kernelrelease: '2.6.18-400.1.1.el5',
+        os: {
+          family: 'RedHat',
+          release: {
+            full: '5.0',
+            major: '5',
+            minor: '0',
+          }
+        }
+
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -190,7 +199,16 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '10.2',
         kernelrelease: '2.6.18.2-34-default',
+        os: {
+          family: 'Suse',
+          release: {
+            full: '10.2',
+            major: '10',
+            minor: '2',
+          }
+        }
       }
+
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { is_expected.not_to contain_package('open-vm-tools') }
@@ -342,6 +360,15 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '11.2',
         kernelrelease: '3.0.13-0.27.1',
+        os: {
+          family: 'Suse',
+          release: {
+            full: '11.2',
+            major: '11',
+            minor: '2',
+          }
+        }
+
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 

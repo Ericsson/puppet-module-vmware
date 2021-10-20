@@ -1,1 +1,2 @@
---- {}
+---
+vmware::service_path: /etc/vmware-tools/init/

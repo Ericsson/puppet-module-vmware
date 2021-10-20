@@ -94,11 +94,13 @@ Default value: `'USE_DEFAULTS'`
 
 ##### <a name="service_path"></a>`service_path`
 
-Data type: `Any`
+Data type: `Stdlib::Absolutepath`
 
-Path to service init files. `/etc/vmwre-tools/init/`, only applicable for `init` service provider.
-
-Default value: `'USE_DEFAULTS'`
+Path to service init files. Only applicable for `init` service provider.
+Default values:
+  RedHat 5: `/etc/init.d/`
+  Suse: `/etc/init.d/`
+  others: `/etc/vmwre-tools/init/`
 
 ##### <a name="esx_version"></a>`esx_version`
 

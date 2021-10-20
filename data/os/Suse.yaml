@@ -1,0 +1,2 @@
+---
+vmware::service_path: /etc/init.d/

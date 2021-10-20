@@ -24,7 +24,11 @@
 #   Service provider, based on package type, `service` for open-vm-tools, `init` for OSP.
 #
 # @param service_path
-#   Path to service init files. `/etc/vmwre-tools/init/`, only applicable for `init` service provider.
+#   Path to service init files. Only applicable for `init` service provider.
+#   Default values:
+#     RedHat 5: `/etc/init.d/`
+#     Suse: `/etc/init.d/`
+#     others: `/etc/vmwre-tools/init/`
 #
 # @param esx_version
 #   Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
@@ -77,6 +81,7 @@
 #   First non-buggy kernel version for sync driver.
 #
 class vmware (
+  Stdlib::Absolutepath $service_path,
   $manage_repo               = 'USE_DEFAULTS',
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
   $esx_version               = 'latest',
@@ -88,7 +93,6 @@ class vmware (
   $manage_service            = true,
   $service_name              = 'USE_DEFAULTS',
   $service_provider          = 'USE_DEFAULTS',
-  $service_path              = 'USE_DEFAULTS',
   $manage_tools_nox_package  = true,
   $manage_tools_x_package    = 'USE_DEFAULTS',
   $tools_nox_package_name    = 'USE_DEFAULTS',
@@ -379,27 +383,18 @@ class vmware (
         } else {
           $service_provider_real = $service_provider
         }
-        if $service_path == 'USE_DEFAULTS' {
-          if $::osfamily == 'Suse' or ($::osfamily == 'RedHat' and $osmajrelease_int == 5) {
-            $service_path_real = '/etc/init.d/'
-          } else {
-            $service_path_real = '/etc/vmware-tools/init/'
-          }
-        } else {
-          $service_path_real = $service_path
-        }
         # For non-Ubuntu systems we need to specify the location of of the scripts
         # to ensure the start script is found on the non-standard locations.
         if $::operatingsystem != 'Ubuntu' {
           Service[$service_name_real] {
-            start  =>  "${service_path_real}${_service_name_default} start",
-            stop   =>  "${service_path_real}${_service_name_default} stop",
-            status =>  "${service_path_real}${_service_name_default} status",
+            start  =>  "${service_path}${_service_name_default} start",
+            stop   =>  "${service_path}${_service_name_default} stop",
+            status =>  "${service_path}${_service_name_default} status",
           }
         }
         Service[$service_name_real] {
           provider => $service_provider_real,
-          path     => $service_path_real,
+          path     => $service_path,
         }
       }
 
