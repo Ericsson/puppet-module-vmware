@@ -21,7 +21,11 @@
 #   Service name to manage.
 #
 # @param service_provider
+#   !!!FIXME!!! Description is wrong
 #   Service provider, based on package type, `service` for open-vm-tools, `init` for OSP.
+#   Default values:
+#   - Ubuntu: init
+#   - others: redhat
 #
 # @param service_path
 #   Path to service init files. Only applicable for `init` service provider.
@@ -83,6 +87,7 @@
 class vmware (
   Stdlib::Absolutepath $service_path,
   String[1]            $working_kernel_release,
+  String[1]            $service_provider,
   $manage_repo               = 'USE_DEFAULTS',
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
   $esx_version               = 'latest',
@@ -93,7 +98,6 @@ class vmware (
   $force_open_vm_tools       = false,
   $manage_service            = true,
   $service_name              = 'USE_DEFAULTS',
-  $service_provider          = 'USE_DEFAULTS',
   $manage_tools_nox_package  = true,
   $manage_tools_x_package    = 'USE_DEFAULTS',
   $tools_nox_package_name    = 'USE_DEFAULTS',
@@ -373,16 +377,6 @@ class vmware (
       }
 
       if ! $_use_open_vm_tools {
-        if $service_provider == 'USE_DEFAULTS' {
-          if $::operatingsystem == 'Ubuntu' {
-            $service_provider_real = 'init'
-          } else {
-            # Default to redhat
-            $service_provider_real = 'redhat'
-          }
-        } else {
-          $service_provider_real = $service_provider
-        }
         # For non-Ubuntu systems we need to specify the location of of the scripts
         # to ensure the start script is found on the non-standard locations.
         if $::operatingsystem != 'Ubuntu' {
@@ -393,7 +387,7 @@ class vmware (
           }
         }
         Service[$service_name_real] {
-          provider => $service_provider_real,
+          provider => $service_provider,
           path     => $service_path,
         }
       }

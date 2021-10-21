@@ -593,6 +593,14 @@ describe 'vmware' do
         kernelrelease: '3.2.0-23-generic',
         lsbdistid: 'ubuntu',  # needed for apt
         lsbdistcodename: 'precise', # needed for apt
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          release: {
+            full: '12.04',
+            major: '12.04',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { prefer_open_vm_tools: 'false' } }
