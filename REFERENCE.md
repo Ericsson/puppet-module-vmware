@@ -226,9 +226,7 @@ Default value: `'auto'`
 
 ##### <a name="working_kernel_release"></a>`working_kernel_release`
 
-Data type: `Any`
+Data type: `String[1]`
 
 First non-buggy kernel version for sync driver.
-
-Default value: `'USE_DEFAULTS'`
 

@@ -1,2 +1,3 @@
 ---
 vmware::service_path: /etc/vmware-tools/init/
+vmware::working_kernel_release: 2.6.35-22

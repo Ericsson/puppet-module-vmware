@@ -9,6 +9,15 @@ describe 'vmware' do
       operatingsystemrelease: '6.0',
       architecture: 'x86_64',
       kernelrelease: '2.6.32-431.11.2.el6.x86_64',
+      os: {
+        family: 'RedHat',
+        release: {
+          full: '6.0',
+          major: '6',
+          minor: '0',
+        }
+      }
+
     }
   end
   let(:facts) { default_facts }

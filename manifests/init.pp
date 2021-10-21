@@ -82,6 +82,7 @@
 #
 class vmware (
   Stdlib::Absolutepath $service_path,
+  String[1]            $working_kernel_release,
   $manage_repo               = 'USE_DEFAULTS',
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
   $esx_version               = 'latest',
@@ -102,7 +103,6 @@ class vmware (
   $tools_conf_path           = '/etc/vmware-tools/tools.conf',
   $disable_tools_version     = true,
   $enable_sync_driver        = 'auto',
-  $working_kernel_release    = 'USE_DEFAULTS',
 ){
 
   # variable preparation
@@ -414,21 +414,7 @@ class vmware (
     }
 
     if $enable_sync_driver == 'auto' {
-
-      if $working_kernel_release == 'USE_DEFAULTS' {
-        case $::operatingsystem {
-          'RedHat', 'CentOS': {
-            $_working_kernel_release = '2.6.32-358'
-          }
-          default: {
-            $_working_kernel_release = '2.6.35-22'
-          }
-        }
-      } else {
-        $_working_kernel_release = $working_kernel_release
-      }
-
-      if (versioncmp("${::kernelrelease}", "${_working_kernel_release}") >= 0) { # lint:ignore:only_variable_string
+      if (versioncmp("${::kernelrelease}", "${working_kernel_release}") >= 0) { # lint:ignore:only_variable_string
         $_enable_sync_driver_bool = true
       } else {
         $_enable_sync_driver_bool = false
