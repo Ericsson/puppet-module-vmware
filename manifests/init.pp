@@ -161,9 +161,6 @@ class vmware (
 
   validate_absolute_path($tools_conf_path)
 
-  $osrelease_array = split($::operatingsystemrelease, '\.')
-  $osmajrelease_int = 0 + $osrelease_array[0]
-
   if $::virtual == 'vmware' {
 
     if $force_open_vm_tools_bool == true {
@@ -223,7 +220,7 @@ class vmware (
           }
 
           yumrepo { 'vmware-osps':
-            baseurl  => "${repo_base_url}/${esx_version}/rhel${osmajrelease_int}/${::architecture}",
+            baseurl  => "${repo_base_url}/${esx_version}/rhel${facts['os']['release']['major']}/${::architecture}",
             descr    => 'VMware Tools OSPs',
             enabled  => 1,
             gpgcheck => 1,
