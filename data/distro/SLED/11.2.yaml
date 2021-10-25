@@ -1,3 +1,2 @@
 ---
 vmware::default_open_vm_tools_exist: false
-vmware::service_path: /etc/init.d/

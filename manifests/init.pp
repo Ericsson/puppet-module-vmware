@@ -91,11 +91,20 @@
 #   - Ubuntu: open-vm-tools
 #   - others: vmtoolsd
 #
+# @param default_open_vm_tools_exist
+#   Used for module default values only. If you want to enforce using VMware OSP tools/packages, use $tools_nox_package_name and $tools_x_package_name instead.
+#   OS specific defaults if open source VM tools are available.
+#   Default value is `true` with exceptions for the following OS versions:
+#   - RedHat 6 and older: `false`
+#   - SLED/SLES 11.3 and older: `false`
+#   - OpenSuSE 11: `false`
+#
 class vmware (
   Stdlib::Absolutepath $service_path,
   String[1]            $working_kernel_release,
   String[1]            $service_provider,
   String[1]            $default_service_name_open,
+  Boolean              $default_open_vm_tools_exist,
   $manage_repo               = 'USE_DEFAULTS',
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
   $esx_version               = 'latest',
@@ -150,39 +159,10 @@ class vmware (
 
     if $force_open_vm_tools_bool == true {
       $_use_open_vm_tools = true
+    } elsif $prefer_open_vm_tools_bool == false and "${facts['os']['name']}-${facts['os']['release']['major']}" == 'Ubuntu-12.04' {
+      $_use_open_vm_tools = false
     } else {
-      # OSs that have open-vm-tools
-      case $::operatingsystem {
-        'RedHat', 'CentOS': {
-          $_use_open_vm_tools = $osmajrelease_int >= 7
-        }
-        'SLED', 'SLES': {
-          $osminrelease_int = 0 + $osrelease_array[1]
-          if $osmajrelease_int >= 12 {
-            $_use_open_vm_tools = true
-          } elsif $osmajrelease_int >= 11 and $osminrelease_int >= 4 {
-            $_use_open_vm_tools = true
-          }
-          else {
-            $_use_open_vm_tools = false
-          }
-        }
-        'OpenSuSE': {
-          $_use_open_vm_tools = $osmajrelease_int >= 12
-        }
-        'Ubuntu': {
-          if $prefer_open_vm_tools_bool == true {
-            # include Ubuntu 12.04
-            $_use_open_vm_tools = $osmajrelease_int >= 12
-          } else {
-            # skip Ubuntu 12.04
-            $_use_open_vm_tools = $osmajrelease_int > 12
-          }
-        }
-        default: {
-            fail("The vmware module is not supported on ${::operatingsystem}")
-        }
-      }
+      $_use_open_vm_tools = $default_open_vm_tools_exist
     }
 
     if $_use_open_vm_tools == true {

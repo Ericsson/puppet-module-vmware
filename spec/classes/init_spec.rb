@@ -11,13 +11,13 @@ describe 'vmware' do
       kernelrelease: '2.6.32-431.11.2.el6.x86_64',
       os: {
         family: 'RedHat',
+        name: 'RedHat',
         release: {
           full: '6.0',
           major: '6',
           minor: '0',
         }
       }
-
     }
   end
   let(:facts) { default_facts }
@@ -164,6 +164,14 @@ describe 'vmware' do
       specific_facts = {
         operatingsystemrelease: '7.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
+        os: {
+          family: 'RedHat',
+          release: {
+            full: '7.0',
+            major: '7',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -194,6 +202,14 @@ describe 'vmware' do
         operatingsystemrelease: '7.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
         vmware_has_x: 'true',
+        os: {
+          family: 'RedHat',
+          release: {
+            full: '7.0',
+            major: '7',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -210,6 +226,7 @@ describe 'vmware' do
         kernelrelease: '2.6.18.2-34-default',
         os: {
           family: 'Suse',
+          name: 'SLES',
           release: {
             full: '10.2',
             major: '10',
@@ -278,6 +295,15 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '11.4',
         kernelrelease: '3.0.101-63-default',
+        os: {
+          family: 'Suse',
+          name: 'SLED',
+          release: {
+            full: '11.4',
+            major: '11',
+            minor: '4',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -309,6 +335,15 @@ describe 'vmware' do
         operatingsystemrelease: '11.4',
         kernelrelease: '3.0.101-63-default',
         vmware_has_x: 'true',
+        os: {
+          family: 'Suse',
+          name: 'SLED',
+          release: {
+            full: '11.4',
+            major: '11',
+            minor: '4',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -323,6 +358,15 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '12.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
+        os: {
+          family: 'Suse',
+          name: 'SLED',
+          release: {
+            full: '12.0',
+            major: '12',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -355,6 +399,15 @@ describe 'vmware' do
         operatingsystemrelease: '12.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
         vmware_has_x: 'true',
+        os: {
+          family: 'Suse',
+          name: 'SLED',
+          release: {
+            full: '12.0',
+            major: '12',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -371,6 +424,7 @@ describe 'vmware' do
         kernelrelease: '3.0.13-0.27.1',
         os: {
           family: 'Suse',
+          name: 'SLES',
           release: {
             full: '11.2',
             major: '11',
@@ -505,6 +559,15 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '12.0',
         kernelrelease: '3.12.28-4.6',
+        os: {
+          family: 'Suse',
+          name: 'OpenSuSE',
+          release: {
+            full: '12.0',
+            major: '12',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -532,6 +595,15 @@ describe 'vmware' do
         operatingsystemrelease: '12.0',
         kernelrelease: '3.12.28-4.6',
         vmware_has_x: 'true',
+        os: {
+          family: 'Suse',
+          name: 'OpenSuSE',
+          release: {
+            full: '12.0',
+            major: '12',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -554,7 +626,6 @@ describe 'vmware' do
             major: '12.04',
           }
         }
-
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -588,6 +659,14 @@ describe 'vmware' do
         operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
         vmware_has_x: 'true',
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          release: {
+            full: '12.04',
+            major: '12.04',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -718,7 +797,6 @@ describe 'vmware' do
             major: '16.04',
           }
         }
-
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -752,6 +830,14 @@ describe 'vmware' do
         operatingsystemrelease: '16.04',
         kernelrelease: '4.4.0-166-generic',
         vmware_has_x: 'true',
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          release: {
+            full: '16.04',
+            major: '16.04',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -966,6 +1052,15 @@ describe 'vmware' do
     specific_facts = {
       operatingsystemrelease: '7.0',
       kernelrelease: '3.10.0-229.7.2.el7.x86_64',
+      os: {
+        family: 'RedHat',
+        name: 'RedHat',
+        release: {
+          full: '7.0',
+          major: '7',
+          minor: '0',
+        }
+      }
     }
     let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
