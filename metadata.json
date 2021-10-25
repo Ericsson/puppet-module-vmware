@@ -47,6 +47,7 @@
     {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
+        "10",
         "11",
         "12",
         "15"
@@ -55,9 +56,17 @@
     {
       "operatingsystem": "SLED",
       "operatingsystemrelease": [
+        "10",
         "11",
         "12",
         "15"
+      ]
+    },
+    {
+      "operatingsystem": "OpenSuSE",
+      "operatingsystemrelease": [
+        "11",
+        "12"
       ]
     },
     {
