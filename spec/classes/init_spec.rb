@@ -546,6 +546,15 @@ describe 'vmware' do
         osfamily: 'Debian',
         operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          release: {
+            full: '12.04',
+            major: '12.04',
+          }
+        }
+
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -701,6 +710,15 @@ describe 'vmware' do
         osfamily: 'Debian',
         operatingsystemrelease: '16.04',
         kernelrelease: '4.4.0-166-generic',
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          release: {
+            full: '16.04',
+            major: '16.04',
+          }
+        }
+
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 

@@ -51,6 +51,7 @@ The following parameters are available in the `vmware` class:
 * [`disable_tools_version`](#disable_tools_version)
 * [`enable_sync_driver`](#enable_sync_driver)
 * [`working_kernel_release`](#working_kernel_release)
+* [`default_service_name_open`](#default_service_name_open)
 
 ##### <a name="manage_repo"></a>`manage_repo`
 
@@ -86,11 +87,13 @@ Default value: `'USE_DEFAULTS'`
 
 ##### <a name="service_provider"></a>`service_provider`
 
-Data type: `Any`
+Data type: `String[1]`
 
+!!!FIXME!!! Description is wrong
 Service provider, based on package type, `service` for open-vm-tools, `init` for OSP.
-
-Default value: `'USE_DEFAULTS'`
+Default values:
+- Ubuntu: init
+- others: redhat
 
 ##### <a name="service_path"></a>`service_path`
 
@@ -229,4 +232,14 @@ Default value: `'auto'`
 Data type: `String[1]`
 
 First non-buggy kernel version for sync driver.
+
+##### <a name="default_service_name_open"></a>`default_service_name_open`
+
+Data type: `String[1]`
+
+Used for default values only. If you want to specifiy the service name use $service_name instead.
+Default service name for open source VM tools. which is used when open source VM tools are available.
+Defaults values:
+- Ubuntu: open-vm-tools
+- others: vmtoolsd
 

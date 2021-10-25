@@ -84,10 +84,18 @@
 # @param working_kernel_release
 #   First non-buggy kernel version for sync driver.
 #
+# @param default_service_name_open
+#   Used for default values only. If you want to specifiy the service name use $service_name instead.
+#   Default service name for open source VM tools. which is used when open source VM tools are available.
+#   Defaults values:
+#   - Ubuntu: open-vm-tools
+#   - others: vmtoolsd
+#
 class vmware (
   Stdlib::Absolutepath $service_path,
   String[1]            $working_kernel_release,
   String[1]            $service_provider,
+  String[1]            $default_service_name_open,
   $manage_repo               = 'USE_DEFAULTS',
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
   $esx_version               = 'latest',
@@ -183,15 +191,12 @@ class vmware (
       case $::operatingsystem {
         'RedHat', 'CentOS': {
           $_tools_x_package_name_default = 'open-vm-tools-desktop'
-          $_service_name_default         = 'vmtoolsd'
         }
         'SLED', 'SLES': {
           $_tools_x_package_name_default = 'open-vm-tools-desktop'
-          $_service_name_default         = 'vmtoolsd'
         }
         'OpenSuSE': {
           $_tools_x_package_name_default = 'open-vm-tools-gui'
-          $_service_name_default         = 'vmtoolsd'
         }
         'Ubuntu': {
           if $osmajrelease_int > 14 {
@@ -199,7 +204,6 @@ class vmware (
           } else {
             $_tools_x_package_name_default = 'open-vm-toolbox'
           }
-          $_service_name_default         = 'open-vm-tools'
         }
         default: {
           fail("The vmware module is not supported on ${::operatingsystem}")
@@ -209,6 +213,16 @@ class vmware (
       $_tools_nox_package_name_default = 'vmware-tools-esx-nox'
       $_tools_x_package_name_default   = 'vmware-tools-esx'
       $_service_name_default           = 'vmware-tools-services'
+    }
+
+    if $service_name == 'USE_DEFAULTS' {
+      if $_use_open_vm_tools == true {
+        $service_name_real = $default_service_name_open
+      } else {
+        $service_name_real = 'vmware-tools-services'
+      }
+    } else {
+      $service_name_real = $service_name
     }
 
     if $manage_repo == 'USE_DEFAULTS' {
@@ -358,12 +372,6 @@ class vmware (
       package { $tools_x_package_name_real:
         ensure => $tools_x_package_ensure,
       }
-    }
-
-    if $service_name == 'USE_DEFAULTS' {
-      $service_name_real = $_service_name_default
-    } else {
-      $service_name_real = $service_name
     }
 
     if $manage_service_bool == true {
