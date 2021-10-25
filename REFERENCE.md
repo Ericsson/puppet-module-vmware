@@ -52,6 +52,8 @@ The following parameters are available in the `vmware` class:
 * [`enable_sync_driver`](#enable_sync_driver)
 * [`working_kernel_release`](#working_kernel_release)
 * [`default_service_name_open`](#default_service_name_open)
+* [`default_open_vm_tools_exist`](#default_open_vm_tools_exist)
+* [`default_open_tools_x_package`](#default_open_tools_x_package)
 
 ##### <a name="manage_repo"></a>`manage_repo`
 
@@ -242,4 +244,26 @@ Default service name for open source VM tools. which is used when open source VM
 Defaults values:
 - Ubuntu: open-vm-tools
 - others: vmtoolsd
+
+##### <a name="default_open_vm_tools_exist"></a>`default_open_vm_tools_exist`
+
+Data type: `Boolean`
+
+Used for module default values only. If you want to enforce using VMware OSP tools/packages, use $tools_nox_package_name and $tools_x_package_name instead.
+OS specific defaults if open source VM tools are available.
+Default value is `true` with exceptions for the following OS versions:
+- RedHat 6 and older: `false`
+- SLED/SLES 11.3 and older: `false`
+- OpenSuSE 11: `false`
+
+##### <a name="default_open_tools_x_package"></a>`default_open_tools_x_package`
+
+Data type: `String[1]`
+
+Used for modules default values only. If you want to specify the package name use $tools_x_package_name instead.
+OS specific defaults for the package name of open source VMware tools.
+Default values:
+- OpenSuSE: `open-vm-tools-gui`
+- Ubuntu 14.04 and below: `open-vm-toolbox`
+- others: `open-vm-tools-desktop`
 

@@ -99,11 +99,20 @@
 #   - SLED/SLES 11.3 and older: `false`
 #   - OpenSuSE 11: `false`
 #
+# @param default_open_tools_x_package
+#   Used for modules default values only. If you want to specify the package name use $tools_x_package_name instead.
+#   OS specific defaults for the package name of open source VMware tools.
+#   Default values:
+#   - OpenSuSE: `open-vm-tools-gui`
+#   - Ubuntu 14.04 and below: `open-vm-toolbox`
+#   - others: `open-vm-tools-desktop`
+#
 class vmware (
   Stdlib::Absolutepath $service_path,
   String[1]            $working_kernel_release,
   String[1]            $service_provider,
   String[1]            $default_service_name_open,
+  String[1]            $default_open_tools_x_package,
   Boolean              $default_open_vm_tools_exist,
   $manage_repo               = 'USE_DEFAULTS',
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
@@ -167,28 +176,7 @@ class vmware (
 
     if $_use_open_vm_tools == true {
       $_tools_nox_package_name_default = 'open-vm-tools'
-
-      case $::operatingsystem {
-        'RedHat', 'CentOS': {
-          $_tools_x_package_name_default = 'open-vm-tools-desktop'
-        }
-        'SLED', 'SLES': {
-          $_tools_x_package_name_default = 'open-vm-tools-desktop'
-        }
-        'OpenSuSE': {
-          $_tools_x_package_name_default = 'open-vm-tools-gui'
-        }
-        'Ubuntu': {
-          if $osmajrelease_int > 14 {
-            $_tools_x_package_name_default = 'open-vm-tools-desktop'
-          } else {
-            $_tools_x_package_name_default = 'open-vm-toolbox'
-          }
-        }
-        default: {
-          fail("The vmware module is not supported on ${::operatingsystem}")
-        }
-      }
+      $_tools_x_package_name_default = $default_open_tools_x_package
     } else { # assume vmware-tools exists for OS
       $_tools_nox_package_name_default = 'vmware-tools-esx-nox'
       $_tools_x_package_name_default   = 'vmware-tools-esx'
