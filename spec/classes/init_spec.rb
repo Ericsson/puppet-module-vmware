@@ -1096,7 +1096,7 @@ describe 'vmware' do
         message: '(Wrong argument type given|expects a value of type Numeric or String|cannot convert given value to a floating point value)', # (<Puppet6|Puppet6|Puppet6)
       },
       'string' => {
-        name: ['proxy_host', 'service_name', 'tools_nox_package_ensure', 'tools_nox_package_name', 'tools_x_package_ensure', 'tools_x_package_name'],
+        name: ['proxy_host', 'tools_nox_package_ensure', 'tools_nox_package_name', 'tools_x_package_ensure', 'tools_x_package_name'],
         valid: ['valid'],
         invalid: [['array'], { 'ha' => 'sh' }, 3, 2.42, true],
         message: 'is not a string',

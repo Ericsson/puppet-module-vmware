@@ -57,11 +57,11 @@ The following parameters are available in the `vmware` class:
 
 ##### <a name="manage_repo"></a>`manage_repo`
 
-Data type: `Any`
+Data type: `Optional[Boolean]`
 
 If repo file should be managed.
 
-Default value: `'USE_DEFAULTS'`
+Default value: ``undef``
 
 ##### <a name="repo_base_url"></a>`repo_base_url`
 
@@ -81,11 +81,11 @@ Default value: ``true``
 
 ##### <a name="service_name"></a>`service_name`
 
-Data type: `Any`
+Data type: `Optional[String[1]]`
 
 Service name to manage.
 
-Default value: `'USE_DEFAULTS'`
+Default value: ``undef``
 
 ##### <a name="service_provider"></a>`service_provider`
 

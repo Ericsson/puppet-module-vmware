@@ -115,6 +115,7 @@ class vmware (
   String[1]            $default_open_tools_x_package,
   Boolean              $default_open_vm_tools_exist,
   Optional[Boolean]    $manage_repo                   = undef,
+  Optional[String[1]]  $service_name                  = undef,
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
   $esx_version               = 'latest',
   $gpgkey_url                = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
@@ -123,7 +124,6 @@ class vmware (
   $prefer_open_vm_tools      = true,
   $force_open_vm_tools       = false,
   $manage_service            = true,
-  $service_name              = 'USE_DEFAULTS',
   $manage_tools_nox_package  = true,
   $manage_tools_x_package    = 'USE_DEFAULTS',
   $tools_nox_package_name    = 'USE_DEFAULTS',
@@ -150,7 +150,6 @@ class vmware (
   if is_string($repo_base_url)            == false { fail('vmware::repo_base_url is not a string') }
   if is_string($gpgkey_url)               == false { fail('vmware::gpgkey_url is not a string') }
   if is_string($proxy_host)               == false { fail('vmware::proxy_host is not a string') }
-  if is_string($service_name)             == false { fail('vmware::service_name is not a string') }
   if is_string($tools_nox_package_ensure) == false { fail('vmware::tools_nox_package_ensure is not a string') }
   if is_string($tools_nox_package_name)   == false { fail('vmware::tools_nox_package_name is not a string') }
   if is_string($tools_x_package_ensure)   == false { fail('vmware::tools_x_package_ensure is not a string') }
@@ -175,20 +174,12 @@ class vmware (
       $_tools_nox_package_name_default = 'open-vm-tools'
       $_tools_x_package_name_default = $default_open_tools_x_package
       $manage_repo_real = pick($manage_repo, false)
+      $service_name_real = pick($service_name, $default_service_name_open)
     } else { # assume vmware-tools exists for OS
       $_tools_nox_package_name_default = 'vmware-tools-esx-nox'
       $_tools_x_package_name_default   = 'vmware-tools-esx'
       $manage_repo_real = pick($manage_repo, true)
-    }
-
-    if $service_name == 'USE_DEFAULTS' {
-      if $_use_open_vm_tools == true {
-        $service_name_real = $default_service_name_open
-      } else {
-        $service_name_real = 'vmware-tools-services'
-      }
-    } else {
-      $service_name_real = $service_name
+      $service_name_real = pick($service_name, 'vmware-tools-services')
     }
 
     if $vmware_has_x_bool == true and $manage_tools_x_package == 'USE_DEFAULTS' {
