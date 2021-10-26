@@ -177,7 +177,6 @@ class vmware (
     } else { # assume vmware-tools exists for OS
       $_tools_nox_package_name_default = 'vmware-tools-esx-nox'
       $_tools_x_package_name_default   = 'vmware-tools-esx'
-      $_service_name_default           = 'vmware-tools-services'
     }
 
     if $service_name == 'USE_DEFAULTS' {
@@ -354,9 +353,9 @@ class vmware (
         # to ensure the start script is found on the non-standard locations.
         if $::operatingsystem != 'Ubuntu' {
           Service[$service_name_real] {
-            start  =>  "${service_path}${_service_name_default} start",
-            stop   =>  "${service_path}${_service_name_default} stop",
-            status =>  "${service_path}${_service_name_default} status",
+            start  =>  "${service_path}vmware-tools-services start",
+            stop   =>  "${service_path}vmware-tools-services stop",
+            status =>  "${service_path}vmware-tools-services status",
           }
         }
         Service[$service_name_real] {
