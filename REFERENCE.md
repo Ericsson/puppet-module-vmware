@@ -165,11 +165,11 @@ Default value: ``true``
 
 ##### <a name="tools_nox_package_name"></a>`tools_nox_package_name`
 
-Data type: `Any`
+Data type: `Optional[String[1]]`
 
 Name of package for vmwaretools nox package.
 
-Default value: `'USE_DEFAULTS'`
+Default value: ``undef``
 
 ##### <a name="tools_nox_package_ensure"></a>`tools_nox_package_ensure`
 
@@ -189,11 +189,11 @@ Default value: ``undef``
 
 ##### <a name="tools_x_package_name"></a>`tools_x_package_name`
 
-Data type: `Any`
+Data type: `Optional[String[1]]`
 
 Name of package for vmwaretools x package.
 
-Default value: `'USE_DEFAULTS'`
+Default value: ``undef``
 
 ##### <a name="tools_x_package_ensure"></a>`tools_x_package_ensure`
 

@@ -117,6 +117,8 @@ class vmware (
   Optional[Boolean]    $manage_repo                   = undef,
   Optional[String[1]]  $service_name                  = undef,
   Optional[Boolean]    $manage_tools_x_package        = undef,
+  Optional[String[1]]  $tools_nox_package_name        = undef,
+  Optional[String[1]]  $tools_x_package_name          = undef,
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
   $esx_version               = 'latest',
   $gpgkey_url                = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
@@ -126,8 +128,6 @@ class vmware (
   $force_open_vm_tools       = false,
   $manage_service            = true,
   $manage_tools_nox_package  = true,
-  $tools_nox_package_name    = 'USE_DEFAULTS',
-  $tools_x_package_name      = 'USE_DEFAULTS',
   $tools_nox_package_ensure  = 'present',
   $tools_x_package_ensure    = 'present',
   $tools_conf_path           = '/etc/vmware-tools/tools.conf',
@@ -151,9 +151,7 @@ class vmware (
   if is_string($gpgkey_url)               == false { fail('vmware::gpgkey_url is not a string') }
   if is_string($proxy_host)               == false { fail('vmware::proxy_host is not a string') }
   if is_string($tools_nox_package_ensure) == false { fail('vmware::tools_nox_package_ensure is not a string') }
-  if is_string($tools_nox_package_name)   == false { fail('vmware::tools_nox_package_name is not a string') }
   if is_string($tools_x_package_ensure)   == false { fail('vmware::tools_x_package_ensure is not a string') }
-  if is_string($tools_x_package_name)     == false { fail('vmware::tools_x_package_name is not a string') }
 
   # esx_version can contain strings like '6.0' which is_string() falsely classifies as integer. So we use validate_string() instead
   validate_string($esx_version)
@@ -181,6 +179,9 @@ class vmware (
       $manage_repo_real = pick($manage_repo, true)
       $service_name_real = pick($service_name, 'vmware-tools-services')
     }
+
+    $tools_nox_package_name_real = pick($tools_nox_package_name, $_tools_nox_package_name_default)
+    $tools_x_package_name_real   = pick($tools_x_package_name,   $_tools_x_package_name_default)
 
     case $vmware_has_x_bool {
       true:    { $manage_tools_x_package_real = pick($manage_tools_x_package, true) }
@@ -274,18 +275,6 @@ class vmware (
           fail("The vmware module is not supported on ${::operatingsystem}")
         }
       }
-    }
-
-    if $tools_nox_package_name == 'USE_DEFAULTS' {
-      $tools_nox_package_name_real = $_tools_nox_package_name_default
-    } else {
-      $tools_nox_package_name_real = $tools_nox_package_name
-    }
-
-    if $tools_x_package_name == 'USE_DEFAULTS' {
-      $tools_x_package_name_real = $_tools_x_package_name_default
-    } else {
-      $tools_x_package_name_real = $tools_x_package_name
     }
 
     if $manage_tools_nox_package_bool == true or $manage_tools_x_package_real == true {
