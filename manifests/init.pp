@@ -114,7 +114,7 @@ class vmware (
   String[1]            $default_service_name_open,
   String[1]            $default_open_tools_x_package,
   Boolean              $default_open_vm_tools_exist,
-  $manage_repo               = 'USE_DEFAULTS',
+  Optional[Boolean]    $manage_repo                   = undef,
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
   $esx_version               = 'latest',
   $gpgkey_url                = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
@@ -174,9 +174,11 @@ class vmware (
     if $_use_open_vm_tools == true {
       $_tools_nox_package_name_default = 'open-vm-tools'
       $_tools_x_package_name_default = $default_open_tools_x_package
+      $manage_repo_real = pick($manage_repo, false)
     } else { # assume vmware-tools exists for OS
       $_tools_nox_package_name_default = 'vmware-tools-esx-nox'
       $_tools_x_package_name_default   = 'vmware-tools-esx'
+      $manage_repo_real = pick($manage_repo, true)
     }
 
     if $service_name == 'USE_DEFAULTS' {
@@ -189,16 +191,6 @@ class vmware (
       $service_name_real = $service_name
     }
 
-    if $manage_repo == 'USE_DEFAULTS' {
-      if $_use_open_vm_tools {
-        $manage_repo_bool = false
-      } else {
-        $manage_repo_bool = true
-      }
-    } else {
-      $manage_repo_bool = str2bool($manage_repo)
-    }
-
     if $vmware_has_x_bool == true and $manage_tools_x_package == 'USE_DEFAULTS' {
       $manage_tools_x_package_bool = true
     } elsif $vmware_has_x_bool == false and $manage_tools_x_package == 'USE_DEFAULTS' {
@@ -207,7 +199,7 @@ class vmware (
       $manage_tools_x_package_bool = str2bool($manage_tools_x_package)
     }
 
-    if $manage_repo_bool == true {
+    if $manage_repo_real == true {
 
       case $::operatingsystem {
         'RedHat', 'CentOS': {

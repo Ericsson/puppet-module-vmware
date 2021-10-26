@@ -1084,7 +1084,7 @@ describe 'vmware' do
         message: 'is not an absolute path',
       },
       'boolean & stringified' => {
-        name: ['force_open_vm_tools', 'manage_repo', 'manage_service', 'manage_tools_nox_package', 'manage_tools_x_package', 'prefer_open_vm_tools'],
+        name: ['force_open_vm_tools', 'manage_service', 'manage_tools_nox_package', 'manage_tools_x_package', 'prefer_open_vm_tools'],
         valid: [true, 'true', false, 'false'],
         invalid: ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
         message: '(is not a boolean|str2bool)',
