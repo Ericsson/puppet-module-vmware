@@ -159,7 +159,6 @@ class vmware (
   validate_absolute_path($tools_conf_path)
 
   if $::virtual == 'vmware' {
-
     if $force_open_vm_tools_bool == true {
       $_use_open_vm_tools = true
     } elsif $prefer_open_vm_tools_bool == false and "${facts['os']['name']}-${facts['os']['release']['major']}" == 'Ubuntu-12.04' {
@@ -170,14 +169,14 @@ class vmware (
 
     if $_use_open_vm_tools == true {
       $_tools_nox_package_name_default = 'open-vm-tools'
-      $_tools_x_package_name_default = $default_open_tools_x_package
-      $manage_repo_real = pick($manage_repo, false)
-      $service_name_real = pick($service_name, $default_service_name_open)
+      $_tools_x_package_name_default   = $default_open_tools_x_package
+      $manage_repo_real                = pick($manage_repo, false)
+      $service_name_real               = pick($service_name, $default_service_name_open)
     } else { # assume vmware-tools exists for OS
       $_tools_nox_package_name_default = 'vmware-tools-esx-nox'
       $_tools_x_package_name_default   = 'vmware-tools-esx'
-      $manage_repo_real = pick($manage_repo, true)
-      $service_name_real = pick($service_name, 'vmware-tools-services')
+      $manage_repo_real                = pick($manage_repo, true)
+      $service_name_real               = pick($service_name, 'vmware-tools-services')
     }
 
     $tools_nox_package_name_real = pick($tools_nox_package_name, $_tools_nox_package_name_default)
@@ -189,10 +188,8 @@ class vmware (
     }
 
     if $manage_repo_real == true {
-
       case $::operatingsystem {
         'RedHat', 'CentOS': {
-
           if $proxy_host == 'absent' {
             $_proxy = undef
           } else {
@@ -208,7 +205,6 @@ class vmware (
             proxy    => $_proxy,
           }
         }
-
         'SLED', 'SLES', 'OpenSuSE': {
           include ::zypprepo
 
@@ -248,7 +244,6 @@ class vmware (
           }
         }
         'Ubuntu': {
-
           if $proxy_host == 'absent' {
             include ::apt
           } else {
@@ -296,8 +291,7 @@ class vmware (
         ensure => $tools_nox_package_ensure,
       }
       $_require_manage_tools_nox_package = "Package[${tools_nox_package_name_real}]"
-    }
-    else {
+    } else {
       $_require_manage_tools_nox_package = undef
     }
 
@@ -337,15 +331,8 @@ class vmware (
         ensure  => 'running',
         require => $_require_manage_tools_nox_package,
       }
-    }
-    else {
-      $_notify_ini_setting = undef
-    }
-
-    if $disable_tools_version_bool == true {
-      $_disable_tools_version_bool = true
     } else {
-      $_disable_tools_version_bool = false
+      $_notify_ini_setting = undef
     }
 
     if $enable_sync_driver == 'auto' {
@@ -354,7 +341,6 @@ class vmware (
       } else {
         $_enable_sync_driver_bool = false
       }
-
     } else {
       $_enable_sync_driver_bool = str2bool($enable_sync_driver)
     }
@@ -372,7 +358,7 @@ class vmware (
       'require' => File['vmtools_conf'],
     }
     $vmtools_settings = {
-      'vmtools'  => { 'disable-tools-version' => bool2str($_disable_tools_version_bool), },
+      'vmtools'  => { 'disable-tools-version' => bool2str($disable_tools_version_bool), },
       'vmbackup' => { 'enableSyncDriver'      => bool2str($_enable_sync_driver_bool), },
     }
     create_ini_settings($vmtools_settings, $vmtools_defaults)
