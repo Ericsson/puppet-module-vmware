@@ -116,6 +116,7 @@ class vmware (
   Boolean              $default_open_vm_tools_exist,
   Optional[Boolean]    $manage_repo                   = undef,
   Optional[String[1]]  $service_name                  = undef,
+  Optional[Boolean]    $manage_tools_x_package        = undef,
   $repo_base_url             = 'http://packages.vmware.com/tools/esx',
   $esx_version               = 'latest',
   $gpgkey_url                = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
@@ -125,7 +126,6 @@ class vmware (
   $force_open_vm_tools       = false,
   $manage_service            = true,
   $manage_tools_nox_package  = true,
-  $manage_tools_x_package    = 'USE_DEFAULTS',
   $tools_nox_package_name    = 'USE_DEFAULTS',
   $tools_x_package_name      = 'USE_DEFAULTS',
   $tools_nox_package_ensure  = 'present',
@@ -182,12 +182,9 @@ class vmware (
       $service_name_real = pick($service_name, 'vmware-tools-services')
     }
 
-    if $vmware_has_x_bool == true and $manage_tools_x_package == 'USE_DEFAULTS' {
-      $manage_tools_x_package_bool = true
-    } elsif $vmware_has_x_bool == false and $manage_tools_x_package == 'USE_DEFAULTS' {
-      $manage_tools_x_package_bool = false
-    } else {
-      $manage_tools_x_package_bool = str2bool($manage_tools_x_package)
+    case $vmware_has_x_bool {
+      true:    { $manage_tools_x_package_real = pick($manage_tools_x_package, true) }
+      default: { $manage_tools_x_package_real = pick($manage_tools_x_package, false) }
     }
 
     if $manage_repo_real == true {
@@ -291,7 +288,7 @@ class vmware (
       $tools_x_package_name_real = $tools_x_package_name
     }
 
-    if $manage_tools_nox_package_bool == true or $manage_tools_x_package_bool == true {
+    if $manage_tools_nox_package_bool == true or $manage_tools_x_package_real == true {
       exec { 'Remove vmware tools script installation':
         path    => '/usr/bin/:/etc/vmware-tools/',
         onlyif  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
@@ -300,7 +297,7 @@ class vmware (
       if $manage_tools_nox_package_bool == true {
         Exec['Remove vmware tools script installation'] -> Package[$tools_nox_package_name_real]
       }
-      if $manage_tools_x_package_bool == true {
+      if $manage_tools_x_package_real == true {
         Exec['Remove vmware tools script installation'] -> Package[$tools_x_package_name_real]
       }
     }
@@ -315,7 +312,7 @@ class vmware (
       $_require_manage_tools_nox_package = undef
     }
 
-    if $manage_tools_x_package_bool == true {
+    if $manage_tools_x_package_real == true {
       package { $tools_x_package_name_real:
         ensure => $tools_x_package_ensure,
       }

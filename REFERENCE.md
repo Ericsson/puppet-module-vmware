@@ -181,11 +181,11 @@ Default value: `'present'`
 
 ##### <a name="manage_tools_x_package"></a>`manage_tools_x_package`
 
-Data type: `Any`
+Data type: `Optional[Boolean]`
 
 If vmwaretools x package should be managed.
 
-Default value: `'USE_DEFAULTS'`
+Default value: ``undef``
 
 ##### <a name="tools_x_package_name"></a>`tools_x_package_name`
 
