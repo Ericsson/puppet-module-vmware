@@ -691,7 +691,7 @@ describe 'vmware' do
         }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
-      let(:params) { { prefer_open_vm_tools: 'false' } }
+      let(:params) { { prefer_open_vm_tools: false } }
 
       it { is_expected.not_to contain_package('open-vm-tools') }
       it { is_expected.not_to contain_package('open-vm-toolbox') }
@@ -755,7 +755,7 @@ describe 'vmware' do
   context 'without managing packages' do
     let(:params) do
       {
-        manage_tools_nox_package: 'false',
+        manage_tools_nox_package: false,
         manage_tools_x_package: false,
       }
     end
@@ -1030,7 +1030,7 @@ describe 'vmware' do
       end
 
       it 'fails' do
-        expect { is_expected.to contain_ini_setting('[vmtools] disable-tools-version') }.to raise_error(Puppet::Error, %r{Unknown type of boolean})
+        expect { is_expected.to contain_ini_setting('[vmtools] disable-tools-version') }.to raise_error(Puppet::Error, %r{expects a Boolean value})
       end
     end
 
@@ -1071,72 +1071,6 @@ describe 'vmware' do
           'path'    => '/etc/vmware-tools/tools.conf',
           'require' => 'Package[open-vm-tools]',
                                                          })
-      end
-    end
-  end
-
-  describe 'variable type and content validations' do
-    validations = {
-      'absolute_path' => {
-        name: ['tools_conf_path'],
-        valid: ['/absolute/filepath', '/absolute/directory/'],
-        invalid: ['./relative/path', ['array'], { 'ha' => 'sh' }, 3, 2.42, true, nil],
-        message: 'is not an absolute path',
-      },
-      'boolean & stringified' => {
-        name: ['force_open_vm_tools', 'manage_service', 'manage_tools_nox_package', 'prefer_open_vm_tools'],
-        valid: [true, 'true', false, 'false'],
-        invalid: ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
-        message: '(is not a boolean|str2bool)',
-      },
-      'integer & stringified' => {
-        name: ['proxy_port'],
-        valid: [242, '242', -242, '-242', 2.42],
-        invalid: ['string', ['array'], { 'ha' => 'sh' }, true, nil],
-        message: '(Wrong argument type given|expects a value of type Numeric or String|cannot convert given value to a floating point value)', # (<Puppet6|Puppet6|Puppet6)
-      },
-      'string' => {
-        name: ['proxy_host', 'tools_nox_package_ensure', 'tools_x_package_ensure'],
-        valid: ['valid'],
-        invalid: [['array'], { 'ha' => 'sh' }, 3, 2.42, true],
-        message: 'is not a string',
-      },
-      'string (URL)' => {
-        name: ['repo_base_url', 'gpgkey_url'],
-        valid: ['http://spec.test.local/path'],
-        invalid: [['array'], { 'ha' => 'sh' }, 3, 2.42, true],
-        message: 'is not a string',
-      },
-      'esx_version (string)' => {
-        name: ['esx_version'],
-        valid: ['6.0', '5.5latest'],
-        invalid: [['array'], { 'ha' => 'sh' }, true], # esx_version can contain strings like '6.0' therefore we use validate_string() instead of is_string()
-        message: 'is not a string',
-      },
-    }
-
-    validations.sort.each do |type, var|
-      var[:name].each do |var_name|
-        var[:params] = {} if var[:params].nil?
-        var[:valid].each do |valid|
-          context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
-            let(:params) { [var[:params], { "#{var_name}": valid, }].reduce(:merge) }
-
-            it { is_expected.to compile }
-          end
-        end
-
-        var[:invalid].each do |invalid|
-          context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
-            let(:params) { [var[:params], { "#{var_name}": invalid, }].reduce(:merge) }
-
-            it 'fails' do
-              # rubocop:disable NamedSubject
-              expect { is_expected.to contain_class(subject) }.to raise_error(Puppet::Error, %r{#{var[:message]}})
-              # rubocop:enable NamedSubject
-            end
-          end
-        end
       end
     end
   end

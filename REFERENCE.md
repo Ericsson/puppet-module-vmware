@@ -65,7 +65,7 @@ Default value: ``undef``
 
 ##### <a name="repo_base_url"></a>`repo_base_url`
 
-Data type: `Any`
+Data type: `Stdlib::HTTPUrl`
 
 Base URL of mirror of packages.vmware.com/tools/esx.
 
@@ -73,7 +73,7 @@ Default value: `'http://packages.vmware.com/tools/esx'`
 
 ##### <a name="manage_service"></a>`manage_service`
 
-Data type: `Any`
+Data type: `Boolean`
 
 If vmwaretools service should be managed.
 
@@ -109,7 +109,7 @@ Default values:
 
 ##### <a name="esx_version"></a>`esx_version`
 
-Data type: `Any`
+Data type: `String[1]`
 
 Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
 
@@ -117,7 +117,7 @@ Default value: `'latest'`
 
 ##### <a name="gpgkey_url"></a>`gpgkey_url`
 
-Data type: `Any`
+Data type: `Stdlib::HTTPUrl`
 
 URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
 
@@ -125,7 +125,7 @@ Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-
 
 ##### <a name="proxy_host"></a>`proxy_host`
 
-Data type: `Any`
+Data type: `String[1]`
 
 Hostname of web proxy (not supported on SUSE).
 
@@ -133,7 +133,7 @@ Default value: `'absent'`
 
 ##### <a name="proxy_port"></a>`proxy_port`
 
-Data type: `Any`
+Data type: `Integer[0, 65535]`
 
 Port number of web proxy.
 
@@ -141,7 +141,7 @@ Default value: `8080`
 
 ##### <a name="prefer_open_vm_tools"></a>`prefer_open_vm_tools`
 
-Data type: `Any`
+Data type: `Boolean`
 
 Prefer open-vm-tools over vmware-tools in the case that both are available (e.g. Ubuntu 12.04).
 
@@ -149,7 +149,7 @@ Default value: ``true``
 
 ##### <a name="force_open_vm_tools"></a>`force_open_vm_tools`
 
-Data type: `Any`
+Data type: `Boolean`
 
 Force open-vm-tools over vmware-tools. Using this option is suitable in cases where EPEL is available for EL systems.
 
@@ -157,7 +157,7 @@ Default value: ``false``
 
 ##### <a name="manage_tools_nox_package"></a>`manage_tools_nox_package`
 
-Data type: `Any`
+Data type: `Boolean`
 
 If vmwaretools nox package should be managed.
 
@@ -173,7 +173,7 @@ Default value: ``undef``
 
 ##### <a name="tools_nox_package_ensure"></a>`tools_nox_package_ensure`
 
-Data type: `Any`
+Data type: `String[1]`
 
 String to pass to ensure attribute for the vmwaretools nox package.
 
@@ -197,7 +197,7 @@ Default value: ``undef``
 
 ##### <a name="tools_x_package_ensure"></a>`tools_x_package_ensure`
 
-Data type: `Any`
+Data type: `String[1]`
 
 String to pass to ensure attribute for the vmwaretools x package.
 
@@ -205,7 +205,7 @@ Default value: `'present'`
 
 ##### <a name="tools_conf_path"></a>`tools_conf_path`
 
-Data type: `Any`
+Data type: `Stdlib::Absolutepath`
 
 Path to vmware-tools configuration file.
 
@@ -213,7 +213,7 @@ Default value: `'/etc/vmware-tools/tools.conf'`
 
 ##### <a name="disable_tools_version"></a>`disable_tools_version`
 
-Data type: `Any`
+Data type: `Boolean`
 
 Disable tools version reporting to vSphere.
 
@@ -221,7 +221,7 @@ Default value: ``true``
 
 ##### <a name="enable_sync_driver"></a>`enable_sync_driver`
 
-Data type: `Any`
+Data type: `String[1]`
 
 Enable vmtools sync driver on snapshots.  `true`, `false`, `auto` to enable on non-buggy systems.
 See KB2038606 (http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2038606)

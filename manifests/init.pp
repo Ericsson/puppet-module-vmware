@@ -119,49 +119,29 @@ class vmware (
   Optional[Boolean]    $manage_tools_x_package        = undef,
   Optional[String[1]]  $tools_nox_package_name        = undef,
   Optional[String[1]]  $tools_x_package_name          = undef,
-  $repo_base_url             = 'http://packages.vmware.com/tools/esx',
-  $esx_version               = 'latest',
-  $gpgkey_url                = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-  $proxy_host                = 'absent',
-  $proxy_port                = 8080,
-  $prefer_open_vm_tools      = true,
-  $force_open_vm_tools       = false,
-  $manage_service            = true,
-  $manage_tools_nox_package  = true,
-  $tools_nox_package_ensure  = 'present',
-  $tools_x_package_ensure    = 'present',
-  $tools_conf_path           = '/etc/vmware-tools/tools.conf',
-  $disable_tools_version     = true,
+  Stdlib::HTTPUrl      $repo_base_url                 = 'http://packages.vmware.com/tools/esx',
+  Stdlib::HTTPUrl      $gpgkey_url                    = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+  Boolean              $prefer_open_vm_tools          = true,
+  Boolean              $force_open_vm_tools           = false,
+  Boolean              $manage_service                = true,
+  Boolean              $manage_tools_nox_package      = true,
+  Boolean              $disable_tools_version         = true,
+  String[1]            $esx_version                   = 'latest',
+  String[1]            $proxy_host                    = 'absent',
+  Integer[0, 65535]    $proxy_port                    = 8080,
+  String[1]            $tools_nox_package_ensure      = 'present',
+  String[1]            $tools_x_package_ensure        = 'present',
+  Stdlib::Absolutepath $tools_conf_path               = '/etc/vmware-tools/tools.conf',
   $enable_sync_driver        = 'auto',
 ){
 
   # variable preparation
-  $proxy_port_int = floor($proxy_port)
-  $prefer_open_vm_tools_bool = str2bool($prefer_open_vm_tools)
-  $force_open_vm_tools_bool = str2bool($force_open_vm_tools)
-  $manage_service_bool = str2bool($manage_service)
-  $manage_tools_nox_package_bool = str2bool($manage_tools_nox_package)
-  $disable_tools_version_bool = str2bool($disable_tools_version)
   $vmware_has_x_bool = str2bool($::vmware_has_x)
 
-  # variable validations
-  if is_integer($proxy_port_int) == false { fail('vmware::proxy_port is not an integer') }
-
-  if is_string($repo_base_url)            == false { fail('vmware::repo_base_url is not a string') }
-  if is_string($gpgkey_url)               == false { fail('vmware::gpgkey_url is not a string') }
-  if is_string($proxy_host)               == false { fail('vmware::proxy_host is not a string') }
-  if is_string($tools_nox_package_ensure) == false { fail('vmware::tools_nox_package_ensure is not a string') }
-  if is_string($tools_x_package_ensure)   == false { fail('vmware::tools_x_package_ensure is not a string') }
-
-  # esx_version can contain strings like '6.0' which is_string() falsely classifies as integer. So we use validate_string() instead
-  validate_string($esx_version)
-
-  validate_absolute_path($tools_conf_path)
-
   if $::virtual == 'vmware' {
-    if $force_open_vm_tools_bool == true {
+    if $force_open_vm_tools == true {
       $_use_open_vm_tools = true
-    } elsif $prefer_open_vm_tools_bool == false and "${facts['os']['name']}-${facts['os']['release']['major']}" == 'Ubuntu-12.04' {
+    } elsif $prefer_open_vm_tools == false and "${facts['os']['name']}-${facts['os']['release']['major']}" == 'Ubuntu-12.04' {
       $_use_open_vm_tools = false
     } else {
       $_use_open_vm_tools = $default_open_vm_tools_exist
@@ -193,7 +173,7 @@ class vmware (
           if $proxy_host == 'absent' {
             $_proxy = undef
           } else {
-            $_proxy = "http://${proxy_host}:${proxy_port_int}"
+            $_proxy = "http://${proxy_host}:${proxy_port}"
           }
 
           yumrepo { 'vmware-osps':
@@ -272,13 +252,13 @@ class vmware (
       }
     }
 
-    if $manage_tools_nox_package_bool == true or $manage_tools_x_package_real == true {
+    if $manage_tools_nox_package == true or $manage_tools_x_package_real == true {
       exec { 'Remove vmware tools script installation':
         path    => '/usr/bin/:/etc/vmware-tools/',
         onlyif  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
         command => 'installer.sh uninstall',
       }
-      if $manage_tools_nox_package_bool == true {
+      if $manage_tools_nox_package == true {
         Exec['Remove vmware tools script installation'] -> Package[$tools_nox_package_name_real]
       }
       if $manage_tools_x_package_real == true {
@@ -286,7 +266,7 @@ class vmware (
       }
     }
 
-    if $manage_tools_nox_package_bool == true {
+    if $manage_tools_nox_package == true {
       package { $tools_nox_package_name_real:
         ensure => $tools_nox_package_ensure,
       }
@@ -301,7 +281,7 @@ class vmware (
       }
     }
 
-    if $manage_service_bool == true {
+    if $manage_service == true {
       $_notify_ini_setting = "Service[${service_name_real}]"
       # workaround for Ubuntu which does not provide the service status
       if $::operatingsystem == 'Ubuntu' {
@@ -358,7 +338,7 @@ class vmware (
       'require' => File['vmtools_conf'],
     }
     $vmtools_settings = {
-      'vmtools'  => { 'disable-tools-version' => bool2str($disable_tools_version_bool), },
+      'vmtools'  => { 'disable-tools-version' => bool2str($disable_tools_version), },
       'vmbackup' => { 'enableSyncDriver'      => bool2str($_enable_sync_driver_bool), },
     }
     create_ini_settings($vmtools_settings, $vmtools_defaults)
