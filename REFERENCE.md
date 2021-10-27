@@ -221,13 +221,13 @@ Default value: ``true``
 
 ##### <a name="enable_sync_driver"></a>`enable_sync_driver`
 
-Data type: `String[1]`
+Data type: `Optional[Boolean]`
 
-Enable vmtools sync driver on snapshots.  `true`, `false`, `auto` to enable on non-buggy systems.
+Enable vmtools sync driver on snapshots.  Use `undef` to automatically enable on non-buggy systems or set to `true` or `false` to override.
 See KB2038606 (http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2038606)
 https://access.redhat.com/solutions/484303
 
-Default value: `'auto'`
+Default value: ``undef``
 
 ##### <a name="working_kernel_release"></a>`working_kernel_release`
 

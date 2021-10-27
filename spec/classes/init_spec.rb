@@ -949,9 +949,7 @@ describe 'vmware' do
                                                                                })
       end
     end
-    context 'with auto default' do
-      let(:params) { { enable_sync_driver: 'auto' } }
-
+    context 'with undef default' do
       it do
         is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
                                                                                  'ensure'  => 'present',
@@ -963,10 +961,9 @@ describe 'vmware' do
                                                                                })
       end
     end
-    context 'with auto, set kernel <' do
+    context 'with undef, set kernel <' do
       let(:params) do
         {
-          enable_sync_driver: 'auto',
           working_kernel_release: '2.6.32-238',
         }
       end
@@ -982,10 +979,9 @@ describe 'vmware' do
                                                                                })
       end
     end
-    context 'with auto, set kernel >' do
+    context 'with undef, set kernel >' do
       let(:params) do
         {
-          enable_sync_driver: 'auto',
           working_kernel_release: '2.6.32-440',
         }
       end
@@ -1001,10 +997,9 @@ describe 'vmware' do
                                                                                })
       end
     end
-    context 'with auto, set kernel =' do
+    context 'with undef, set kernel =' do
       let(:params) do
         {
-          enable_sync_driver: 'auto',
           working_kernel_release: '2.6.32-431.11.2.el6.x86_64',
         }
       end
@@ -1043,7 +1038,7 @@ describe 'vmware' do
       end
 
       it 'fails' do
-        expect { is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver') }.to raise_error(Puppet::Error, %r{Unknown type of boolean})
+        expect { is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver') }.to raise_error(Puppet::Error, %r{expects a value of type Undef or Boolean})
       end
     end
   end

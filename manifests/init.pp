@@ -77,7 +77,7 @@
 #   Disable tools version reporting to vSphere.
 #
 # @param enable_sync_driver
-#   Enable vmtools sync driver on snapshots.  `true`, `false`, `auto` to enable on non-buggy systems.
+#   Enable vmtools sync driver on snapshots.  Use `undef` to automatically enable on non-buggy systems or set to `true` or `false` to override.
 #   See KB2038606 (http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2038606)
 #   https://access.redhat.com/solutions/484303
 #
@@ -132,7 +132,7 @@ class vmware (
   String[1]            $tools_nox_package_ensure      = 'present',
   String[1]            $tools_x_package_ensure        = 'present',
   Stdlib::Absolutepath $tools_conf_path               = '/etc/vmware-tools/tools.conf',
-  $enable_sync_driver        = 'auto',
+  Optional[Boolean]    $enable_sync_driver            = undef,
 ){
 
   # variable preparation
@@ -161,6 +161,7 @@ class vmware (
 
     $tools_nox_package_name_real = pick($tools_nox_package_name, $_tools_nox_package_name_default)
     $tools_x_package_name_real   = pick($tools_x_package_name,   $_tools_x_package_name_default)
+    $enable_sync_driver_real     = pick($enable_sync_driver,     versioncmp($::kernelrelease, $working_kernel_release) >= 0)
 
     case $vmware_has_x_bool {
       true:    { $manage_tools_x_package_real = pick($manage_tools_x_package, true) }
@@ -315,16 +316,6 @@ class vmware (
       $_notify_ini_setting = undef
     }
 
-    if $enable_sync_driver == 'auto' {
-      if (versioncmp("${::kernelrelease}", "${working_kernel_release}") >= 0) { # lint:ignore:only_variable_string
-        $_enable_sync_driver_bool = true
-      } else {
-        $_enable_sync_driver_bool = false
-      }
-    } else {
-      $_enable_sync_driver_bool = str2bool($enable_sync_driver)
-    }
-
     file { 'vmtools_conf':
       ensure  => file,
       path    => $tools_conf_path,
@@ -339,7 +330,7 @@ class vmware (
     }
     $vmtools_settings = {
       'vmtools'  => { 'disable-tools-version' => bool2str($disable_tools_version), },
-      'vmbackup' => { 'enableSyncDriver'      => bool2str($_enable_sync_driver_bool), },
+      'vmbackup' => { 'enableSyncDriver'      => bool2str($enable_sync_driver_real), },
     }
     create_ini_settings($vmtools_settings, $vmtools_defaults)
   }
