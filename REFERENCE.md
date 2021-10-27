@@ -125,11 +125,11 @@ Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-
 
 ##### <a name="proxy_host"></a>`proxy_host`
 
-Data type: `String[1]`
+Data type: `Optional[Boolean]`
 
 Hostname of web proxy (not supported on SUSE).
 
-Default value: `'absent'`
+Default value: ``undef``
 
 ##### <a name="proxy_port"></a>`proxy_port`
 

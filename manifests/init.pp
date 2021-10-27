@@ -127,7 +127,7 @@ class vmware (
   Boolean              $manage_tools_nox_package      = true,
   Boolean              $disable_tools_version         = true,
   String[1]            $esx_version                   = 'latest',
-  String[1]            $proxy_host                    = 'absent',
+  Optional[Boolean]    $proxy_host                    = undef,
   Integer[0, 65535]    $proxy_port                    = 8080,
   String[1]            $tools_nox_package_ensure      = 'present',
   String[1]            $tools_x_package_ensure        = 'present',
@@ -171,7 +171,7 @@ class vmware (
     if $manage_repo_real == true {
       case $::operatingsystem {
         'RedHat', 'CentOS': {
-          if $proxy_host == 'absent' {
+          if $proxy_host == undef {
             $_proxy = undef
           } else {
             $_proxy = "http://${proxy_host}:${proxy_port}"
@@ -189,7 +189,7 @@ class vmware (
         'SLED', 'SLES', 'OpenSuSE': {
           include ::zypprepo
 
-          if $proxy_host != 'absent' {
+          if $proxy_host != undef {
             fail("The vmware::proxy_host parameter is not supported on ${::operatingsystem}")
           }
 
@@ -225,7 +225,7 @@ class vmware (
           }
         }
         'Ubuntu': {
-          if $proxy_host == 'absent' {
+          if $proxy_host == undef {
             include ::apt
           } else {
             # will only work if apt is not already defined elsewhere
