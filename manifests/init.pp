@@ -166,8 +166,8 @@ class vmware (
     }
 
     if $manage_repo_real == true {
-      case $::operatingsystem {
-        'RedHat', 'CentOS': {
+      case $facts['os']['family'] {
+        'RedHat': {
           if $proxy_host == undef {
             $_proxy = undef
           } else {
@@ -175,7 +175,7 @@ class vmware (
           }
 
           yumrepo { 'vmware-osps':
-            baseurl  => "${repo_base_url}/${esx_version}/rhel${facts['os']['release']['major']}/${::architecture}",
+            baseurl  => "${repo_base_url}/${esx_version}/rhel${facts['os']['release']['major']}/${facts['os']['architecture']}",
             descr    => 'VMware Tools OSPs',
             enabled  => 1,
             gpgcheck => 1,
@@ -183,31 +183,31 @@ class vmware (
             proxy    => $_proxy,
           }
         }
-        'SLED', 'SLES', 'OpenSuSE': {
+        'Suse': {
           include ::zypprepo
 
           if $proxy_host != undef {
-            fail("The vmware::proxy_host parameter is not supported on ${::operatingsystem}")
+            fail("The vmware::proxy_host parameter is not supported on ${facts['os']['family']} family")
           }
 
-          case $::operatingsystemrelease {
-            /^10./: {
+          case $facts['os']['release']['major'] {
+            '10': {
               $_suseos = '10'
             }
             default: {
               if versioncmp($esx_version, '6.0') == 0 {
-                $_suseos = regsubst($::operatingsystemrelease, '\.', 'sp')
+                $_suseos = "${facts['os']['release']['major']}sp${facts['os']['release']['minor']}"
               } else {
-                $_suseos = $::operatingsystemrelease
+                $_suseos = $facts['os']['release']['full']
               }
             }
           }
-          case $::architecture {
-            /^i386/: {
+          case $facts['os']['architecture'] {
+            'i386': {
               $architecture_real = 'i586'
             }
             default: {
-              $architecture_real = $::architecture
+              $architecture_real = $facts['os']['architecture']
             }
           }
 
@@ -221,7 +221,7 @@ class vmware (
             gpgkey      => $gpgkey_url,
           }
         }
-        'Ubuntu': {
+        'Debian': {
           if $proxy_host == undef {
             include ::apt
           } else {
@@ -245,7 +245,7 @@ class vmware (
           }
         }
         default: {
-          fail("The vmware module is not supported on ${::operatingsystem}")
+          fail("The vmware module is not supported on ${facts['os']['family']} family")
         }
       }
     }
@@ -278,7 +278,7 @@ class vmware (
     if $manage_service == true {
       $_notify_ini_setting = "Service[${service_name_real}]"
       # workaround for Ubuntu which does not provide the service status
-      if $::operatingsystem == 'Ubuntu' {
+      if $facts['os']['name'] == 'Ubuntu' {
         Service[$service_name_real] {
           hasstatus => false,
           status    => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
@@ -288,7 +288,7 @@ class vmware (
       if ! $_use_open_vm_tools {
         # For non-Ubuntu systems we need to specify the location of of the scripts
         # to ensure the start script is found on the non-standard locations.
-        if $::operatingsystem != 'Ubuntu' {
+        if $facts['os']['name'] != 'Ubuntu' {
           Service[$service_name_real] {
             start  =>  "${service_path}vmware-tools-services start",
             stop   =>  "${service_path}vmware-tools-services stop",

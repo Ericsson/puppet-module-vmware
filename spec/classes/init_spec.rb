@@ -4,12 +4,9 @@ describe 'vmware' do
     {
       virtual: 'vmware',
       vmware_has_x: false,
-      operatingsystem: 'RedHat',
-      osfamily: 'RedHat',
-      operatingsystemrelease: '6.0',
-      architecture: 'x86_64',
       kernelrelease: '2.6.32-431.11.2.el6.x86_64',
       os: {
+        architecture: 'x86_64',
         family: 'RedHat',
         name: 'RedHat',
         release: {
@@ -65,9 +62,9 @@ describe 'vmware' do
   describe 'with defaults for all parameters on RHEL 5 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystemrelease: '5.0',
         kernelrelease: '2.6.18-400.1.1.el5',
         os: {
+          architecture: 'x86_64',
           family: 'RedHat',
           release: {
             full: '5.0',
@@ -114,9 +111,6 @@ describe 'vmware' do
     context 'on machine with X installed' do
       specific_facts = {
         vmware_has_x: true,
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '10.0',
         kernelrelease: '2.6.18.2-34-default',
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
@@ -162,7 +156,6 @@ describe 'vmware' do
   describe 'with defaults for all parameters on RHEL 7 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystemrelease: '7.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
         os: {
           family: 'RedHat',
@@ -199,7 +192,6 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystemrelease: '7.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
         vmware_has_x: true,
         os: {
@@ -220,11 +212,9 @@ describe 'vmware' do
   describe 'with defaults for all parameters on SLES 10 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '10.2',
         kernelrelease: '2.6.18.2-34-default',
         os: {
+          architecture: 'x86_64',
           family: 'Suse',
           name: 'SLES',
           release: {
@@ -276,9 +266,6 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '10.0',
         kernelrelease: '2.6.18.2-34-default',
         vmware_has_x: true,
       }
@@ -291,9 +278,6 @@ describe 'vmware' do
   describe 'with defaults for all parameters on SLED 11.4 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'SLED',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.4',
         kernelrelease: '3.0.101-63-default',
         os: {
           family: 'Suse',
@@ -330,9 +314,6 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'SLED',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.4',
         kernelrelease: '3.0.101-63-default',
         vmware_has_x: true,
         os: {
@@ -354,9 +335,6 @@ describe 'vmware' do
   describe 'with defaults for all parameters on SLED 12 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'SLED',
-        osfamily: 'Suse',
-        operatingsystemrelease: '12.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
         os: {
           family: 'Suse',
@@ -394,9 +372,6 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'SLED',
-        osfamily: 'Suse',
-        operatingsystemrelease: '12.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
         vmware_has_x: true,
         os: {
@@ -418,11 +393,9 @@ describe 'vmware' do
   describe 'with defaults for all parameters on SLES 11 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.2',
         kernelrelease: '3.0.13-0.27.1',
         os: {
+          architecture: 'x86_64',
           family: 'Suse',
           name: 'SLES',
           release: {
@@ -431,7 +404,6 @@ describe 'vmware' do
             minor: '2',
           }
         }
-
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -473,9 +445,6 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.0',
         kernelrelease: '3.0.13-0.27.1',
         vmware_has_x: true,
       }
@@ -486,9 +455,16 @@ describe 'vmware' do
 
     context 'with esx_version = 6.0, x86_64' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.2',
+        os: {
+          architecture: 'x86_64',
+          family: 'Suse',
+          name: 'SLES',
+          release: {
+            full: '11.2',
+            major: '11',
+            minor: '2',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { esx_version: '6.0' } }
@@ -508,9 +484,16 @@ describe 'vmware' do
 
     context 'with esx_version < 6.0, x86_64' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.2',
+        os: {
+          architecture: 'x86_64',
+          family: 'Suse',
+          name: 'SLES',
+          release: {
+            full: '11.2',
+            major: '11',
+            minor: '2',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { esx_version: '5.5latest' } }
@@ -530,10 +513,16 @@ describe 'vmware' do
 
     context 'with esx_version < 6.0, i386' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.2',
-        architecture: 'i386',
+        os: {
+          architecture: 'i386',
+          family: 'Suse',
+          name: 'SLES',
+          release: {
+            full: '11.2',
+            major: '11',
+            minor: '2',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { esx_version: '5.5latest' } }
@@ -555,9 +544,6 @@ describe 'vmware' do
   describe 'with defaults for all parameters on OpenSuSE 12 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'OpenSuSE',
-        osfamily: 'Suse',
-        operatingsystemrelease: '12.0',
         kernelrelease: '3.12.28-4.6',
         os: {
           family: 'Suse',
@@ -590,9 +576,6 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'OpenSuSE',
-        osfamily: 'Suse',
-        operatingsystemrelease: '12.0',
         kernelrelease: '3.12.28-4.6',
         vmware_has_x: true,
         os: {
@@ -614,9 +597,6 @@ describe 'vmware' do
   describe 'with defaults for all parameters on Ubuntu 12.04 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
         os: {
           family: 'Debian',
@@ -654,9 +634,6 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
         vmware_has_x: true,
         os: {
@@ -675,9 +652,6 @@ describe 'vmware' do
 
     context 'with prefer_open_vm_tools = false' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
         lsbdistid: 'ubuntu',  # needed for apt
         lsbdistcodename: 'precise', # needed for apt
@@ -785,9 +759,6 @@ describe 'vmware' do
   describe 'with defaults for all parameters on Ubuntu 16.04 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '16.04',
         kernelrelease: '4.4.0-166-generic',
         os: {
           family: 'Debian',
@@ -825,9 +796,6 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '16.04',
         kernelrelease: '4.4.0-166-generic',
         vmware_has_x: true,
         os: {
@@ -1045,7 +1013,6 @@ describe 'vmware' do
 
   context 'managing tools.conf on RHEL7' do
     specific_facts = {
-      operatingsystemrelease: '7.0',
       kernelrelease: '3.10.0-229.7.2.el7.x86_64',
       os: {
         family: 'RedHat',
