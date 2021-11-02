@@ -253,24 +253,11 @@ class vmware (
       }
     }
 
-    if $manage_tools_nox_package == true or $manage_tools_x_package_real == true {
-      exec { 'Remove vmware tools script installation':
-        path    => '/usr/bin/:/etc/vmware-tools/',
-        onlyif  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
-        command => 'installer.sh uninstall',
-      }
-      if $manage_tools_nox_package == true {
-        Exec['Remove vmware tools script installation'] -> Package[$tools_nox_package_name_real]
-      }
-      if $manage_tools_x_package_real == true {
-        Exec['Remove vmware tools script installation'] -> Package[$tools_x_package_name_real]
-      }
-    }
-
     if $manage_tools_nox_package == true {
       package { $tools_nox_package_name_real:
         ensure => $tools_nox_package_ensure,
       }
+      Exec['Remove vmware tools script installation'] -> Package[$tools_nox_package_name_real]
       $_require_manage_tools_nox_package = "Package[${tools_nox_package_name_real}]"
     } else {
       $_require_manage_tools_nox_package = undef
@@ -279,6 +266,15 @@ class vmware (
     if $manage_tools_x_package_real == true {
       package { $tools_x_package_name_real:
         ensure => $tools_x_package_ensure,
+      }
+      Exec['Remove vmware tools script installation'] -> Package[$tools_x_package_name_real]
+    }
+
+    if $manage_tools_nox_package == true or $manage_tools_x_package_real == true {
+      exec { 'Remove vmware tools script installation':
+        path    => '/usr/bin/:/etc/vmware-tools/',
+        onlyif  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
+        command => 'installer.sh uninstall',
       }
     }
 
