@@ -135,9 +135,6 @@ class vmware (
   Optional[Boolean]    $enable_sync_driver            = undef,
 ){
 
-  # variable preparation
-  $vmware_has_x_bool = str2bool($::vmware_has_x)
-
   if $::virtual == 'vmware' {
     if $force_open_vm_tools == true {
       $_use_open_vm_tools = true
@@ -163,7 +160,7 @@ class vmware (
     $tools_x_package_name_real   = pick($tools_x_package_name,   $_tools_x_package_name_default)
     $enable_sync_driver_real     = pick($enable_sync_driver,     versioncmp($::kernelrelease, $working_kernel_release) >= 0)
 
-    case $vmware_has_x_bool {
+    case $::vmware_has_x {
       true:    { $manage_tools_x_package_real = pick($manage_tools_x_package, true) }
       default: { $manage_tools_x_package_real = pick($manage_tools_x_package, false) }
     }

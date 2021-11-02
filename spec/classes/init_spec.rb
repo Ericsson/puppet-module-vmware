@@ -3,7 +3,7 @@ describe 'vmware' do
   let(:default_facts) do
     {
       virtual: 'vmware',
-      vmware_has_x: 'false',
+      vmware_has_x: false,
       operatingsystem: 'RedHat',
       osfamily: 'RedHat',
       operatingsystemrelease: '6.0',
@@ -56,7 +56,7 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) { [default_facts, { vmware_has_x: 'true' }].reduce(:merge) }
+      let(:facts) { [default_facts, { vmware_has_x: true }].reduce(:merge) }
 
       it { is_expected.to contain_package('vmware-tools-esx').with('ensure' => 'present') }
     end
@@ -113,7 +113,7 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        vmware_has_x: 'true',
+        vmware_has_x: true,
         operatingsystem: 'SLES',
         osfamily: 'Suse',
         operatingsystemrelease: '10.0',
@@ -151,7 +151,7 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) { [default_facts, { vmware_has_x: 'true' }].reduce(:merge) }
+      let(:facts) { [default_facts, { vmware_has_x: true }].reduce(:merge) }
       let(:params) { { force_open_vm_tools: true } }
 
       it { is_expected.to contain_package('open-vm-tools').with('ensure' => 'present') }
@@ -201,7 +201,7 @@ describe 'vmware' do
       specific_facts = {
         operatingsystemrelease: '7.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
         os: {
           family: 'RedHat',
           release: {
@@ -280,7 +280,7 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '10.0',
         kernelrelease: '2.6.18.2-34-default',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -334,7 +334,7 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '11.4',
         kernelrelease: '3.0.101-63-default',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
         os: {
           family: 'Suse',
           name: 'SLED',
@@ -398,7 +398,7 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '12.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
         os: {
           family: 'Suse',
           name: 'SLED',
@@ -477,7 +477,7 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '11.0',
         kernelrelease: '3.0.13-0.27.1',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -594,7 +594,7 @@ describe 'vmware' do
         osfamily: 'Suse',
         operatingsystemrelease: '12.0',
         kernelrelease: '3.12.28-4.6',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
         os: {
           family: 'Suse',
           name: 'OpenSuSE',
@@ -658,7 +658,7 @@ describe 'vmware' do
         osfamily: 'Debian',
         operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
         os: {
           family: 'Debian',
           name: 'Ubuntu',
@@ -726,7 +726,7 @@ describe 'vmware' do
   end
 
   context 'with custom values for parameters on machine running on vmware' do
-    let(:facts) { [default_facts, { vmware_has_x: 'true' }].reduce(:merge) }
+    let(:facts) { [default_facts, { vmware_has_x: true }].reduce(:merge) }
     let(:params) do
       {
         tools_nox_package_name: 'vmware-tools-esx-nox-custom',
@@ -829,7 +829,7 @@ describe 'vmware' do
         osfamily: 'Debian',
         operatingsystemrelease: '16.04',
         kernelrelease: '4.4.0-166-generic',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
         os: {
           family: 'Debian',
           name: 'Ubuntu',
