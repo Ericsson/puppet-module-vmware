@@ -166,87 +166,12 @@ class vmware (
     }
 
     if $manage_repo_real == true {
-      case $facts['os']['family'] {
-        'RedHat': {
-          if $proxy_host == undef {
-            $_proxy = undef
-          } else {
-            $_proxy = "http://${proxy_host}:${proxy_port}"
-          }
-
-          yumrepo { 'vmware-osps':
-            baseurl  => "${repo_base_url}/${esx_version}/rhel${facts['os']['release']['major']}/${facts['os']['architecture']}",
-            descr    => 'VMware Tools OSPs',
-            enabled  => 1,
-            gpgcheck => 1,
-            gpgkey   => $gpgkey_url,
-            proxy    => $_proxy,
-          }
-        }
-        'Suse': {
-          include ::zypprepo
-
-          if $proxy_host != undef {
-            fail("The vmware::proxy_host parameter is not supported on ${facts['os']['family']} family")
-          }
-
-          case $facts['os']['release']['major'] {
-            '10': {
-              $_suseos = '10'
-            }
-            default: {
-              if versioncmp($esx_version, '6.0') == 0 {
-                $_suseos = "${facts['os']['release']['major']}sp${facts['os']['release']['minor']}"
-              } else {
-                $_suseos = $facts['os']['release']['full']
-              }
-            }
-          }
-          case $facts['os']['architecture'] {
-            'i386': {
-              $architecture_real = 'i586'
-            }
-            default: {
-              $architecture_real = $facts['os']['architecture']
-            }
-          }
-
-          zypprepo { 'vmware-osps':
-            enabled     => 1,
-            autorefresh => 0,
-            baseurl     => "${repo_base_url}/${esx_version}/sles${_suseos}/${architecture_real}",
-            path        => '/',
-            type        => 'yum',
-            gpgcheck    => 1,
-            gpgkey      => $gpgkey_url,
-          }
-        }
-        'Debian': {
-          if $proxy_host == undef {
-            include ::apt
-          } else {
-            # will only work if apt is not already defined elsewhere
-            class { '::apt':
-              proxy_host => $proxy_host,
-              proxy_port => '8080',
-            }
-          }
-
-          apt::key { 'vmware':
-            key        => 'C0B5E0AB66FD4949',
-            key_source => $gpgkey_url,
-          }
-
-          apt::source { 'vmware-osps':
-            location    => "${repo_base_url}/${esx_version}/ubuntu",
-            release     => $::lsbdistcodename,
-            repos       => 'main',
-            include_src => false,
-          }
-        }
-        default: {
-          fail("The vmware module is not supported on ${facts['os']['family']} family")
-        }
+      class { "vmware::repo::${facts['os']['family']}".downcase():
+        repo_base_url => $repo_base_url,
+        gpgkey_url    => $gpgkey_url,
+        esx_version   => $esx_version,
+        proxy_host    => $proxy_host,
+        proxy_port    => $proxy_port,
       }
     }
 
