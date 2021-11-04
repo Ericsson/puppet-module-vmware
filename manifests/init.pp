@@ -210,7 +210,7 @@ class vmware (
         }
       }
 
-      if ! $_use_open_vm_tools {
+      if $_use_open_vm_tools == false {
         # For non-Ubuntu systems we need to specify the location of of the scripts
         # to ensure the start script is found on the non-standard locations.
         if $facts['os']['name'] != 'Ubuntu' {

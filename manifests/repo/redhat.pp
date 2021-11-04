@@ -27,10 +27,9 @@ class vmware::repo::redhat (
   Integer[0, 65535]    $proxy_port                    = 8080,
 ) {
 
-  if $proxy_host == undef {
-    $_proxy = undef
-  } else {
-    $_proxy = "http://${proxy_host}:${proxy_port}"
+  case $proxy_host {
+    undef:   { $_proxy = undef }
+    default: { $_proxy = "http://${proxy_host}:${proxy_port}" }
   }
 
   yumrepo { 'vmware-osps':
