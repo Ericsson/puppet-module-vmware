@@ -31,6 +31,17 @@ describe 'vmware' do
                                                                                     })
       end
       it do
+        is_expected.to contain_class('vmware::repo::redhat').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+            'proxy_host'    => nil,
+            'proxy_port'    => '8080',
+          },
+        )
+      end
+      it do
         is_expected.to contain_yumrepo('vmware-osps').with({
                                                              'baseurl' => 'http://packages.vmware.com/tools/esx/latest/rhel6/x86_64',
           'enabled'  => '1',
@@ -86,6 +97,17 @@ describe 'vmware' do
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
                                                                                     })
+      end
+      it do
+        is_expected.to contain_class('vmware::repo::redhat').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+            'proxy_host'    => nil,
+            'proxy_port'    => '8080',
+          },
+        )
       end
       it do
         is_expected.to contain_yumrepo('vmware-osps').with({
@@ -238,6 +260,17 @@ describe 'vmware' do
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
                                                                                     })
+      end
+      it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+            'proxy_host'    => nil,
+            'proxy_port'    => '8080',
+          },
+        )
       end
       it do
         is_expected.to contain_zypprepo('vmware-osps').with({
@@ -420,6 +453,17 @@ describe 'vmware' do
                                                                                     })
       end
       it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+            'proxy_host'    => nil,
+            'proxy_port'    => '8080',
+          },
+        )
+      end
+      it do
         is_expected.to contain_zypprepo('vmware-osps').with({
                                                               'enabled'     => '1',
           'autorefresh' => '0',
@@ -470,6 +514,17 @@ describe 'vmware' do
       let(:params) { { esx_version: '6.0' } }
 
       it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => '6.0',
+            'proxy_host'    => nil,
+            'proxy_port'    => '8080',
+          },
+        )
+      end
+      it do
         is_expected.to contain_zypprepo('vmware-osps').with({
                                                               'enabled'     => '1',
           'autorefresh' => '0',
@@ -499,6 +554,17 @@ describe 'vmware' do
       let(:params) { { esx_version: '5.5latest' } }
 
       it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => '5.5latest',
+            'proxy_host'    => nil,
+            'proxy_port'    => '8080',
+          },
+        )
+      end
+      it do
         is_expected.to contain_zypprepo('vmware-osps').with({
                                                               'enabled'     => '1',
           'autorefresh' => '0',
@@ -527,6 +593,17 @@ describe 'vmware' do
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { esx_version: '5.5latest' } }
 
+      it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => '5.5latest',
+            'proxy_host'    => nil,
+            'proxy_port'    => '8080',
+          },
+        )
+      end
       it do
         is_expected.to contain_zypprepo('vmware-osps').with({
                                                               'enabled'     => '1',
@@ -678,6 +755,26 @@ describe 'vmware' do
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
                                                                                     })
+      end
+
+      it do
+        is_expected.to contain_class('vmware::repo::debian').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+            'proxy_host'    => nil,
+            'proxy_port'    => '8080',
+          },
+        )
+      end
+      it do
+        is_expected.to contain_apt__key('vmware').with(
+          {
+            'key'        => 'C0B5E0AB66FD4949',
+            'key_source' => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+          },
+        )
       end
       it do
         is_expected.to contain_apt__source('vmware-osps').with({
