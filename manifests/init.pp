@@ -9,69 +9,91 @@
 #   class { 'vmware': }
 #
 # @param manage_repo
-#   If repo file should be managed.
+#   Boolean to choose if repository for VMware tools should be managed.
 #
 # @param repo_base_url
-#   Base URL of mirror of packages.vmware.com/tools/esx.
+#   Base URL of repository for VMware tools packages.
+#   Only used when parameter $manage_repo is active.
+#
+# @param gpgkey_url
+#   URL for the GPG key with which packages of VMware tools repository are signed.
+#   Only used when parameter $manage_repo is active.
+#
+# @param proxy_host
+#   URL of a proxy server that should be used when accessing the VMware tools repositories.
+#   Not supported on Suse OS families.
+#   Only used when parameter $manage_repo is active.
+#
+# @param proxy_port
+#   Proxy port of a proxy server that should be used when accessing the VMware tools repositories.
+#   Not supported on Suse OS families.
+#   Only used when parameter $manage_repo is active.
+#
+# @param esx_version
+#   Version of ESX (e.g. 5.1, 5.5, 5.5ep06).
+#   Used together with repo_base_url and client facts to build the URL used to manage the VMware tools packages.
+#   Note, it is recommended to explicitly set the ESX version rather than defaulting to latest.
+#   Only used when parameter $manage_repo is active.
 #
 # @param manage_service
-#   If vmwaretools service should be managed.
+#   Boolean to choose if service for VMware tools should be managed.
 #
 # @param service_name
-#   Service name to manage.
+#   Service name of VMware tools to manage.
+#   Only used when parameter $manage_service is active.
 #
 # @param service_provider
-#   !!!FIXME!!! Description is wrong
-#   Service provider, based on package type, `service` for open-vm-tools, `init` for OSP.
+#   The specific backend to use for the VMware tools service resource.
+#   It should not be necessary to use this parameter. Use at your own risk.
+#   Only used when parameter $manage_service is active and OSP packages of VMware tools are used.
 #   Default values:
 #   - Ubuntu: init
 #   - others: redhat
 #
 # @param service_path
-#   Path to service init files. Only applicable for `init` service provider.
+#   The search path for finding init scripts of VMware tools service.
+#   Only used when parameter $manage_service is active and OSP packages of VMware tools are used.
 #   Default values:
 #     RedHat 5: `/etc/init.d/`
 #     Suse: `/etc/init.d/`
 #     others: `/etc/vmwre-tools/init/`
 #
-# @param esx_version
-#   Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
-#
-# @param gpgkey_url
-#   URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
-#
-# @param proxy_host
-#   Hostname of web proxy (not supported on SUSE).
-#
-# @param proxy_port
-#   Port number of web proxy.
-#
 # @param prefer_open_vm_tools
-#   Prefer open-vm-tools over vmware-tools in the case that both are available (e.g. Ubuntu 12.04).
+#   Boolean to prefer usage of Open VM Tools over VMware OSP packages in the case that both are available.
+#   Only useable on Ubuntu 12.04, other cases will be silently ignored.
 #
 # @param force_open_vm_tools
-#   Force open-vm-tools over vmware-tools. Using this option is suitable in cases where EPEL is available for EL systems.
+#   Boolean to force usage of Open VM Tools over VMware OSP packages.
+#   This option is suitable in cases where EPEL is available for EL systems.
 #
 # @param manage_tools_nox_package
-#   If vmwaretools nox package should be managed.
+#   Boolean if VM tools packages for command line clients (NOX) should be managed.
+#   If set to true VMware tools that might have been installed manually or from scripts will be removed.
 #
 # @param tools_nox_package_name
 #   Name of package for vmwaretools nox package.
+#   Only used when parameter $manage_tools_nox_package is active.
 #
 # @param tools_nox_package_ensure
 #   String to pass to ensure attribute for the vmwaretools nox package.
+#   Use 'present', 'latest' to install or 'absent', 'purged' to remove package.
+#   Only used when parameter $manage_tools_nox_package is active.
 #
 # @param manage_tools_x_package
-#   If vmwaretools x package should be managed.
+#   Boolean if VM tools packages for X-Windows/GUI clients (X) should be managed.
+#   If set to true VMware tools that might have been installed manually or from scripts will be removed.
 #
 # @param tools_x_package_name
 #   Name of package for vmwaretools x package.
+#   Only used when parameter $manage_tools_x_package is active.
 #
 # @param tools_x_package_ensure
 #   String to pass to ensure attribute for the vmwaretools x package.
+#   Use 'present', 'latest' to install or 'absent', 'purged' to remove package.
+#   Only used when parameter $manage_tools_x_package is active.
 #
 # @param tools_conf_path
-#   Path to vmware-tools configuration file.
+#   Absolute path to vmware-tools configuration file.
 #
 # @param disable_tools_version
 #   Disable tools version reporting to vSphere.

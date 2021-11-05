@@ -5,19 +5,28 @@
 # This class is not intended to be used directly by other modules or node definitions.
 #
 # @param repo_base_url
-#   Base URL of mirror of packages.vmware.com/tools/esx.
+#   Base URL of repository for VMware tools packages.
+#   Only used when parameter $manage_repo is active.
 #
 # @param gpgkey_url
-#   URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
-#
-# @param esx_version
-#   Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
+#   URL for the GPG key with which packages of VMware tools repository are signed.
+#   Only used when parameter $manage_repo is active.
 #
 # @param proxy_host
-#   Hostname of web proxy (not supported on SUSE).
+#   URL of a proxy server that should be used when accessing the VMware tools repositories.
+#   Not supported on Suse OS families.
+#   Only used when parameter $manage_repo is active.
 #
 # @param proxy_port
-#   Port number of web proxy.
+#   Proxy port of a proxy server that should be used when accessing the VMware tools repositories.
+#   Not supported on Suse OS families.
+#   Only used when parameter $manage_repo is active.
+#
+# @param esx_version
+#   Version of ESX (e.g. 5.1, 5.5, 5.5ep06).
+#   Used together with repo_base_url and client facts to build the URL used to manage the VMware tools packages.
+#   Note, it is recommended to explicitly set the ESX version rather than defaulting to latest.
+#   Only used when parameter $manage_repo is active.
 #
 class vmware::repo::debian (
   Stdlib::HTTPUrl      $repo_base_url                 = 'http://packages.vmware.com/tools/esx',

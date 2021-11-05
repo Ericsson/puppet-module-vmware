@@ -7,6 +7,9 @@
 ### Classes
 
 * [`vmware`](#vmware): Manage installation of VMware Tools and related options.
+* [`vmware::repo::debian`](#vmwarerepodebian): Manage repository of VMware Tools packages and related options on Ubuntu. Will use Puppetlabs apt module to add the given repository to allow
+* [`vmware::repo::redhat`](#vmwarereporedhat): Manage repository of VMware Tools packages and related options on RedHat and CentOS. Will use Puppetlabs yumrepo_core module to add the given
+* [`vmware::repo::suse`](#vmwarereposuse): Manage repository of VMware Tools packages and related options on Suse OS families. Will use Puppetlabs zypprepo module to add the given repo
 
 ## Classes
 
@@ -31,14 +34,14 @@ The following parameters are available in the `vmware` class:
 
 * [`manage_repo`](#manage_repo)
 * [`repo_base_url`](#repo_base_url)
+* [`gpgkey_url`](#gpgkey_url)
+* [`proxy_host`](#proxy_host)
+* [`proxy_port`](#proxy_port)
+* [`esx_version`](#esx_version)
 * [`manage_service`](#manage_service)
 * [`service_name`](#service_name)
 * [`service_provider`](#service_provider)
 * [`service_path`](#service_path)
-* [`esx_version`](#esx_version)
-* [`gpgkey_url`](#gpgkey_url)
-* [`proxy_host`](#proxy_host)
-* [`proxy_port`](#proxy_port)
 * [`prefer_open_vm_tools`](#prefer_open_vm_tools)
 * [`force_open_vm_tools`](#force_open_vm_tools)
 * [`manage_tools_nox_package`](#manage_tools_nox_package)
@@ -59,7 +62,7 @@ The following parameters are available in the `vmware` class:
 
 Data type: `Optional[Boolean]`
 
-If repo file should be managed.
+Boolean to choose if repository for VMware tools should be managed.
 
 Default value: ``undef``
 
@@ -67,15 +70,56 @@ Default value: ``undef``
 
 Data type: `Stdlib::HTTPUrl`
 
-Base URL of mirror of packages.vmware.com/tools/esx.
+Base URL of repository for VMware tools packages.
+Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/esx'`
+
+##### <a name="gpgkey_url"></a>`gpgkey_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+URL for the GPG key with which packages of VMware tools repository are signed.
+Only used when parameter $manage_repo is active.
+
+Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
+
+##### <a name="proxy_host"></a>`proxy_host`
+
+Data type: `Optional[Boolean]`
+
+URL of a proxy server that should be used when accessing the VMware tools repositories.
+Not supported on Suse OS families.
+Only used when parameter $manage_repo is active.
+
+Default value: ``undef``
+
+##### <a name="proxy_port"></a>`proxy_port`
+
+Data type: `Integer[0, 65535]`
+
+Proxy port of a proxy server that should be used when accessing the VMware tools repositories.
+Not supported on Suse OS families.
+Only used when parameter $manage_repo is active.
+
+Default value: `8080`
+
+##### <a name="esx_version"></a>`esx_version`
+
+Data type: `String[1]`
+
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06).
+Used together with repo_base_url and client facts to build the URL used to manage the VMware tools packages.
+Note, it is recommended to explicitly set the ESX version rather than defaulting to latest.
+Only used when parameter $manage_repo is active.
+
+Default value: `'latest'`
 
 ##### <a name="manage_service"></a>`manage_service`
 
 Data type: `Boolean`
 
-If vmwaretools service should be managed.
+Boolean to choose if service for VMware tools should be managed.
 
 Default value: ``true``
 
@@ -83,7 +127,8 @@ Default value: ``true``
 
 Data type: `Optional[String[1]]`
 
-Service name to manage.
+Service name of VMware tools to manage.
+Only used when parameter $manage_service is active.
 
 Default value: ``undef``
 
@@ -91,8 +136,9 @@ Default value: ``undef``
 
 Data type: `String[1]`
 
-!!!FIXME!!! Description is wrong
-Service provider, based on package type, `service` for open-vm-tools, `init` for OSP.
+The specific backend to use for the VMware tools service resource.
+It should not be necessary to use this parameter. Use at your own risk.
+Only used when parameter $manage_service is active and OSP packages of VMware tools are used.
 Default values:
 - Ubuntu: init
 - others: redhat
@@ -101,49 +147,19 @@ Default values:
 
 Data type: `Stdlib::Absolutepath`
 
-Path to service init files. Only applicable for `init` service provider.
+The search path for finding init scripts of VMware tools service.
+Only used when parameter $manage_service is active and OSP packages of VMware tools are used.
 Default values:
   RedHat 5: `/etc/init.d/`
   Suse: `/etc/init.d/`
   others: `/etc/vmwre-tools/init/`
 
-##### <a name="esx_version"></a>`esx_version`
-
-Data type: `String[1]`
-
-Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
-
-Default value: `'latest'`
-
-##### <a name="gpgkey_url"></a>`gpgkey_url`
-
-Data type: `Stdlib::HTTPUrl`
-
-URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
-
-Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
-
-##### <a name="proxy_host"></a>`proxy_host`
-
-Data type: `Optional[Boolean]`
-
-Hostname of web proxy (not supported on SUSE).
-
-Default value: ``undef``
-
-##### <a name="proxy_port"></a>`proxy_port`
-
-Data type: `Integer[0, 65535]`
-
-Port number of web proxy.
-
-Default value: `8080`
-
 ##### <a name="prefer_open_vm_tools"></a>`prefer_open_vm_tools`
 
 Data type: `Boolean`
 
-Prefer open-vm-tools over vmware-tools in the case that both are available (e.g. Ubuntu 12.04).
+Boolean to prefer usage of Open VM Tools over VMware OSP packages in the case that both are available.
+Only useable on Ubuntu 12.04, other cases will be silently ignored.
 
 Default value: ``true``
 
@@ -151,7 +167,8 @@ Default value: ``true``
 
 Data type: `Boolean`
 
-Force open-vm-tools over vmware-tools. Using this option is suitable in cases where EPEL is available for EL systems.
+Boolean to force usage of Open VM Tools over VMware OSP packages.
+This option is suitable in cases where EPEL is available for EL systems.
 
 Default value: ``false``
 
@@ -159,7 +176,8 @@ Default value: ``false``
 
 Data type: `Boolean`
 
-If vmwaretools nox package should be managed.
+Boolean if VM tools packages for command line clients (NOX) should be managed.
+If set to true VMware tools that might have been installed manually or from scripts will be removed.
 
 Default value: ``true``
 
@@ -168,6 +186,7 @@ Default value: ``true``
 Data type: `Optional[String[1]]`
 
 Name of package for vmwaretools nox package.
+Only used when parameter $manage_tools_nox_package is active.
 
 Default value: ``undef``
 
@@ -176,6 +195,8 @@ Default value: ``undef``
 Data type: `String[1]`
 
 String to pass to ensure attribute for the vmwaretools nox package.
+Use 'present', 'latest' to install or 'absent', 'purged' to remove package.
+Only used when parameter $manage_tools_nox_package is active.
 
 Default value: `'present'`
 
@@ -183,7 +204,8 @@ Default value: `'present'`
 
 Data type: `Optional[Boolean]`
 
-If vmwaretools x package should be managed.
+Boolean if VM tools packages for X-Windows/GUI clients (X) should be managed.
+If set to true VMware tools that might have been installed manually or from scripts will be removed.
 
 Default value: ``undef``
 
@@ -192,6 +214,7 @@ Default value: ``undef``
 Data type: `Optional[String[1]]`
 
 Name of package for vmwaretools x package.
+Only used when parameter $manage_tools_x_package is active.
 
 Default value: ``undef``
 
@@ -200,6 +223,8 @@ Default value: ``undef``
 Data type: `String[1]`
 
 String to pass to ensure attribute for the vmwaretools x package.
+Use 'present', 'latest' to install or 'absent', 'purged' to remove package.
+Only used when parameter $manage_tools_x_package is active.
 
 Default value: `'present'`
 
@@ -207,7 +232,7 @@ Default value: `'present'`
 
 Data type: `Stdlib::Absolutepath`
 
-Path to vmware-tools configuration file.
+Absolute path to vmware-tools configuration file.
 
 Default value: `'/etc/vmware-tools/tools.conf'`
 
@@ -266,4 +291,178 @@ Default values:
 - OpenSuSE: `open-vm-tools-gui`
 - Ubuntu 14.04 and below: `open-vm-toolbox`
 - others: `open-vm-tools-desktop`
+
+### <a name="vmwarerepodebian"></a>`vmware::repo::debian`
+
+Manage repository of VMware Tools packages and related options on Ubuntu.
+Will use Puppetlabs apt module to add the given repository to allow
+installation of VMware Tools packages.
+
+This class is not intended to be used directly by other modules or node definitions.
+
+#### Parameters
+
+The following parameters are available in the `vmware::repo::debian` class:
+
+* [`repo_base_url`](#repo_base_url)
+* [`gpgkey_url`](#gpgkey_url)
+* [`esx_version`](#esx_version)
+* [`proxy_host`](#proxy_host)
+* [`proxy_port`](#proxy_port)
+
+##### <a name="repo_base_url"></a>`repo_base_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+Base URL of mirror of packages.vmware.com/tools/esx.
+
+Default value: `'http://packages.vmware.com/tools/esx'`
+
+##### <a name="gpgkey_url"></a>`gpgkey_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
+
+Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
+
+##### <a name="esx_version"></a>`esx_version`
+
+Data type: `String[1]`
+
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
+
+Default value: `'latest'`
+
+##### <a name="proxy_host"></a>`proxy_host`
+
+Data type: `Optional[Boolean]`
+
+Hostname of web proxy (not supported on SUSE).
+
+Default value: ``undef``
+
+##### <a name="proxy_port"></a>`proxy_port`
+
+Data type: `Integer[0, 65535]`
+
+Port number of web proxy.
+
+Default value: `8080`
+
+### <a name="vmwarereporedhat"></a>`vmware::repo::redhat`
+
+Manage repository of VMware Tools packages and related options on RedHat and CentOS.
+Will use Puppetlabs yumrepo_core module to add the given repository to allow
+installation of VMware Tools packages.
+
+This class is not intended to be used directly by other modules or node definitions.
+
+#### Parameters
+
+The following parameters are available in the `vmware::repo::redhat` class:
+
+* [`repo_base_url`](#repo_base_url)
+* [`gpgkey_url`](#gpgkey_url)
+* [`esx_version`](#esx_version)
+* [`proxy_host`](#proxy_host)
+* [`proxy_port`](#proxy_port)
+
+##### <a name="repo_base_url"></a>`repo_base_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+Base URL of mirror of packages.vmware.com/tools/esx.
+
+Default value: `'http://packages.vmware.com/tools/esx'`
+
+##### <a name="gpgkey_url"></a>`gpgkey_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
+
+Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
+
+##### <a name="esx_version"></a>`esx_version`
+
+Data type: `String[1]`
+
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
+
+Default value: `'latest'`
+
+##### <a name="proxy_host"></a>`proxy_host`
+
+Data type: `Optional[Boolean]`
+
+Hostname of web proxy (not supported on SUSE).
+
+Default value: ``undef``
+
+##### <a name="proxy_port"></a>`proxy_port`
+
+Data type: `Integer[0, 65535]`
+
+Port number of web proxy.
+
+Default value: `8080`
+
+### <a name="vmwarereposuse"></a>`vmware::repo::suse`
+
+Manage repository of VMware Tools packages and related options on Suse OS families.
+Will use Puppetlabs zypprepo module to add the given repository to allow
+installation of VMware Tools packages.
+
+This class is not intended to be used directly by other modules or node definitions.
+
+#### Parameters
+
+The following parameters are available in the `vmware::repo::suse` class:
+
+* [`repo_base_url`](#repo_base_url)
+* [`gpgkey_url`](#gpgkey_url)
+* [`esx_version`](#esx_version)
+* [`proxy_host`](#proxy_host)
+* [`proxy_port`](#proxy_port)
+
+##### <a name="repo_base_url"></a>`repo_base_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+Base URL of mirror of packages.vmware.com/tools/esx.
+
+Default value: `'http://packages.vmware.com/tools/esx'`
+
+##### <a name="gpgkey_url"></a>`gpgkey_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
+
+Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
+
+##### <a name="esx_version"></a>`esx_version`
+
+Data type: `String[1]`
+
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
+
+Default value: `'latest'`
+
+##### <a name="proxy_host"></a>`proxy_host`
+
+Data type: `Optional[Boolean]`
+
+Hostname of web proxy (not supported on SUSE).
+
+Default value: ``undef``
+
+##### <a name="proxy_port"></a>`proxy_port`
+
+Data type: `Integer[0, 65535]`
+
+Port number of web proxy.
+
+Default value: `8080`
 
