@@ -55,7 +55,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'redhat',
-          'path'     => '/etc/vmware-tools/init/',
+          'path'     => '/etc/vmware-tools/init',
           'start'    => '/etc/vmware-tools/init/vmware-tools-services start',
           'stop'     => '/etc/vmware-tools/init/vmware-tools-services stop',
           'status'   => '/etc/vmware-tools/init/vmware-tools-services status',
@@ -122,7 +122,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'redhat',
-          'path'     => '/etc/init.d/',
+          'path'     => '/etc/init.d',
           'start'    => '/etc/init.d/vmware-tools-services start',
           'stop'     => '/etc/init.d/vmware-tools-services stop',
           'status'   => '/etc/init.d/vmware-tools-services status',
@@ -288,7 +288,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'redhat',
-          'path'     => '/etc/init.d/',
+          'path'     => '/etc/init.d',
           'start'    => '/etc/init.d/vmware-tools-services start',
           'stop'     => '/etc/init.d/vmware-tools-services stop',
           'status'   => '/etc/init.d/vmware-tools-services status',
@@ -479,7 +479,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'redhat',
-          'path'     => '/etc/init.d/',
+          'path'     => '/etc/init.d',
           'start'    => '/etc/init.d/vmware-tools-services start',
           'stop'     => '/etc/init.d/vmware-tools-services stop',
           'status'   => '/etc/init.d/vmware-tools-services status',
@@ -789,7 +789,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'init',
-          'path'     => '/etc/vmware-tools/init/',
+          'path'     => '/etc/vmware-tools/init',
           'status'   => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
                                                                      })
       end
@@ -839,7 +839,7 @@ describe 'vmware' do
                                                                      'ensure' => 'running',
         'require'  => nil,
         'provider' => 'redhat',
-        'path'     => '/etc/vmware-tools/init/',
+        'path'     => '/etc/vmware-tools/init',
                                                                    })
     end
   end

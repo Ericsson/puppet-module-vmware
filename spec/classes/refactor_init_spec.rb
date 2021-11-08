@@ -259,7 +259,7 @@ describe 'vmware' do
                 'ensure'   => 'running',
                 'require'  => service_require,
                 'provider' => service_provider,
-                'path'     => "#{service_path}/",
+                'path'     => service_path,
               },
             )
           end

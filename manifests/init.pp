@@ -54,9 +54,9 @@
 #   The search path for finding init scripts of VMware tools service.
 #   Only used when parameter $manage_service is active and OSP packages of VMware tools are used.
 #   Default values:
-#     RedHat 5: `/etc/init.d/`
-#     Suse: `/etc/init.d/`
-#     others: `/etc/vmwre-tools/init/`
+#     RedHat 5: `/etc/init.d`
+#     Suse: `/etc/init.d`
+#     others: `/etc/vmwre-tools/init`
 #
 # @param prefer_open_vm_tools
 #   Boolean to prefer usage of Open VM Tools over VMware OSP packages in the case that both are available.
@@ -181,6 +181,8 @@ class vmware (
     $tools_nox_package_name_real = pick($tools_nox_package_name, $_tools_nox_package_name_default)
     $tools_x_package_name_real   = pick($tools_x_package_name,   $_tools_x_package_name_default)
     $enable_sync_driver_real     = pick($enable_sync_driver,     versioncmp($::kernelrelease, $working_kernel_release) >= 0)
+    # remove trailing slash (if present) from $service_path for backward compatibility
+    $_service_path_real = regsubst($service_path,'/$', '')
 
     case $::vmware_has_x {
       true:    { $manage_tools_x_package_real = pick($manage_tools_x_package, true) }
@@ -237,14 +239,14 @@ class vmware (
         # to ensure the start script is found on the non-standard locations.
         if $facts['os']['name'] != 'Ubuntu' {
           Service[$service_name_real] {
-            start  =>  "${service_path}vmware-tools-services start",
-            stop   =>  "${service_path}vmware-tools-services stop",
-            status =>  "${service_path}vmware-tools-services status",
+            start  =>  "${_service_path_real}/vmware-tools-services start",
+            stop   =>  "${_service_path_real}/vmware-tools-services stop",
+            status =>  "${_service_path_real}/vmware-tools-services status",
           }
         }
         Service[$service_name_real] {
           provider => $service_provider,
-          path     => $service_path,
+          path     => $_service_path_real,
         }
       }
 
