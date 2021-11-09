@@ -29,11 +29,11 @@
 #   Only used when parameter $manage_repo is active.
 #
 class vmware::repo::debian (
-  Stdlib::HTTPUrl      $repo_base_url                 = 'http://packages.vmware.com/tools/esx',
-  Stdlib::HTTPUrl      $gpgkey_url                    = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-  String[1]            $esx_version                   = 'latest',
-  Optional[Boolean]    $proxy_host                    = undef,
-  Integer[0, 65535]    $proxy_port                    = 8080,
+  Stdlib::HTTPUrl        $repo_base_url = 'http://packages.vmware.com/tools/esx',
+  Stdlib::HTTPUrl        $gpgkey_url    = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+  String[1]              $esx_version   = 'latest',
+  Optional[Stdlib::Host] $proxy_host    = undef,
+  Stdlib::Port           $proxy_port    = 8080,
 ){
 
   if $proxy_host == undef {
@@ -42,7 +42,7 @@ class vmware::repo::debian (
     # will only work if apt is not already defined elsewhere
     class { '::apt':
       proxy_host => $proxy_host,
-      proxy_port => '8080',
+      proxy_port => $proxy_port,
     }
   }
 

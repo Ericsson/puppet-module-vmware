@@ -1133,4 +1133,92 @@ describe 'vmware' do
       end
     end
   end
+
+  context 'with proxy_host and proxy port set to valid values on RedHat' do
+    specific_facts = {
+      os: {
+        family: 'RedHat',
+        name: 'RedHat',
+        release: {
+          full: '8.0',
+          major: '8',
+          minor: '0',
+        }
+      }
+    }
+    let(:facts) { [default_facts, specific_facts].reduce(:merge) }
+    let(:params) do
+      {
+        proxy_host: 'test.proxy.local',
+        proxy_port: 242,
+        manage_repo: true, # needed to activate the functionality
+      }
+    end
+
+    it do
+      is_expected.to contain_yumrepo('vmware-osps').with(
+        {
+          'proxy' => 'http://test.proxy.local:242',
+        },
+      )
+    end
+  end
+
+  context 'with proxy_host and proxy port set to valid values on Ubuntu' do
+    specific_facts = {
+      lsbdistid: 'ubuntu', # needed for apt
+      lsbdistcodename: 'precise', # needed for apt
+      os: {
+        family: 'Debian',
+        name: 'Ubuntu',
+        release: {
+          full: '20.04',
+          major: '20.04',
+        }
+      }
+    }
+    let(:facts) { [default_facts, specific_facts].reduce(:merge) }
+    let(:params) do
+      {
+        proxy_host: 'test.proxy.local',
+        proxy_port: 242,
+        manage_repo: true, # needed to activate the functionality
+      }
+    end
+
+    it do
+      is_expected.to contain_class('apt').with(
+        {
+          'proxy_host' => 'test.proxy.local',
+          'proxy_port' => 242,
+        },
+      )
+    end
+  end
+
+  context 'with proxy_host and proxy port set to valid values on Suse' do
+    specific_facts = {
+      os: {
+        family: 'Suse',
+        name: 'SLED',
+        release: {
+          full: '15.0',
+          major: '15',
+          minor: '0',
+        }
+      }
+    }
+    let(:facts) { [default_facts, specific_facts].reduce(:merge) }
+    let(:params) do
+      {
+        proxy_host: 'test.proxy.local',
+        proxy_port: 242,
+        manage_repo: true, # needed to activate the functionality
+      }
+    end
+
+    it 'fails' do
+      expect { is_expected.to contain_class(:subject) }.to raise_error(Puppet::Error, %r{vmware::proxy_host parameter is not supported on Suse OS family})
+    end
+  end
 end

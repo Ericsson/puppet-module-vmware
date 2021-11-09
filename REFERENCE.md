@@ -86,7 +86,7 @@ Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-
 
 ##### <a name="proxy_host"></a>`proxy_host`
 
-Data type: `Optional[Boolean]`
+Data type: `Optional[Stdlib::Host]`
 
 URL of a proxy server that should be used when accessing the VMware tools repositories.
 Not supported on Suse OS families.
@@ -96,7 +96,7 @@ Default value: ``undef``
 
 ##### <a name="proxy_port"></a>`proxy_port`
 
-Data type: `Integer[0, 65535]`
+Data type: `Stdlib::Port`
 
 Proxy port of a proxy server that should be used when accessing the VMware tools repositories.
 Not supported on Suse OS families.
@@ -150,9 +150,9 @@ Data type: `Stdlib::Absolutepath`
 The search path for finding init scripts of VMware tools service.
 Only used when parameter $manage_service is active and OSP packages of VMware tools are used.
 Default values:
-  RedHat 5: `/etc/init.d/`
-  Suse: `/etc/init.d/`
-  others: `/etc/vmwre-tools/init/`
+  RedHat 5: `/etc/init.d`
+  Suse: `/etc/init.d`
+  others: `/etc/vmwre-tools/init`
 
 ##### <a name="prefer_open_vm_tools"></a>`prefer_open_vm_tools`
 
@@ -306,15 +306,16 @@ The following parameters are available in the `vmware::repo::debian` class:
 
 * [`repo_base_url`](#repo_base_url)
 * [`gpgkey_url`](#gpgkey_url)
-* [`esx_version`](#esx_version)
 * [`proxy_host`](#proxy_host)
 * [`proxy_port`](#proxy_port)
+* [`esx_version`](#esx_version)
 
 ##### <a name="repo_base_url"></a>`repo_base_url`
 
 Data type: `Stdlib::HTTPUrl`
 
-Base URL of mirror of packages.vmware.com/tools/esx.
+Base URL of repository for VMware tools packages.
+Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/esx'`
 
@@ -322,33 +323,41 @@ Default value: `'http://packages.vmware.com/tools/esx'`
 
 Data type: `Stdlib::HTTPUrl`
 
-URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
+URL for the GPG key with which packages of VMware tools repository are signed.
+Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
 
-##### <a name="esx_version"></a>`esx_version`
-
-Data type: `String[1]`
-
-Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
-
-Default value: `'latest'`
-
 ##### <a name="proxy_host"></a>`proxy_host`
 
-Data type: `Optional[Boolean]`
+Data type: `Optional[Stdlib::Host]`
 
-Hostname of web proxy (not supported on SUSE).
+URL of a proxy server that should be used when accessing the VMware tools repositories.
+Not supported on Suse OS families.
+Only used when parameter $manage_repo is active.
 
 Default value: ``undef``
 
 ##### <a name="proxy_port"></a>`proxy_port`
 
-Data type: `Integer[0, 65535]`
+Data type: `Stdlib::Port`
 
-Port number of web proxy.
+Proxy port of a proxy server that should be used when accessing the VMware tools repositories.
+Not supported on Suse OS families.
+Only used when parameter $manage_repo is active.
 
 Default value: `8080`
+
+##### <a name="esx_version"></a>`esx_version`
+
+Data type: `String[1]`
+
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06).
+Used together with repo_base_url and client facts to build the URL used to manage the VMware tools packages.
+Note, it is recommended to explicitly set the ESX version rather than defaulting to latest.
+Only used when parameter $manage_repo is active.
+
+Default value: `'latest'`
 
 ### <a name="vmwarereporedhat"></a>`vmware::repo::redhat`
 
@@ -364,15 +373,16 @@ The following parameters are available in the `vmware::repo::redhat` class:
 
 * [`repo_base_url`](#repo_base_url)
 * [`gpgkey_url`](#gpgkey_url)
-* [`esx_version`](#esx_version)
 * [`proxy_host`](#proxy_host)
 * [`proxy_port`](#proxy_port)
+* [`esx_version`](#esx_version)
 
 ##### <a name="repo_base_url"></a>`repo_base_url`
 
 Data type: `Stdlib::HTTPUrl`
 
-Base URL of mirror of packages.vmware.com/tools/esx.
+Base URL of repository for VMware tools packages.
+Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/esx'`
 
@@ -380,33 +390,41 @@ Default value: `'http://packages.vmware.com/tools/esx'`
 
 Data type: `Stdlib::HTTPUrl`
 
-URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
+URL for the GPG key with which packages of VMware tools repository are signed.
+Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
 
-##### <a name="esx_version"></a>`esx_version`
-
-Data type: `String[1]`
-
-Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
-
-Default value: `'latest'`
-
 ##### <a name="proxy_host"></a>`proxy_host`
 
-Data type: `Optional[Boolean]`
+Data type: `Optional[Stdlib::Host]`
 
-Hostname of web proxy (not supported on SUSE).
+URL of a proxy server that should be used when accessing the VMware tools repositories.
+Not supported on Suse OS families.
+Only used when parameter $manage_repo is active.
 
 Default value: ``undef``
 
 ##### <a name="proxy_port"></a>`proxy_port`
 
-Data type: `Integer[0, 65535]`
+Data type: `Stdlib::Port`
 
-Port number of web proxy.
+Proxy port of a proxy server that should be used when accessing the VMware tools repositories.
+Not supported on Suse OS families.
+Only used when parameter $manage_repo is active.
 
 Default value: `8080`
+
+##### <a name="esx_version"></a>`esx_version`
+
+Data type: `String[1]`
+
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06).
+Used together with repo_base_url and client facts to build the URL used to manage the VMware tools packages.
+Note, it is recommended to explicitly set the ESX version rather than defaulting to latest.
+Only used when parameter $manage_repo is active.
+
+Default value: `'latest'`
 
 ### <a name="vmwarereposuse"></a>`vmware::repo::suse`
 
@@ -422,15 +440,16 @@ The following parameters are available in the `vmware::repo::suse` class:
 
 * [`repo_base_url`](#repo_base_url)
 * [`gpgkey_url`](#gpgkey_url)
-* [`esx_version`](#esx_version)
 * [`proxy_host`](#proxy_host)
 * [`proxy_port`](#proxy_port)
+* [`esx_version`](#esx_version)
 
 ##### <a name="repo_base_url"></a>`repo_base_url`
 
 Data type: `Stdlib::HTTPUrl`
 
-Base URL of mirror of packages.vmware.com/tools/esx.
+Base URL of repository for VMware tools packages.
+Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/esx'`
 
@@ -438,31 +457,39 @@ Default value: `'http://packages.vmware.com/tools/esx'`
 
 Data type: `Stdlib::HTTPUrl`
 
-URL for VMware GPG key. Defaults to http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub.
+URL for the GPG key with which packages of VMware tools repository are signed.
+Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
 
-##### <a name="esx_version"></a>`esx_version`
-
-Data type: `String[1]`
-
-Version of ESX (e.g. 5.1, 5.5, 5.5ep06). Note, it is recommended to explicitly set the esx version rather than default to latest.
-
-Default value: `'latest'`
-
 ##### <a name="proxy_host"></a>`proxy_host`
 
-Data type: `Optional[Boolean]`
+Data type: `Optional[Stdlib::Host]`
 
-Hostname of web proxy (not supported on SUSE).
+URL of a proxy server that should be used when accessing the VMware tools repositories.
+Not supported on Suse OS families.
+Only used when parameter $manage_repo is active.
 
 Default value: ``undef``
 
 ##### <a name="proxy_port"></a>`proxy_port`
 
-Data type: `Integer[0, 65535]`
+Data type: `Stdlib::Port`
 
-Port number of web proxy.
+Proxy port of a proxy server that should be used when accessing the VMware tools repositories.
+Not supported on Suse OS families.
+Only used when parameter $manage_repo is active.
 
 Default value: `8080`
+
+##### <a name="esx_version"></a>`esx_version`
+
+Data type: `String[1]`
+
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06).
+Used together with repo_base_url and client facts to build the URL used to manage the VMware tools packages.
+Note, it is recommended to explicitly set the ESX version rather than defaulting to latest.
+Only used when parameter $manage_repo is active.
+
+Default value: `'latest'`
 
