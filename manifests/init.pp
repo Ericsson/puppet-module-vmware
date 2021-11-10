@@ -76,7 +76,7 @@
 #
 # @param tools_nox_package_ensure
 #   String to pass to ensure attribute for the vmwaretools nox package.
-#   Use 'present', 'latest' to install or 'absent', 'purged' to remove package.
+#   Use 'present', 'latest' or a string with a specific version number to install or 'absent', 'purged' to remove package.
 #   Only used when parameter $manage_tools_nox_package is active.
 #
 # @param manage_tools_x_package
@@ -89,7 +89,7 @@
 #
 # @param tools_x_package_ensure
 #   String to pass to ensure attribute for the vmwaretools x package.
-#   Use 'present', 'latest' to install or 'absent', 'purged' to remove package.
+#   Use 'present', 'latest' or a string with a specific version number to install or 'absent', 'purged' to remove package.
 #   Only used when parameter $manage_tools_x_package is active.
 #
 # @param tools_conf_path
@@ -151,10 +151,10 @@ class vmware (
   String[1]              $esx_version                   = 'latest',
   Optional[Stdlib::Host] $proxy_host                    = undef,
   Stdlib::Port           $proxy_port                    = 8080,
-  String[1]              $tools_nox_package_ensure      = 'present',
-  String[1]              $tools_x_package_ensure        = 'present',
   Stdlib::Absolutepath   $tools_conf_path               = '/etc/vmware-tools/tools.conf',
   Optional[Boolean]      $enable_sync_driver            = undef,
+  Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]] $tools_nox_package_ensure = 'present',
+  Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]] $tools_x_package_ensure   = 'present',
 ){
 
   if $::virtual == 'vmware' {

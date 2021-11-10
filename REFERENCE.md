@@ -192,10 +192,10 @@ Default value: ``undef``
 
 ##### <a name="tools_nox_package_ensure"></a>`tools_nox_package_ensure`
 
-Data type: `String[1]`
+Data type: `Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]]`
 
 String to pass to ensure attribute for the vmwaretools nox package.
-Use 'present', 'latest' to install or 'absent', 'purged' to remove package.
+Use 'present', 'latest' or a string with a specific version number to install or 'absent', 'purged' to remove package.
 Only used when parameter $manage_tools_nox_package is active.
 
 Default value: `'present'`
@@ -220,10 +220,10 @@ Default value: ``undef``
 
 ##### <a name="tools_x_package_ensure"></a>`tools_x_package_ensure`
 
-Data type: `String[1]`
+Data type: `Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]]`
 
 String to pass to ensure attribute for the vmwaretools x package.
-Use 'present', 'latest' to install or 'absent', 'purged' to remove package.
+Use 'present', 'latest' or a string with a specific version number to install or 'absent', 'purged' to remove package.
 Only used when parameter $manage_tools_x_package is active.
 
 Default value: `'present'`
