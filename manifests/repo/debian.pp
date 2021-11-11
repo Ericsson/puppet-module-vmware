@@ -36,6 +36,8 @@ class vmware::repo::debian (
   Stdlib::Port           $proxy_port    = 8080,
 ){
 
+  assert_private()
+
   if $proxy_host == undef {
     include ::apt
   } else {

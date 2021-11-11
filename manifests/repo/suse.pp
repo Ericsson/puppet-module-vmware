@@ -36,6 +36,8 @@ class vmware::repo::suse (
   Stdlib::Port           $proxy_port    = 8080,
 ) {
 
+  assert_private()
+
   if $proxy_host != undef {
     fail('The vmware::proxy_host parameter is not supported on Suse OS family.')
   }

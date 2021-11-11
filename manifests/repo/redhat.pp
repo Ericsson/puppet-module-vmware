@@ -36,6 +36,8 @@ class vmware::repo::redhat (
   Stdlib::Port           $proxy_port    = 8080,
 ) {
 
+  assert_private()
+
   case $proxy_host {
     undef:   { $_proxy = undef }
     default: { $_proxy = "http://${proxy_host}:${proxy_port}" }
