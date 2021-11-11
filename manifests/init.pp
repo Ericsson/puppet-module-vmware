@@ -19,16 +19,6 @@
 #   URL for the GPG key with which packages of VMware tools repository are signed.
 #   Only used when parameter $manage_repo is active.
 #
-# @param proxy_host
-#   URL of a proxy server that should be used when accessing the VMware tools repositories.
-#   Not supported on Suse OS families.
-#   Only used when parameter $manage_repo is active.
-#
-# @param proxy_port
-#   Proxy port of a proxy server that should be used when accessing the VMware tools repositories.
-#   Not supported on Suse OS families.
-#   Only used when parameter $manage_repo is active.
-#
 # @param esx_version
 #   Version of ESX (e.g. 5.1, 5.5, 5.5ep06).
 #   Used together with repo_base_url and client facts to build the URL used to manage the VMware tools packages.
@@ -130,29 +120,27 @@
 #   - others: `open-vm-tools-desktop`
 #
 class vmware (
-  Stdlib::Absolutepath   $service_path,
-  String[1]              $working_kernel_release,
-  String[1]              $service_provider,
-  String[1]              $default_service_name_open,
-  String[1]              $default_open_tools_x_package,
-  Boolean                $default_open_vm_tools_exist,
-  Optional[Boolean]      $manage_repo                   = undef,
-  Optional[String[1]]    $service_name                  = undef,
-  Optional[Boolean]      $manage_tools_x_package        = undef,
-  Optional[String[1]]    $tools_nox_package_name        = undef,
-  Optional[String[1]]    $tools_x_package_name          = undef,
-  Stdlib::HTTPUrl        $repo_base_url                 = 'http://packages.vmware.com/tools/esx',
-  Stdlib::HTTPUrl        $gpgkey_url                    = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-  Boolean                $prefer_open_vm_tools          = true,
-  Boolean                $force_open_vm_tools           = false,
-  Boolean                $manage_service                = true,
-  Boolean                $manage_tools_nox_package      = true,
-  Boolean                $disable_tools_version         = true,
-  String[1]              $esx_version                   = 'latest',
-  Optional[Stdlib::Host] $proxy_host                    = undef,
-  Stdlib::Port           $proxy_port                    = 8080,
-  Stdlib::Absolutepath   $tools_conf_path               = '/etc/vmware-tools/tools.conf',
-  Optional[Boolean]      $enable_sync_driver            = undef,
+  Stdlib::Absolutepath $service_path,
+  String[1]            $working_kernel_release,
+  String[1]            $service_provider,
+  String[1]            $default_service_name_open,
+  String[1]            $default_open_tools_x_package,
+  Boolean              $default_open_vm_tools_exist,
+  Optional[Boolean]    $manage_repo                   = undef,
+  Optional[String[1]]  $service_name                  = undef,
+  Optional[Boolean]    $manage_tools_x_package        = undef,
+  Optional[String[1]]  $tools_nox_package_name        = undef,
+  Optional[String[1]]  $tools_x_package_name          = undef,
+  Stdlib::HTTPUrl      $repo_base_url                 = 'http://packages.vmware.com/tools/esx',
+  Stdlib::HTTPUrl      $gpgkey_url                    = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+  Boolean              $prefer_open_vm_tools          = true,
+  Boolean              $force_open_vm_tools           = false,
+  Boolean              $manage_service                = true,
+  Boolean              $manage_tools_nox_package      = true,
+  Boolean              $disable_tools_version         = true,
+  String[1]            $esx_version                   = 'latest',
+  Stdlib::Absolutepath $tools_conf_path               = '/etc/vmware-tools/tools.conf',
+  Optional[Boolean]    $enable_sync_driver            = undef,
   Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]] $tools_nox_package_ensure = 'present',
   Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]] $tools_x_package_ensure   = 'present',
 ){
@@ -194,8 +182,6 @@ class vmware (
         repo_base_url => $repo_base_url,
         gpgkey_url    => $gpgkey_url,
         esx_version   => $esx_version,
-        proxy_host    => $proxy_host,
-        proxy_port    => $proxy_port,
       }
     }
 
