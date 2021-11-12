@@ -260,6 +260,6 @@ class vmware (
       'vmtools'  => { 'disable-tools-version' => bool2str($disable_tools_version), },
       'vmbackup' => { 'enableSyncDriver'      => bool2str($enable_sync_driver_real), },
     }
-    create_ini_settings($vmtools_settings, $vmtools_defaults)
+    inifile::create_ini_settings($vmtools_settings, $vmtools_defaults)
   }
 }

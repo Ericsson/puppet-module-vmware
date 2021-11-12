@@ -28,14 +28,16 @@ class vmware::repo::debian (
   include apt
 
   apt::key { 'vmware':
-    key        => 'C0B5E0AB66FD4949',
-    key_source => $gpgkey_url,
+    id     => 'C0B5E0AB66FD4949',
+    source => $gpgkey_url,
   }
 
   apt::source { 'vmware-osps':
-    location    => "${repo_base_url}/${esx_version}/ubuntu",
-    release     => $::lsbdistcodename,
-    repos       => 'main',
-    include_src => false,
+    location => "${repo_base_url}/${esx_version}/ubuntu",
+    release  => $facts['os']['distro']['codename'],
+    repos    => 'main',
+    include  => {
+      'src' => false,
+    },
   }
 }

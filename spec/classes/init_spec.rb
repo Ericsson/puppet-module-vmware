@@ -716,11 +716,12 @@ describe 'vmware' do
     context 'with prefer_open_vm_tools = false' do
       specific_facts = {
         kernelrelease: '3.2.0-23-generic',
-        lsbdistid: 'ubuntu',  # needed for apt
-        lsbdistcodename: 'precise', # needed for apt
         os: {
           family: 'Debian',
           name: 'Ubuntu',
+          distro: {
+            codename: 'precise',
+          },
           release: {
             full: '12.04',
             major: '12.04',
@@ -755,17 +756,19 @@ describe 'vmware' do
       it do
         is_expected.to contain_apt__key('vmware').with(
           {
-            'key'        => 'C0B5E0AB66FD4949',
-            'key_source' => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'id'     => 'C0B5E0AB66FD4949',
+            'source' => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
           },
         )
       end
       it do
         is_expected.to contain_apt__source('vmware-osps').with({
                                                                  'location' => 'http://packages.vmware.com/tools/esx/latest/ubuntu',
-          'release'     => 'precise',
-          'repos'       => 'main',
-          'include_src' => false,
+          'release' => 'precise',
+          'repos'   => 'main',
+          'include' => {
+            'src' => false,
+          }
                                                                })
       end
       it do
@@ -904,24 +907,28 @@ describe 'vmware' do
                                                          })
       end
       it do
-        is_expected.to contain_ini_setting('[vmtools] disable-tools-version').with({
-                                                                                     'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmtools',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                                   })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmtools] disable-tools-version').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmtools',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
 
@@ -942,24 +949,28 @@ describe 'vmware' do
                                                          })
       end
       it do
-        is_expected.to contain_ini_setting('[vmtools] disable-tools-version').with({
-                                                                                     'ensure'  => 'present',
-          'path'    => '/path/to/file',
-          'section' => 'vmtools',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                                   })
+        is_expected.to contain_ini_setting('/path/to/file [vmtools] disable-tools-version').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/path/to/file',
+            'section' => 'vmtools',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/path/to/file',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/path/to/file [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/path/to/file',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
     context 'with false' do
@@ -978,36 +989,42 @@ describe 'vmware' do
                                                          })
       end
       it do
-        is_expected.to contain_ini_setting('[vmtools] disable-tools-version').with({
-                                                                                     'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmtools',
-          'value'   => 'false',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                                   })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmtools] disable-tools-version').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmtools',
+            'value'   => 'false',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'false',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'false',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
     context 'with undef default' do
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
     context 'with undef, set kernel <' do
@@ -1018,14 +1035,16 @@ describe 'vmware' do
       end
 
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
     context 'with undef, set kernel >' do
@@ -1036,14 +1055,16 @@ describe 'vmware' do
       end
 
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'false',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'false',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
     context 'with undef, set kernel =' do
@@ -1054,14 +1075,16 @@ describe 'vmware' do
       end
 
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
 
