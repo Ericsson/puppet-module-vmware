@@ -3,12 +3,18 @@ describe 'vmware' do
   let(:default_facts) do
     {
       virtual: 'vmware',
-      vmware_has_x: 'false',
-      operatingsystem: 'RedHat',
-      osfamily: 'RedHat',
-      operatingsystemrelease: '6.0',
-      architecture: 'x86_64',
+      vmware_has_x: false,
       kernelrelease: '2.6.32-431.11.2.el6.x86_64',
+      os: {
+        architecture: 'x86_64',
+        family: 'RedHat',
+        name: 'RedHat',
+        release: {
+          full: '6.0',
+          major: '6',
+          minor: '0',
+        }
+      }
     }
   end
   let(:facts) { default_facts }
@@ -25,6 +31,15 @@ describe 'vmware' do
                                                                                     })
       end
       it do
+        is_expected.to contain_class('vmware::repo::redhat').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+          },
+        )
+      end
+      it do
         is_expected.to contain_yumrepo('vmware-osps').with({
                                                              'baseurl' => 'http://packages.vmware.com/tools/esx/latest/rhel6/x86_64',
           'enabled'  => '1',
@@ -38,7 +53,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'redhat',
-          'path'     => '/etc/vmware-tools/init/',
+          'path'     => '/etc/vmware-tools/init',
           'start'    => '/etc/vmware-tools/init/vmware-tools-services start',
           'stop'     => '/etc/vmware-tools/init/vmware-tools-services stop',
           'status'   => '/etc/vmware-tools/init/vmware-tools-services status',
@@ -47,7 +62,7 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) { [default_facts, { vmware_has_x: 'true' }].reduce(:merge) }
+      let(:facts) { [default_facts, { vmware_has_x: true }].reduce(:merge) }
 
       it { is_expected.to contain_package('vmware-tools-esx').with('ensure' => 'present') }
     end
@@ -56,8 +71,17 @@ describe 'vmware' do
   describe 'with defaults for all parameters on RHEL 5 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystemrelease: '5.0',
         kernelrelease: '2.6.18-400.1.1.el5',
+        os: {
+          architecture: 'x86_64',
+          family: 'RedHat',
+          release: {
+            full: '5.0',
+            major: '5',
+            minor: '0',
+          }
+        }
+
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -73,6 +97,15 @@ describe 'vmware' do
                                                                                     })
       end
       it do
+        is_expected.to contain_class('vmware::repo::redhat').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+          },
+        )
+      end
+      it do
         is_expected.to contain_yumrepo('vmware-osps').with({
                                                              'enabled' => '1',
           'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/rhel5/x86_64',
@@ -85,7 +118,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'redhat',
-          'path'     => '/etc/init.d/',
+          'path'     => '/etc/init.d',
           'start'    => '/etc/init.d/vmware-tools-services start',
           'stop'     => '/etc/init.d/vmware-tools-services stop',
           'status'   => '/etc/init.d/vmware-tools-services status',
@@ -95,10 +128,7 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        vmware_has_x: 'true',
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '10.0',
+        vmware_has_x: true,
         kernelrelease: '2.6.18.2-34-default',
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
@@ -133,7 +163,7 @@ describe 'vmware' do
     end
 
     context 'on machine with X installed' do
-      let(:facts) { [default_facts, { vmware_has_x: 'true' }].reduce(:merge) }
+      let(:facts) { [default_facts, { vmware_has_x: true }].reduce(:merge) }
       let(:params) { { force_open_vm_tools: true } }
 
       it { is_expected.to contain_package('open-vm-tools').with('ensure' => 'present') }
@@ -144,8 +174,15 @@ describe 'vmware' do
   describe 'with defaults for all parameters on RHEL 7 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystemrelease: '7.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
+        os: {
+          family: 'RedHat',
+          release: {
+            full: '7.0',
+            major: '7',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -173,9 +210,16 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystemrelease: '7.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
+        os: {
+          family: 'RedHat',
+          release: {
+            full: '7.0',
+            major: '7',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -186,11 +230,19 @@ describe 'vmware' do
   describe 'with defaults for all parameters on SLES 10 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '10.2',
         kernelrelease: '2.6.18.2-34-default',
+        os: {
+          architecture: 'x86_64',
+          family: 'Suse',
+          name: 'SLES',
+          release: {
+            full: '10.2',
+            major: '10',
+            minor: '2',
+          }
+        }
       }
+
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
       it { is_expected.not_to contain_package('open-vm-tools') }
@@ -204,6 +256,15 @@ describe 'vmware' do
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
                                                                                     })
+      end
+      it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+          },
+        )
       end
       it do
         is_expected.to contain_zypprepo('vmware-osps').with({
@@ -221,7 +282,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'redhat',
-          'path'     => '/etc/init.d/',
+          'path'     => '/etc/init.d',
           'start'    => '/etc/init.d/vmware-tools-services start',
           'stop'     => '/etc/init.d/vmware-tools-services stop',
           'status'   => '/etc/init.d/vmware-tools-services status',
@@ -232,11 +293,8 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '10.0',
         kernelrelease: '2.6.18.2-34-default',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -247,10 +305,16 @@ describe 'vmware' do
   describe 'with defaults for all parameters on SLED 11.4 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'SLED',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.4',
         kernelrelease: '3.0.101-63-default',
+        os: {
+          family: 'Suse',
+          name: 'SLED',
+          release: {
+            full: '11.4',
+            major: '11',
+            minor: '4',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -277,11 +341,17 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'SLED',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.4',
         kernelrelease: '3.0.101-63-default',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
+        os: {
+          family: 'Suse',
+          name: 'SLED',
+          release: {
+            full: '11.4',
+            major: '11',
+            minor: '4',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -292,10 +362,16 @@ describe 'vmware' do
   describe 'with defaults for all parameters on SLED 12 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'SLED',
-        osfamily: 'Suse',
-        operatingsystemrelease: '12.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
+        os: {
+          family: 'Suse',
+          name: 'SLED',
+          release: {
+            full: '12.0',
+            major: '12',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -323,11 +399,17 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'SLED',
-        osfamily: 'Suse',
-        operatingsystemrelease: '12.0',
         kernelrelease: '3.10.0-123.9.2.el7.x86_64',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
+        os: {
+          family: 'Suse',
+          name: 'SLED',
+          release: {
+            full: '12.0',
+            major: '12',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -338,10 +420,17 @@ describe 'vmware' do
   describe 'with defaults for all parameters on SLES 11 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.2',
         kernelrelease: '3.0.13-0.27.1',
+        os: {
+          architecture: 'x86_64',
+          family: 'Suse',
+          name: 'SLES',
+          release: {
+            full: '11.2',
+            major: '11',
+            minor: '2',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -356,6 +445,15 @@ describe 'vmware' do
           'path'    => '/usr/bin/:/etc/vmware-tools/',
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
                                                                                     })
+      end
+      it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+          },
+        )
       end
       it do
         is_expected.to contain_zypprepo('vmware-osps').with({
@@ -373,7 +471,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'redhat',
-          'path'     => '/etc/init.d/',
+          'path'     => '/etc/init.d',
           'start'    => '/etc/init.d/vmware-tools-services start',
           'stop'     => '/etc/init.d/vmware-tools-services stop',
           'status'   => '/etc/init.d/vmware-tools-services status',
@@ -383,11 +481,8 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.0',
         kernelrelease: '3.0.13-0.27.1',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -396,13 +491,29 @@ describe 'vmware' do
 
     context 'with esx_version = 6.0, x86_64' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.2',
+        os: {
+          architecture: 'x86_64',
+          family: 'Suse',
+          name: 'SLES',
+          release: {
+            full: '11.2',
+            major: '11',
+            minor: '2',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { esx_version: '6.0' } }
 
+      it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => '6.0',
+          },
+        )
+      end
       it do
         is_expected.to contain_zypprepo('vmware-osps').with({
                                                               'enabled'     => '1',
@@ -418,13 +529,29 @@ describe 'vmware' do
 
     context 'with esx_version < 6.0, x86_64' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.2',
+        os: {
+          architecture: 'x86_64',
+          family: 'Suse',
+          name: 'SLES',
+          release: {
+            full: '11.2',
+            major: '11',
+            minor: '2',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { esx_version: '5.5latest' } }
 
+      it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => '5.5latest',
+          },
+        )
+      end
       it do
         is_expected.to contain_zypprepo('vmware-osps').with({
                                                               'enabled'     => '1',
@@ -440,14 +567,29 @@ describe 'vmware' do
 
     context 'with esx_version < 6.0, i386' do
       specific_facts = {
-        operatingsystem: 'SLES',
-        osfamily: 'Suse',
-        operatingsystemrelease: '11.2',
-        architecture: 'i386',
+        os: {
+          architecture: 'i386',
+          family: 'Suse',
+          name: 'SLES',
+          release: {
+            full: '11.2',
+            major: '11',
+            minor: '2',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
       let(:params) { { esx_version: '5.5latest' } }
 
+      it do
+        is_expected.to contain_class('vmware::repo::suse').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => '5.5latest',
+          },
+        )
+      end
       it do
         is_expected.to contain_zypprepo('vmware-osps').with({
                                                               'enabled'     => '1',
@@ -465,10 +607,16 @@ describe 'vmware' do
   describe 'with defaults for all parameters on OpenSuSE 12 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'OpenSuSE',
-        osfamily: 'Suse',
-        operatingsystemrelease: '12.0',
         kernelrelease: '3.12.28-4.6',
+        os: {
+          family: 'Suse',
+          name: 'OpenSuSE',
+          release: {
+            full: '12.0',
+            major: '12',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -491,11 +639,17 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'OpenSuSE',
-        osfamily: 'Suse',
-        operatingsystemrelease: '12.0',
         kernelrelease: '3.12.28-4.6',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
+        os: {
+          family: 'Suse',
+          name: 'OpenSuSE',
+          release: {
+            full: '12.0',
+            major: '12',
+            minor: '0',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -506,10 +660,15 @@ describe 'vmware' do
   describe 'with defaults for all parameters on Ubuntu 12.04 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          release: {
+            full: '12.04',
+            major: '12.04',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -538,11 +697,16 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          release: {
+            full: '12.04',
+            major: '12.04',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -551,15 +715,21 @@ describe 'vmware' do
 
     context 'with prefer_open_vm_tools = false' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '12.04',
         kernelrelease: '3.2.0-23-generic',
-        lsbdistid: 'ubuntu',  # needed for apt
-        lsbdistcodename: 'precise', # needed for apt
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          distro: {
+            codename: 'precise',
+          },
+          release: {
+            full: '12.04',
+            major: '12.04',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
-      let(:params) { { prefer_open_vm_tools: 'false' } }
+      let(:params) { { prefer_open_vm_tools: false } }
 
       it { is_expected.not_to contain_package('open-vm-tools') }
       it { is_expected.not_to contain_package('open-vm-toolbox') }
@@ -573,12 +743,32 @@ describe 'vmware' do
           'onlyif'  => 'test -e "/etc/vmware-tools/locations" -a ! -e "/usr/lib/vmware-tools/dsp"',
                                                                                     })
       end
+
+      it do
+        is_expected.to contain_class('vmware::repo::debian').only_with(
+          {
+            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
+            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            'esx_version'   => 'latest',
+          },
+        )
+      end
+      it do
+        is_expected.to contain_apt__key('vmware').with(
+          {
+            'id'     => 'C0B5E0AB66FD4949',
+            'source' => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+          },
+        )
+      end
       it do
         is_expected.to contain_apt__source('vmware-osps').with({
                                                                  'location' => 'http://packages.vmware.com/tools/esx/latest/ubuntu',
-          'release'     => 'precise',
-          'repos'       => 'main',
-          'include_src' => false,
+          'release' => 'precise',
+          'repos'   => 'main',
+          'include' => {
+            'src' => false,
+          }
                                                                })
       end
       it do
@@ -586,7 +776,7 @@ describe 'vmware' do
                                                                        'ensure'   => 'running',
           'require'  => 'Package[vmware-tools-esx-nox]',
           'provider' => 'init',
-          'path'     => '/etc/vmware-tools/init/',
+          'path'     => '/etc/vmware-tools/init',
           'status'   => '/bin/ps -ef | /bin/grep -i "vmtoolsd" | /bin/grep -v "grep"',
                                                                      })
       end
@@ -594,7 +784,7 @@ describe 'vmware' do
   end
 
   context 'with custom values for parameters on machine running on vmware' do
-    let(:facts) { [default_facts, { vmware_has_x: 'true' }].reduce(:merge) }
+    let(:facts) { [default_facts, { vmware_has_x: true }].reduce(:merge) }
     let(:params) do
       {
         tools_nox_package_name: 'vmware-tools-esx-nox-custom',
@@ -611,7 +801,7 @@ describe 'vmware' do
   context 'with managing the x package on a machine without x' do
     let(:params) do
       {
-        manage_tools_x_package: 'true',
+        manage_tools_x_package: true,
         tools_x_package_name: 'vmware-tools-esx-custom',
         tools_x_package_ensure: '0.5-1',
       }
@@ -623,8 +813,8 @@ describe 'vmware' do
   context 'without managing packages' do
     let(:params) do
       {
-        manage_tools_nox_package: 'false',
-        manage_tools_x_package: 'false',
+        manage_tools_nox_package: false,
+        manage_tools_x_package: false,
       }
     end
 
@@ -636,7 +826,7 @@ describe 'vmware' do
                                                                      'ensure' => 'running',
         'require'  => nil,
         'provider' => 'redhat',
-        'path'     => '/etc/vmware-tools/init/',
+        'path'     => '/etc/vmware-tools/init',
                                                                    })
     end
   end
@@ -653,10 +843,15 @@ describe 'vmware' do
   describe 'with defaults for all parameters on Ubuntu 16.04 running on vmware' do
     context 'on machine without X installed' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '16.04',
         kernelrelease: '4.4.0-166-generic',
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          release: {
+            full: '16.04',
+            major: '16.04',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -685,11 +880,16 @@ describe 'vmware' do
 
     context 'on machine with X installed' do
       specific_facts = {
-        operatingsystem: 'Ubuntu',
-        osfamily: 'Debian',
-        operatingsystemrelease: '16.04',
         kernelrelease: '4.4.0-166-generic',
-        vmware_has_x: 'true',
+        vmware_has_x: true,
+        os: {
+          family: 'Debian',
+          name: 'Ubuntu',
+          release: {
+            full: '16.04',
+            major: '16.04',
+          }
+        }
       }
       let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -707,24 +907,28 @@ describe 'vmware' do
                                                          })
       end
       it do
-        is_expected.to contain_ini_setting('[vmtools] disable-tools-version').with({
-                                                                                     'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmtools',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                                   })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmtools] disable-tools-version').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmtools',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
 
@@ -745,24 +949,28 @@ describe 'vmware' do
                                                          })
       end
       it do
-        is_expected.to contain_ini_setting('[vmtools] disable-tools-version').with({
-                                                                                     'ensure'  => 'present',
-          'path'    => '/path/to/file',
-          'section' => 'vmtools',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                                   })
+        is_expected.to contain_ini_setting('/path/to/file [vmtools] disable-tools-version').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/path/to/file',
+            'section' => 'vmtools',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/path/to/file',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/path/to/file [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/path/to/file',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
     context 'with false' do
@@ -781,95 +989,102 @@ describe 'vmware' do
                                                          })
       end
       it do
-        is_expected.to contain_ini_setting('[vmtools] disable-tools-version').with({
-                                                                                     'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmtools',
-          'value'   => 'false',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                                   })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmtools] disable-tools-version').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmtools',
+            'value'   => 'false',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'false',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'false',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
-    context 'with auto default' do
-      let(:params) { { enable_sync_driver: 'auto' } }
-
+    context 'with undef default' do
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
-    context 'with auto, set kernel <' do
+    context 'with undef, set kernel <' do
       let(:params) do
         {
-          enable_sync_driver: 'auto',
           working_kernel_release: '2.6.32-238',
         }
       end
 
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
-    context 'with auto, set kernel >' do
+    context 'with undef, set kernel >' do
       let(:params) do
         {
-          enable_sync_driver: 'auto',
           working_kernel_release: '2.6.32-440',
         }
       end
 
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'false',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'false',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
-    context 'with auto, set kernel =' do
+    context 'with undef, set kernel =' do
       let(:params) do
         {
-          enable_sync_driver: 'auto',
           working_kernel_release: '2.6.32-431.11.2.el6.x86_64',
         }
       end
 
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').with({
-                                                                                 'ensure'  => 'present',
-          'path'    => '/etc/vmware-tools/tools.conf',
-          'section' => 'vmbackup',
-          'value'   => 'true',
-          'notify'  => %r{Service\[vmware-tools-services\]},
-          'require' => 'File[vmtools_conf]',
-                                                                               })
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').with(
+          {
+            'ensure'  => 'present',
+            'path'    => '/etc/vmware-tools/tools.conf',
+            'section' => 'vmbackup',
+            'value'   => 'true',
+            'notify'  => %r{Service\[vmware-tools-services\]},
+            'require' => 'File[vmtools_conf]',
+          },
+        )
       end
     end
 
@@ -882,7 +1097,7 @@ describe 'vmware' do
       end
 
       it 'fails' do
-        expect { is_expected.to contain_ini_setting('[vmtools] disable-tools-version') }.to raise_error(Puppet::Error, %r{Unknown type of boolean})
+        expect { is_expected.to contain_ini_setting('[vmtools] disable-tools-version') }.to raise_error(Puppet::Error, %r{expects a Boolean value})
       end
     end
 
@@ -895,15 +1110,23 @@ describe 'vmware' do
       end
 
       it 'fails' do
-        expect { is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver') }.to raise_error(Puppet::Error, %r{Unknown type of boolean})
+        expect { is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver') }.to raise_error(Puppet::Error, %r{expects a value of type Undef or Boolean})
       end
     end
   end
 
   context 'managing tools.conf on RHEL7' do
     specific_facts = {
-      operatingsystemrelease: '7.0',
       kernelrelease: '3.10.0-229.7.2.el7.x86_64',
+      os: {
+        family: 'RedHat',
+        name: 'RedHat',
+        release: {
+          full: '7.0',
+          major: '7',
+          minor: '0',
+        }
+      }
     }
     let(:facts) { [default_facts, specific_facts].reduce(:merge) }
 
@@ -914,72 +1137,6 @@ describe 'vmware' do
           'path'    => '/etc/vmware-tools/tools.conf',
           'require' => 'Package[open-vm-tools]',
                                                          })
-      end
-    end
-  end
-
-  describe 'variable type and content validations' do
-    validations = {
-      'absolute_path' => {
-        name: ['tools_conf_path'],
-        valid: ['/absolute/filepath', '/absolute/directory/'],
-        invalid: ['./relative/path', ['array'], { 'ha' => 'sh' }, 3, 2.42, true, nil],
-        message: 'is not an absolute path',
-      },
-      'boolean & stringified' => {
-        name: ['force_open_vm_tools', 'manage_repo', 'manage_service', 'manage_tools_nox_package', 'manage_tools_x_package', 'prefer_open_vm_tools'],
-        valid: [true, 'true', false, 'false'],
-        invalid: ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
-        message: '(is not a boolean|str2bool)',
-      },
-      'integer & stringified' => {
-        name: ['proxy_port'],
-        valid: [242, '242', -242, '-242', 2.42],
-        invalid: ['string', ['array'], { 'ha' => 'sh' }, true, nil],
-        message: '(Wrong argument type given|expects a value of type Numeric or String|cannot convert given value to a floating point value)', # (<Puppet6|Puppet6|Puppet6)
-      },
-      'string' => {
-        name: ['proxy_host', 'service_name', 'tools_nox_package_ensure', 'tools_nox_package_name', 'tools_x_package_ensure', 'tools_x_package_name'],
-        valid: ['valid'],
-        invalid: [['array'], { 'ha' => 'sh' }, 3, 2.42, true],
-        message: 'is not a string',
-      },
-      'string (URL)' => {
-        name: ['repo_base_url', 'gpgkey_url'],
-        valid: ['http://spec.test.local/path'],
-        invalid: [['array'], { 'ha' => 'sh' }, 3, 2.42, true],
-        message: 'is not a string',
-      },
-      'esx_version (string)' => {
-        name: ['esx_version'],
-        valid: ['6.0', '5.5latest'],
-        invalid: [['array'], { 'ha' => 'sh' }, true], # esx_version can contain strings like '6.0' therefore we use validate_string() instead of is_string()
-        message: 'is not a string',
-      },
-    }
-
-    validations.sort.each do |type, var|
-      var[:name].each do |var_name|
-        var[:params] = {} if var[:params].nil?
-        var[:valid].each do |valid|
-          context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
-            let(:params) { [var[:params], { "#{var_name}": valid, }].reduce(:merge) }
-
-            it { is_expected.to compile }
-          end
-        end
-
-        var[:invalid].each do |invalid|
-          context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
-            let(:params) { [var[:params], { "#{var_name}": invalid, }].reduce(:merge) }
-
-            it 'fails' do
-              # rubocop:disable NamedSubject
-              expect { is_expected.to contain_class(subject) }.to raise_error(Puppet::Error, %r{#{var[:message]}})
-              # rubocop:enable NamedSubject
-            end
-          end
-        end
       end
     end
   end

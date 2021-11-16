@@ -1,1 +1,7 @@
---- {}
+---
+vmware::service_path: /etc/vmware-tools/init
+vmware::working_kernel_release: 2.6.35-22
+vmware::service_provider: redhat
+vmware::default_service_name_open: vmtoolsd
+vmware::default_open_vm_tools_exist: true
+vmware::default_open_tools_x_package: open-vm-tools-desktop

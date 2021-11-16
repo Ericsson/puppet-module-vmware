@@ -1,0 +1,3 @@
+---
+vmware::service_provider: init
+vmware::default_service_name_open: open-vm-tools

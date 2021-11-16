@@ -2,19 +2,19 @@ fixtures:
   repositories:
     apt:
       repo: 'https://github.com/puppetlabs/puppetlabs-apt.git'
-      ref: '1.4.2'
+      ref: 'v8.3.0'
     inifile:
       repo: 'https://github.com/puppetlabs/puppetlabs-inifile.git'
-      ref: '1.4.2'
+      ref: 'v5.2.0'
     stdlib:
       repo: 'https://github.com/puppetlabs/puppetlabs-stdlib.git'
-      ref: '5.2.0'
+      ref: 'v8.1.0'
     zypprepo:
       repo: 'https://github.com/voxpupuli/puppet-zypprepo.git'
-      ref: 'v2.2.2'
+      ref: 'v4.0.1'
     yumrepo:
       repo: 'https://github.com/puppetlabs/puppetlabs-yumrepo_core.git'
-      ref: '1.0.1'
+      ref: 'v1.1.0'
       puppet_version: ">= 6.0.0"
   symlinks:
     vmware: "#{source_dir}"

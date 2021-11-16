@@ -259,7 +259,7 @@ describe 'vmware' do
                 'ensure'   => 'running',
                 'require'  => service_require,
                 'provider' => service_provider,
-                'path'     => "#{service_path}/",
+                'path'     => service_path,
               },
             )
           end
@@ -314,7 +314,7 @@ describe 'vmware' do
       end
 
       it do
-        is_expected.to contain_ini_setting('[vmtools] disable-tools-version').only_with(
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmtools] disable-tools-version').only_with(
           {
             'ensure'  => 'present',
             'path'    => '/etc/vmware-tools/tools.conf',
@@ -343,7 +343,7 @@ describe 'vmware' do
       end
 
       it do
-        is_expected.to contain_ini_setting('[vmbackup] enableSyncDriver').only_with(
+        is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmbackup] enableSyncDriver').only_with(
           {
             'ensure'  => 'present',
             'path'    => '/etc/vmware-tools/tools.conf',
