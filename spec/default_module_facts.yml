@@ -1,0 +1,4 @@
+# Facts specified here will override the values provided by rspec-puppet-facts.
+---
+virtual: 'vmware'
+vmware_has_x: false
