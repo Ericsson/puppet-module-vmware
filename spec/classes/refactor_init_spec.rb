@@ -330,7 +330,7 @@ describe 'vmware' do
             {
               'enabled'     => 1,
               'autorefresh' => 0,
-              'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles15.1/x86_64',
+              'baseurl'     => 'http://packages.vmware.com/tools/esx/latest/sles15.2/x86_64',
               'path'        => '/',
               'type'        => 'yum',
               'gpgcheck'    => 1,
@@ -469,7 +469,7 @@ describe 'vmware' do
       when 'RedHat'
         it { is_expected.to contain_yumrepo('vmware-osps').with_baseurl('https://test.tld/latest/rhel8/x86_64') }
       when 'Suse'
-        it { is_expected.to contain_zypprepo('vmware-osps').with_baseurl('https://test.tld/latest/sles15.1/x86_64') }
+        it { is_expected.to contain_zypprepo('vmware-osps').with_baseurl('https://test.tld/latest/sles15.2/x86_64') }
       when 'Debian'
         it { is_expected.to contain_apt__source('vmware-osps').with_location('https://test.tld/latest/ubuntu') }
       end
