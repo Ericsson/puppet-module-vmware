@@ -7,9 +7,9 @@
 ### Classes
 
 * [`vmware`](#vmware): Manage installation of VMware Tools and related options.
-* [`vmware::repo::debian`](#vmwarerepodebian): Manage repository of VMware Tools packages and related options on Ubuntu. Will use Puppetlabs apt module to add the given repository to allow
-* [`vmware::repo::redhat`](#vmwarereporedhat): Manage repository of VMware Tools packages and related options on RedHat and CentOS. Will use Puppetlabs yumrepo_core module to add the given
-* [`vmware::repo::suse`](#vmwarereposuse): Manage repository of VMware Tools packages and related options on Suse OS families. Will use Puppetlabs zypprepo module to add the given repo
+* [`vmware::repo::debian`](#vmware--repo--debian): Manage repository of VMware Tools packages and related options on Ubuntu. Will use Puppetlabs apt module to add the given repository to allow
+* [`vmware::repo::redhat`](#vmware--repo--redhat): Manage repository of VMware Tools packages and related options on RedHat and CentOS. Will use Puppetlabs yumrepo_core module to add the given
+* [`vmware::repo::suse`](#vmware--repo--suse): Manage repository of VMware Tools packages and related options on Suse OS families. Will use Puppetlabs zypprepo module to add the given repo
 
 ## Classes
 
@@ -32,39 +32,39 @@ class { 'vmware': }
 
 The following parameters are available in the `vmware` class:
 
-* [`manage_repo`](#manage_repo)
-* [`repo_base_url`](#repo_base_url)
-* [`gpgkey_url`](#gpgkey_url)
-* [`esx_version`](#esx_version)
-* [`manage_service`](#manage_service)
-* [`service_name`](#service_name)
-* [`service_provider`](#service_provider)
-* [`service_path`](#service_path)
-* [`prefer_open_vm_tools`](#prefer_open_vm_tools)
-* [`force_open_vm_tools`](#force_open_vm_tools)
-* [`manage_tools_nox_package`](#manage_tools_nox_package)
-* [`tools_nox_package_name`](#tools_nox_package_name)
-* [`tools_nox_package_ensure`](#tools_nox_package_ensure)
-* [`manage_tools_x_package`](#manage_tools_x_package)
-* [`tools_x_package_name`](#tools_x_package_name)
-* [`tools_x_package_ensure`](#tools_x_package_ensure)
-* [`tools_conf_path`](#tools_conf_path)
-* [`disable_tools_version`](#disable_tools_version)
-* [`enable_sync_driver`](#enable_sync_driver)
-* [`working_kernel_release`](#working_kernel_release)
-* [`default_service_name_open`](#default_service_name_open)
-* [`default_open_vm_tools_exist`](#default_open_vm_tools_exist)
-* [`default_open_tools_x_package`](#default_open_tools_x_package)
+* [`manage_repo`](#-vmware--manage_repo)
+* [`repo_base_url`](#-vmware--repo_base_url)
+* [`gpgkey_url`](#-vmware--gpgkey_url)
+* [`esx_version`](#-vmware--esx_version)
+* [`manage_service`](#-vmware--manage_service)
+* [`service_name`](#-vmware--service_name)
+* [`service_provider`](#-vmware--service_provider)
+* [`service_path`](#-vmware--service_path)
+* [`prefer_open_vm_tools`](#-vmware--prefer_open_vm_tools)
+* [`force_open_vm_tools`](#-vmware--force_open_vm_tools)
+* [`manage_tools_nox_package`](#-vmware--manage_tools_nox_package)
+* [`tools_nox_package_name`](#-vmware--tools_nox_package_name)
+* [`tools_nox_package_ensure`](#-vmware--tools_nox_package_ensure)
+* [`manage_tools_x_package`](#-vmware--manage_tools_x_package)
+* [`tools_x_package_name`](#-vmware--tools_x_package_name)
+* [`tools_x_package_ensure`](#-vmware--tools_x_package_ensure)
+* [`tools_conf_path`](#-vmware--tools_conf_path)
+* [`disable_tools_version`](#-vmware--disable_tools_version)
+* [`enable_sync_driver`](#-vmware--enable_sync_driver)
+* [`working_kernel_release`](#-vmware--working_kernel_release)
+* [`default_service_name_open`](#-vmware--default_service_name_open)
+* [`default_open_vm_tools_exist`](#-vmware--default_open_vm_tools_exist)
+* [`default_open_tools_x_package`](#-vmware--default_open_tools_x_package)
 
-##### <a name="manage_repo"></a>`manage_repo`
+##### <a name="-vmware--manage_repo"></a>`manage_repo`
 
 Data type: `Optional[Boolean]`
 
 Boolean to choose if repository for VMware tools should be managed.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="repo_base_url"></a>`repo_base_url`
+##### <a name="-vmware--repo_base_url"></a>`repo_base_url`
 
 Data type: `Stdlib::HTTPUrl`
 
@@ -73,7 +73,7 @@ Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/esx'`
 
-##### <a name="gpgkey_url"></a>`gpgkey_url`
+##### <a name="-vmware--gpgkey_url"></a>`gpgkey_url`
 
 Data type: `Stdlib::HTTPUrl`
 
@@ -82,7 +82,7 @@ Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
 
-##### <a name="esx_version"></a>`esx_version`
+##### <a name="-vmware--esx_version"></a>`esx_version`
 
 Data type: `String[1]`
 
@@ -93,24 +93,24 @@ Only used when parameter $manage_repo is active.
 
 Default value: `'latest'`
 
-##### <a name="manage_service"></a>`manage_service`
+##### <a name="-vmware--manage_service"></a>`manage_service`
 
 Data type: `Boolean`
 
 Boolean to choose if service for VMware tools should be managed.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="service_name"></a>`service_name`
+##### <a name="-vmware--service_name"></a>`service_name`
 
 Data type: `Optional[String[1]]`
 
 Service name of VMware tools to manage.
 Only used when parameter $manage_service is active.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="service_provider"></a>`service_provider`
+##### <a name="-vmware--service_provider"></a>`service_provider`
 
 Data type: `String[1]`
 
@@ -121,7 +121,7 @@ Default values:
 - Ubuntu: init
 - others: redhat
 
-##### <a name="service_path"></a>`service_path`
+##### <a name="-vmware--service_path"></a>`service_path`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -132,43 +132,43 @@ Default values:
   Suse: `/etc/init.d`
   others: `/etc/vmwre-tools/init`
 
-##### <a name="prefer_open_vm_tools"></a>`prefer_open_vm_tools`
+##### <a name="-vmware--prefer_open_vm_tools"></a>`prefer_open_vm_tools`
 
 Data type: `Boolean`
 
 Boolean to prefer usage of Open VM Tools over VMware OSP packages in the case that both are available.
 Only useable on Ubuntu 12.04, other cases will be silently ignored.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="force_open_vm_tools"></a>`force_open_vm_tools`
+##### <a name="-vmware--force_open_vm_tools"></a>`force_open_vm_tools`
 
 Data type: `Boolean`
 
 Boolean to force usage of Open VM Tools over VMware OSP packages.
 This option is suitable in cases where EPEL is available for EL systems.
 
-Default value: ``false``
+Default value: `false`
 
-##### <a name="manage_tools_nox_package"></a>`manage_tools_nox_package`
+##### <a name="-vmware--manage_tools_nox_package"></a>`manage_tools_nox_package`
 
 Data type: `Boolean`
 
 Boolean if VM tools packages for command line clients (NOX) should be managed.
 If set to true VMware tools that might have been installed manually or from scripts will be removed.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="tools_nox_package_name"></a>`tools_nox_package_name`
+##### <a name="-vmware--tools_nox_package_name"></a>`tools_nox_package_name`
 
 Data type: `Optional[String[1]]`
 
 Name of package for vmwaretools nox package.
 Only used when parameter $manage_tools_nox_package is active.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="tools_nox_package_ensure"></a>`tools_nox_package_ensure`
+##### <a name="-vmware--tools_nox_package_ensure"></a>`tools_nox_package_ensure`
 
 Data type: `Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]]`
 
@@ -178,25 +178,25 @@ Only used when parameter $manage_tools_nox_package is active.
 
 Default value: `'present'`
 
-##### <a name="manage_tools_x_package"></a>`manage_tools_x_package`
+##### <a name="-vmware--manage_tools_x_package"></a>`manage_tools_x_package`
 
 Data type: `Optional[Boolean]`
 
 Boolean if VM tools packages for X-Windows/GUI clients (X) should be managed.
 If set to true VMware tools that might have been installed manually or from scripts will be removed.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="tools_x_package_name"></a>`tools_x_package_name`
+##### <a name="-vmware--tools_x_package_name"></a>`tools_x_package_name`
 
 Data type: `Optional[String[1]]`
 
 Name of package for vmwaretools x package.
 Only used when parameter $manage_tools_x_package is active.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="tools_x_package_ensure"></a>`tools_x_package_ensure`
+##### <a name="-vmware--tools_x_package_ensure"></a>`tools_x_package_ensure`
 
 Data type: `Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]]`
 
@@ -206,7 +206,7 @@ Only used when parameter $manage_tools_x_package is active.
 
 Default value: `'present'`
 
-##### <a name="tools_conf_path"></a>`tools_conf_path`
+##### <a name="-vmware--tools_conf_path"></a>`tools_conf_path`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -214,15 +214,15 @@ Absolute path to vmware-tools configuration file.
 
 Default value: `'/etc/vmware-tools/tools.conf'`
 
-##### <a name="disable_tools_version"></a>`disable_tools_version`
+##### <a name="-vmware--disable_tools_version"></a>`disable_tools_version`
 
 Data type: `Boolean`
 
 Disable tools version reporting to vSphere.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="enable_sync_driver"></a>`enable_sync_driver`
+##### <a name="-vmware--enable_sync_driver"></a>`enable_sync_driver`
 
 Data type: `Optional[Boolean]`
 
@@ -230,15 +230,15 @@ Enable vmtools sync driver on snapshots.  Use `undef` to automatically enable on
 See KB2038606 (http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2038606)
 https://access.redhat.com/solutions/484303
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="working_kernel_release"></a>`working_kernel_release`
+##### <a name="-vmware--working_kernel_release"></a>`working_kernel_release`
 
 Data type: `String[1]`
 
 First non-buggy kernel version for sync driver.
 
-##### <a name="default_service_name_open"></a>`default_service_name_open`
+##### <a name="-vmware--default_service_name_open"></a>`default_service_name_open`
 
 Data type: `String[1]`
 
@@ -248,7 +248,7 @@ Defaults values:
 - Ubuntu: open-vm-tools
 - others: vmtoolsd
 
-##### <a name="default_open_vm_tools_exist"></a>`default_open_vm_tools_exist`
+##### <a name="-vmware--default_open_vm_tools_exist"></a>`default_open_vm_tools_exist`
 
 Data type: `Boolean`
 
@@ -259,7 +259,7 @@ Default value is `true` with exceptions for the following OS versions:
 - SLED/SLES 11.3 and older: `false`
 - OpenSuSE 11: `false`
 
-##### <a name="default_open_tools_x_package"></a>`default_open_tools_x_package`
+##### <a name="-vmware--default_open_tools_x_package"></a>`default_open_tools_x_package`
 
 Data type: `String[1]`
 
@@ -270,7 +270,7 @@ Default values:
 - Ubuntu 14.04 and below: `open-vm-toolbox`
 - others: `open-vm-tools-desktop`
 
-### <a name="vmwarerepodebian"></a>`vmware::repo::debian`
+### <a name="vmware--repo--debian"></a>`vmware::repo::debian`
 
 Manage repository of VMware Tools packages and related options on Ubuntu.
 Will use Puppetlabs apt module to add the given repository to allow
@@ -282,12 +282,11 @@ This class is not intended to be used directly by other modules or node definiti
 
 The following parameters are available in the `vmware::repo::debian` class:
 
-* [`repo_base_url`](#repo_base_url)
-* [`gpgkey_url`](#gpgkey_url)
-* [`proxy_host`](#proxy_host)
-* [`esx_version`](#esx_version)
+* [`repo_base_url`](#-vmware--repo--debian--repo_base_url)
+* [`gpgkey_url`](#-vmware--repo--debian--gpgkey_url)
+* [`esx_version`](#-vmware--repo--debian--esx_version)
 
-##### <a name="repo_base_url"></a>`repo_base_url`
+##### <a name="-vmware--repo--debian--repo_base_url"></a>`repo_base_url`
 
 Data type: `Stdlib::HTTPUrl`
 
@@ -296,7 +295,7 @@ Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/esx'`
 
-##### <a name="gpgkey_url"></a>`gpgkey_url`
+##### <a name="-vmware--repo--debian--gpgkey_url"></a>`gpgkey_url`
 
 Data type: `Stdlib::HTTPUrl`
 
@@ -305,21 +304,16 @@ Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
 
-##### <a name="proxy_host"></a>`proxy_host`
-
-URL of a proxy server that should be used when accessing the VMware tools repositories.
-Not supported on Suse OS families.
-Only used when parameter $manage_repo is active.
-
-##### <a name="esx_version"></a>`esx_version`
+##### <a name="-vmware--repo--debian--esx_version"></a>`esx_version`
 
 Data type: `String[1]`
 
-
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06)
+Note: it is recommended to explicitly set the esx version rather than default to latest.
 
 Default value: `'latest'`
 
-### <a name="vmwarereporedhat"></a>`vmware::repo::redhat`
+### <a name="vmware--repo--redhat"></a>`vmware::repo::redhat`
 
 Manage repository of VMware Tools packages and related options on RedHat and CentOS.
 Will use Puppetlabs yumrepo_core module to add the given repository to allow
@@ -331,12 +325,11 @@ This class is not intended to be used directly by other modules or node definiti
 
 The following parameters are available in the `vmware::repo::redhat` class:
 
-* [`repo_base_url`](#repo_base_url)
-* [`gpgkey_url`](#gpgkey_url)
-* [`proxy_host`](#proxy_host)
-* [`esx_version`](#esx_version)
+* [`repo_base_url`](#-vmware--repo--redhat--repo_base_url)
+* [`gpgkey_url`](#-vmware--repo--redhat--gpgkey_url)
+* [`esx_version`](#-vmware--repo--redhat--esx_version)
 
-##### <a name="repo_base_url"></a>`repo_base_url`
+##### <a name="-vmware--repo--redhat--repo_base_url"></a>`repo_base_url`
 
 Data type: `Stdlib::HTTPUrl`
 
@@ -345,7 +338,7 @@ Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/esx'`
 
-##### <a name="gpgkey_url"></a>`gpgkey_url`
+##### <a name="-vmware--repo--redhat--gpgkey_url"></a>`gpgkey_url`
 
 Data type: `Stdlib::HTTPUrl`
 
@@ -354,21 +347,16 @@ Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
 
-##### <a name="proxy_host"></a>`proxy_host`
-
-URL of a proxy server that should be used when accessing the VMware tools repositories.
-Not supported on Suse OS families.
-Only used when parameter $manage_repo is active.
-
-##### <a name="esx_version"></a>`esx_version`
+##### <a name="-vmware--repo--redhat--esx_version"></a>`esx_version`
 
 Data type: `String[1]`
 
-
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06)
+Note: it is recommended to explicitly set the esx version rather than default to latest.
 
 Default value: `'latest'`
 
-### <a name="vmwarereposuse"></a>`vmware::repo::suse`
+### <a name="vmware--repo--suse"></a>`vmware::repo::suse`
 
 Manage repository of VMware Tools packages and related options on Suse OS families.
 Will use Puppetlabs zypprepo module to add the given repository to allow
@@ -380,12 +368,11 @@ This class is not intended to be used directly by other modules or node definiti
 
 The following parameters are available in the `vmware::repo::suse` class:
 
-* [`repo_base_url`](#repo_base_url)
-* [`gpgkey_url`](#gpgkey_url)
-* [`proxy_host`](#proxy_host)
-* [`esx_version`](#esx_version)
+* [`repo_base_url`](#-vmware--repo--suse--repo_base_url)
+* [`gpgkey_url`](#-vmware--repo--suse--gpgkey_url)
+* [`esx_version`](#-vmware--repo--suse--esx_version)
 
-##### <a name="repo_base_url"></a>`repo_base_url`
+##### <a name="-vmware--repo--suse--repo_base_url"></a>`repo_base_url`
 
 Data type: `Stdlib::HTTPUrl`
 
@@ -394,7 +381,7 @@ Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/esx'`
 
-##### <a name="gpgkey_url"></a>`gpgkey_url`
+##### <a name="-vmware--repo--suse--gpgkey_url"></a>`gpgkey_url`
 
 Data type: `Stdlib::HTTPUrl`
 
@@ -403,17 +390,12 @@ Only used when parameter $manage_repo is active.
 
 Default value: `'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub'`
 
-##### <a name="proxy_host"></a>`proxy_host`
-
-URL of a proxy server that should be used when accessing the VMware tools repositories.
-Not supported on Suse OS families.
-Only used when parameter $manage_repo is active.
-
-##### <a name="esx_version"></a>`esx_version`
+##### <a name="-vmware--repo--suse--esx_version"></a>`esx_version`
 
 Data type: `String[1]`
 
-
+Version of ESX (e.g. 5.1, 5.5, 5.5ep06)
+Note: it is recommended to explicitly set the esx version rather than default to latest.
 
 Default value: `'latest'`
 
