@@ -89,7 +89,8 @@
 #   Disable tools version reporting to vSphere.
 #
 # @param enable_sync_driver
-#   Enable vmtools sync driver on snapshots.  Use `undef` to automatically enable on non-buggy systems or set to `true` or `false` to override.
+#   Enable vmtools sync driver on snapshots.  Use `undef` to automatically enable on non-buggy systems or set to `true` or `false`
+#   to override.
 #   See KB2038606 (http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2038606)
 #   https://access.redhat.com/solutions/484303
 #
@@ -104,7 +105,8 @@
 #   - others: vmtoolsd
 #
 # @param default_open_vm_tools_exist
-#   Used for module default values only. If you want to enforce using VMware OSP tools/packages, use $tools_nox_package_name and $tools_x_package_name instead.
+#   Used for module default values only. If you want to enforce using VMware OSP tools/packages, use $tools_nox_package_name and
+#   $tools_x_package_name instead.
 #   OS specific defaults if open source VM tools are available.
 #   Default value is `true` with exceptions for the following OS versions:
 #   - RedHat 6 and older: `false`
