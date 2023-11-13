@@ -2,7 +2,6 @@ fixtures:
   repositories:
     apt:
       repo: 'https://github.com/puppetlabs/puppetlabs-apt.git'
-      ref: 'v8.3.0'
     inifile:
       repo: 'https://github.com/puppetlabs/puppetlabs-inifile.git'
       ref: 'v5.2.0'
