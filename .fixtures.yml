@@ -7,7 +7,6 @@ fixtures:
       ref: 'v5.2.0'
     stdlib:
       repo: 'https://github.com/puppetlabs/puppetlabs-stdlib.git'
-      ref: 'v8.1.0'
     zypprepo:
       repo: 'https://github.com/voxpupuli/puppet-zypprepo.git'
       ref: 'v4.0.1'
