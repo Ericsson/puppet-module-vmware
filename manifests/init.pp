@@ -143,8 +143,8 @@ class vmware (
   String[1]            $esx_version                   = 'latest',
   Stdlib::Absolutepath $tools_conf_path               = '/etc/vmware-tools/tools.conf',
   Optional[Boolean]    $enable_sync_driver            = undef,
-  Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]] $tools_nox_package_ensure = 'present',
-  Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]] $tools_x_package_ensure   = 'present',
+  Stdlib::Ensure::Package $tools_nox_package_ensure   = 'present',
+  Stdlib::Ensure::Package $tools_x_package_ensure     = 'present',
 ) {
   if $facts['virtual'] == 'vmware' {
     if $force_open_vm_tools == true {
