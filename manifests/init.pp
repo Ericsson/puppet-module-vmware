@@ -170,8 +170,6 @@ class vmware (
     $tools_nox_package_name_real = pick($tools_nox_package_name, $_tools_nox_package_name_default)
     $tools_x_package_name_real   = pick($tools_x_package_name,   $_tools_x_package_name_default)
     $enable_sync_driver_real     = pick($enable_sync_driver,     versioncmp($facts['kernelrelease'], $working_kernel_release) >= 0)
-    # remove trailing slash (if present) from $service_path for backward compatibility
-    $_service_path_real = regsubst($service_path,'/$', '')
 
     case $facts['vmware_has_x'] {
       true:    { $manage_tools_x_package_real = pick($manage_tools_x_package, true) }
@@ -213,6 +211,7 @@ class vmware (
 
     if $manage_service == true {
       $_notify_ini_setting = "Service[${service_name_real}]"
+
       # workaround for Ubuntu which does not provide the service status
       if $facts['os']['name'] == 'Ubuntu' {
         Service[$service_name_real] {
@@ -222,6 +221,9 @@ class vmware (
       }
 
       if $_use_open_vm_tools == false {
+        # remove trailing slash (if present) from $service_path for backward compatibility
+        $_service_path_real = regsubst($service_path,'/$', '')
+
         # For non-Ubuntu systems we need to specify the location of of the scripts
         # to ensure the start script is found on the non-standard locations.
         if $facts['os']['name'] != 'Ubuntu' {
@@ -231,6 +233,7 @@ class vmware (
             status => "${_service_path_real}/vmware-tools-services status",
           }
         }
+
         Service[$service_name_real] {
           provider => $service_provider,
           path     => $_service_path_real,
