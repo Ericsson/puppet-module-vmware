@@ -583,6 +583,17 @@ describe 'vmware' do
   end
 
   on_supported_os(latest).sort.each do |os, facts|
+    [true, false].each do |value|
+      context "on #{os} with disable_tools_version set to #{value}" do
+        let(:facts) { facts }
+        let(:params) { { disable_tools_version: value } }
+
+        it { is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmtools] disable-tools-version').with_value(value.to_s) }
+      end
+    end
+  end
+
+  on_supported_os(latest).sort.each do |os, facts|
     context "on #{os} with esx_version set to 2.42 when manage_repo is true" do
       let(:facts) { facts }
       let(:params) do
@@ -613,17 +624,6 @@ describe 'vmware' do
       it { is_expected.to contain_file('vmtools_conf').with_path('/etc/test') }
       it { is_expected.to contain_ini_setting('/etc/test [vmtools] disable-tools-version').with_path('/etc/test') }
       it { is_expected.to contain_ini_setting('/etc/test [vmbackup] enableSyncDriver').with_path('/etc/test') }
-    end
-  end
-
-  on_supported_os(latest).sort.each do |os, facts|
-    [true, false].each do |value|
-      context "on #{os} with disable_tools_version set to #{value}" do
-        let(:facts) { facts }
-        let(:params) { { disable_tools_version: value } }
-
-        it { is_expected.to contain_ini_setting('/etc/vmware-tools/tools.conf [vmtools] disable-tools-version').with_value(value.to_s) }
-      end
     end
   end
 
