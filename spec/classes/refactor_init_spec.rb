@@ -105,7 +105,7 @@ describe 'vmware' do
                 )
               end
             else
-              it { is_expected.not_to contain_yumrepo('vmware-osps') }
+              it { is_expected.not_to contain_class('vmware::repo::redhat') }
             end
           when 'Suse'
             if default_open_vm_tools_exist == false
@@ -145,7 +145,7 @@ describe 'vmware' do
                 )
               end
             else
-              it { is_expected.not_to contain_zypprepo('vmware-osps') }
+              it { is_expected.not_to contain_class('vmware::repo::suse') }
             end
           when 'Debian'
             it { is_expected.not_to contain_class('vmware::repo::debian') }
