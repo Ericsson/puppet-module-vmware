@@ -48,10 +48,6 @@
 #     Suse: `/etc/init.d`
 #     others: `/etc/vmwre-tools/init`
 #
-# @param prefer_open_vm_tools
-#   Boolean to prefer usage of Open VM Tools over VMware OSP packages in the case that both are available.
-#   Only useable on Ubuntu 12.04, other cases will be silently ignored.
-#
 # @param force_open_vm_tools
 #   Boolean to force usage of Open VM Tools over VMware OSP packages.
 #   This option is suitable in cases where EPEL is available for EL systems.
@@ -135,7 +131,6 @@ class vmware (
   Optional[String[1]]     $tools_x_package_name          = undef,
   Stdlib::HTTPUrl         $repo_base_url                 = 'http://packages.vmware.com/tools/esx',
   Stdlib::HTTPUrl         $gpgkey_url                    = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-  Boolean                 $prefer_open_vm_tools          = true,
   Boolean                 $force_open_vm_tools           = false,
   Boolean                 $manage_service                = true,
   Boolean                 $manage_tools_nox_package      = true,
@@ -148,14 +143,12 @@ class vmware (
 ) {
   if $facts['virtual'] == 'vmware' {
     if $force_open_vm_tools == true {
-      $_use_open_vm_tools = true
-    } elsif $prefer_open_vm_tools == false and "${facts['os']['name']}-${facts['os']['release']['major']}" == 'Ubuntu-12.04' {
-      $_use_open_vm_tools = false
+      $force_open_vm_tools_real = true
     } else {
-      $_use_open_vm_tools = $default_open_vm_tools_exist
+      $force_open_vm_tools_real = $default_open_vm_tools_exist
     }
 
-    if $_use_open_vm_tools == true {
+    if $force_open_vm_tools_real == true {
       $_tools_nox_package_name_default = 'open-vm-tools'
       $_tools_x_package_name_default   = $default_open_tools_x_package
       $manage_repo_real                = pick($manage_repo, false)
@@ -220,7 +213,7 @@ class vmware (
         }
       }
 
-      if $_use_open_vm_tools == false {
+      if $force_open_vm_tools_real == false {
         # remove trailing slash (if present) from $service_path for backward compatibility
         $_service_path_real = regsubst($service_path,'/$', '')
 

@@ -46,15 +46,6 @@ describe 'vmware' do
     ],
   }
 
-  ubuntu = {
-    supported_os: [
-      {
-        'operatingsystem'        => 'Ubuntu',
-        'operatingsystemrelease' => ['12.04', '14.04', '16.04', '18.04', '20.04'],
-      },
-    ],
-  }
-
   on_supported_os.sort.each do |os, facts|
     # these function calls mimic the hiera data, they are sourced in from spec/spec_functions.rb
     default_open_vm_tools_exist = default_open_vm_tools_exist(facts)
@@ -484,40 +475,6 @@ describe 'vmware' do
         it { is_expected.to contain_zypprepo('vmware-osps').with_gpgkey('https://test.tld/test.pub') }
       when 'Debian'
         it { is_expected.to contain_apt__key('vmware').with_source('https://test.tld/test.pub') }
-      end
-    end
-  end
-
-  on_supported_os(ubuntu).sort.each do |os, facts|
-    tools_x_package_name = tools_x_package_name(facts)
-
-    context "on #{os} with prefer_open_vm_tools set to false when manage_tools_x_package is true" do
-      let(:facts) { facts.merge({ vmware_has_x: true }) }
-      let(:params) do
-        {
-          prefer_open_vm_tools:   false,
-          manage_tools_x_package: true,
-        }
-      end
-
-      if facts[:os]['release']['full'] == '12.04'
-        it { is_expected.not_to contain_package('open-vm-tools') }
-        it { is_expected.to contain_package('vmware-tools-esx') }
-        it { is_expected.to contain_package('vmware-tools-esx-nox') }
-        it { is_expected.to contain_class('vmware::repo::debian') }
-        it { is_expected.to contain_apt__key('vmware') }
-        it { is_expected.to contain_apt__source('vmware-osps') }
-        it { is_expected.to contain_exec('Remove vmware tools script installation').with_before(['Package[vmware-tools-esx-nox]', 'Package[vmware-tools-esx]']) }
-        it { is_expected.to contain_service('vmware-tools-services') }
-      else
-        it { is_expected.to contain_package('open-vm-tools') }
-        it { is_expected.not_to contain_package('vmware-tools-esx') }
-        it { is_expected.not_to contain_package('vmware-tools-esx-nox') }
-        it { is_expected.not_to contain_class('vmware::repo::debian') }
-        it { is_expected.not_to contain_apt__key('vmware') }
-        it { is_expected.not_to contain_apt__source('vmware-osps') }
-        it { is_expected.to contain_exec('Remove vmware tools script installation').with_before([ 'Package[open-vm-tools]', "Package[#{tools_x_package_name}]" ]) }
-        it { is_expected.not_to contain_service('vmware-tools-services') }
       end
     end
   end
