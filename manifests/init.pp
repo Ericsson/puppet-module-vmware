@@ -48,10 +48,6 @@
 #     Suse: `/etc/init.d`
 #     others: `/etc/vmwre-tools/init`
 #
-# @param prefer_open_vm_tools
-#   Boolean to prefer usage of Open VM Tools over VMware OSP packages in the case that both are available.
-#   Only useable on Ubuntu 12.04, other cases will be silently ignored.
-#
 # @param force_open_vm_tools
 #   Boolean to force usage of Open VM Tools over VMware OSP packages.
 #   This option is suitable in cases where EPEL is available for EL systems.
@@ -122,40 +118,37 @@
 #   - others: `open-vm-tools-desktop`
 #
 class vmware (
-  Stdlib::Absolutepath $service_path,
-  String[1]            $working_kernel_release,
-  String[1]            $service_provider,
-  String[1]            $default_service_name_open,
-  String[1]            $default_open_tools_x_package,
-  Boolean              $default_open_vm_tools_exist,
-  Optional[Boolean]    $manage_repo                   = undef,
-  Optional[String[1]]  $service_name                  = undef,
-  Optional[Boolean]    $manage_tools_x_package        = undef,
-  Optional[String[1]]  $tools_nox_package_name        = undef,
-  Optional[String[1]]  $tools_x_package_name          = undef,
-  Stdlib::HTTPUrl      $repo_base_url                 = 'http://packages.vmware.com/tools/esx',
-  Stdlib::HTTPUrl      $gpgkey_url                    = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-  Boolean              $prefer_open_vm_tools          = true,
-  Boolean              $force_open_vm_tools           = false,
-  Boolean              $manage_service                = true,
-  Boolean              $manage_tools_nox_package      = true,
-  Boolean              $disable_tools_version         = true,
-  String[1]            $esx_version                   = 'latest',
-  Stdlib::Absolutepath $tools_conf_path               = '/etc/vmware-tools/tools.conf',
-  Optional[Boolean]    $enable_sync_driver            = undef,
-  Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]] $tools_nox_package_ensure = 'present',
-  Variant[Enum['absent', 'latest', 'present', 'purged'], Pattern[/(\d+\.)+([\d-]+)/]] $tools_x_package_ensure   = 'present',
+  Stdlib::Absolutepath    $service_path                  = '/etc/vmware-tools/init',
+  String[1]               $working_kernel_release        = '2.6.35-22',
+  String[1]               $service_provider              = 'redhat',
+  String[1]               $default_service_name_open     = 'vmtoolsd',
+  String[1]               $default_open_tools_x_package  = 'open-vm-tools-desktop',
+  Boolean                 $default_open_vm_tools_exist   = true,
+  Optional[Boolean]       $manage_repo                   = undef,
+  Optional[String[1]]     $service_name                  = undef,
+  Optional[Boolean]       $manage_tools_x_package        = undef,
+  Optional[String[1]]     $tools_nox_package_name        = undef,
+  Optional[String[1]]     $tools_x_package_name          = undef,
+  Stdlib::HTTPUrl         $repo_base_url                 = 'http://packages.vmware.com/tools/esx',
+  Stdlib::HTTPUrl         $gpgkey_url                    = 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+  Boolean                 $force_open_vm_tools           = false,
+  Boolean                 $manage_service                = true,
+  Boolean                 $manage_tools_nox_package      = true,
+  Boolean                 $disable_tools_version         = true,
+  String[1]               $esx_version                   = 'latest',
+  Stdlib::Absolutepath    $tools_conf_path               = '/etc/vmware-tools/tools.conf',
+  Optional[Boolean]       $enable_sync_driver            = undef,
+  Stdlib::Ensure::Package $tools_nox_package_ensure      = 'present',
+  Stdlib::Ensure::Package $tools_x_package_ensure        = 'present',
 ) {
   if $facts['virtual'] == 'vmware' {
     if $force_open_vm_tools == true {
-      $_use_open_vm_tools = true
-    } elsif $prefer_open_vm_tools == false and "${facts['os']['name']}-${facts['os']['release']['major']}" == 'Ubuntu-12.04' {
-      $_use_open_vm_tools = false
+      $force_open_vm_tools_real = true
     } else {
-      $_use_open_vm_tools = $default_open_vm_tools_exist
+      $force_open_vm_tools_real = $default_open_vm_tools_exist
     }
 
-    if $_use_open_vm_tools == true {
+    if $force_open_vm_tools_real == true {
       $_tools_nox_package_name_default = 'open-vm-tools'
       $_tools_x_package_name_default   = $default_open_tools_x_package
       $manage_repo_real                = pick($manage_repo, false)
@@ -170,8 +163,6 @@ class vmware (
     $tools_nox_package_name_real = pick($tools_nox_package_name, $_tools_nox_package_name_default)
     $tools_x_package_name_real   = pick($tools_x_package_name,   $_tools_x_package_name_default)
     $enable_sync_driver_real     = pick($enable_sync_driver,     versioncmp($facts['kernelrelease'], $working_kernel_release) >= 0)
-    # remove trailing slash (if present) from $service_path for backward compatibility
-    $_service_path_real = regsubst($service_path,'/$', '')
 
     case $facts['vmware_has_x'] {
       true:    { $manage_tools_x_package_real = pick($manage_tools_x_package, true) }
@@ -213,6 +204,7 @@ class vmware (
 
     if $manage_service == true {
       $_notify_ini_setting = "Service[${service_name_real}]"
+
       # workaround for Ubuntu which does not provide the service status
       if $facts['os']['name'] == 'Ubuntu' {
         Service[$service_name_real] {
@@ -221,7 +213,10 @@ class vmware (
         }
       }
 
-      if $_use_open_vm_tools == false {
+      if $force_open_vm_tools_real == false {
+        # remove trailing slash (if present) from $service_path for backward compatibility
+        $_service_path_real = regsubst($service_path,'/$', '')
+
         # For non-Ubuntu systems we need to specify the location of of the scripts
         # to ensure the start script is found on the non-standard locations.
         if $facts['os']['name'] != 'Ubuntu' {
@@ -231,6 +226,7 @@ class vmware (
             status => "${_service_path_real}/vmware-tools-services status",
           }
         }
+
         Service[$service_name_real] {
           provider => $service_provider,
           path     => $_service_path_real,
