@@ -122,12 +122,12 @@
 #   - others: `open-vm-tools-desktop`
 #
 class vmware (
-  Stdlib::Absolutepath    $service_path,
-  String[1]               $working_kernel_release,
-  String[1]               $service_provider,
-  String[1]               $default_service_name_open,
-  String[1]               $default_open_tools_x_package,
-  Boolean                 $default_open_vm_tools_exist,
+  Stdlib::Absolutepath    $service_path                  = '/etc/vmware-tools/init',
+  String[1]               $working_kernel_release        = '2.6.35-22',
+  String[1]               $service_provider              = 'redhat',
+  String[1]               $default_service_name_open     = 'vmtoolsd',
+  String[1]               $default_open_tools_x_package  = 'open-vm-tools-desktop',
+  Boolean                 $default_open_vm_tools_exist   = true,
   Optional[Boolean]       $manage_repo                   = undef,
   Optional[String[1]]     $service_name                  = undef,
   Optional[Boolean]       $manage_tools_x_package        = undef,
