@@ -2,11 +2,6 @@ require 'spec_helper'
 require 'spec_functions'
 
 describe 'vmware' do
-  # By default rspec-puppet-facts only provide facts for x86_64 architectures.
-  all = {
-    hardwaremodels: ['x86_64', 'i386']
-  }
-
   # test only the latest version of each OS family
   latest = {
     supported_os: [
@@ -60,7 +55,7 @@ describe 'vmware' do
     ],
   }
 
-  on_supported_os(all).sort.each do |os, facts|
+  on_supported_os.sort.each do |os, facts|
     # these function calls mimic the hiera data, they are sourced in from spec/spec_functions.rb
     default_open_vm_tools_exist = default_open_vm_tools_exist(facts)
     service_name = service_name(facts)
@@ -109,12 +104,6 @@ describe 'vmware' do
             end
           when 'Suse'
             if default_open_vm_tools_exist == false
-              suse_repo_architecture = if facts[:os]['architecture'] == 'x86_64'
-                                         'x86_64'
-                                       else
-                                         'i586'
-                                       end
-
               it { is_expected.to contain_class('zypprepo') }
 
               # TODO: check the URL - module creates:
@@ -136,7 +125,7 @@ describe 'vmware' do
                   {
                     'enabled'     => '1',
                     'autorefresh' => '0',
-                    'baseurl'     => "http://packages.vmware.com/tools/esx/latest/sles#{facts[:os]['release']['full']}/#{suse_repo_architecture}",
+                    'baseurl'     => "http://packages.vmware.com/tools/esx/latest/sles#{facts[:os]['release']['full']}/#{facts[:os]['architecture']}",
                     'path'        => '/',
                     'type'        => 'yum',
                     'gpgcheck'    => '1',
@@ -533,7 +522,7 @@ describe 'vmware' do
     end
   end
 
-  on_supported_os(all).sort.each do |os, facts|
+  on_supported_os.sort.each do |os, facts|
     default_open_tools_x_package = default_open_tools_x_package(facts)
 
     context "on #{os} with force_open_vm_tools set to true when manage_tools_x_package is true" do
@@ -670,7 +659,7 @@ describe 'vmware' do
   end
 
   # testing open-vm-tools existence and naming on different OS versions
-  on_supported_os(all).sort.each do |os, facts|
+  on_supported_os.sort.each do |os, facts|
     default_open_tools_x_package = default_open_tools_x_package(facts)
     default_open_vm_tools_exist = default_open_vm_tools_exist(facts)
     default_service_name_open = default_service_name_open(facts)

@@ -564,44 +564,6 @@ describe 'vmware' do
                                                             })
       end
     end
-
-    context 'with esx_version < 6.0, i386' do
-      specific_facts = {
-        os: {
-          architecture: 'i386',
-          family: 'Suse',
-          name: 'SLES',
-          release: {
-            full: '11.2',
-            major: '11',
-            minor: '2',
-          }
-        }
-      }
-      let(:facts) { [default_facts, specific_facts].reduce(:merge) }
-      let(:params) { { esx_version: '5.5latest' } }
-
-      it do
-        is_expected.to contain_class('vmware::repo::suse').only_with(
-          {
-            'repo_base_url' => 'http://packages.vmware.com/tools/esx',
-            'gpgkey_url'    => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-            'esx_version'   => '5.5latest',
-          },
-        )
-      end
-      it do
-        is_expected.to contain_zypprepo('vmware-osps').with({
-                                                              'enabled'     => '1',
-          'autorefresh' => '0',
-          'baseurl'     => 'http://packages.vmware.com/tools/esx/5.5latest/sles11.2/i586',
-          'path'        => '/',
-          'type'        => 'yum',
-          'gpgcheck'    => '1',
-          'gpgkey'      => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
-                                                            })
-      end
-    end
   end
 
   describe 'with defaults for all parameters on OpenSuSE 12 running on vmware' do

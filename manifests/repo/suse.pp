@@ -34,17 +34,12 @@ class vmware::repo::suse (
     }
   }
 
-  case $facts['os']['architecture'] {
-    'i386':  { $architecture_real = 'i586' }
-    default: { $architecture_real = $facts['os']['architecture'] }
-  }
-
   include zypprepo
 
   zypprepo { 'vmware-osps':
     enabled     => 1,
     autorefresh => 0,
-    baseurl     => "${repo_base_url}/${esx_version}/sles${_suseos}/${architecture_real}",
+    baseurl     => "${repo_base_url}/${esx_version}/sles${_suseos}/${facts['os']['architecture']}",
     path        => '/',
     type        => 'yum',
     gpgcheck    => 1,
