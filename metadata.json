@@ -1,12 +1,12 @@
 {
-  "name": "gillarkod-vmware",
+  "name": "ericsson-vmware",
   "version": "2.1.0",
-  "author": "gillarkod",
+  "author": "ericsson",
   "summary": "Manage VMware Client Tools",
   "license": "Apache-2.0",
-  "source": "https://github.com/gillarkod/puppet-module-vmware.git",
-  "project_page": "https://github.com/gillarkod/puppet-module-vmware",
-  "issues_url": "https://github.com/gillarkod/puppet-module-vmware/issues",
+  "source": "https://github.com/ericsson/puppet-module-vmware.git",
+  "project_page": "https://github.com/ericsson/puppet-module-vmware",
+  "issues_url": "https://github.com/ericsson/puppet-module-vmware/issues",
   "dependencies": [
     {
       "name": "puppetlabs/apt",
